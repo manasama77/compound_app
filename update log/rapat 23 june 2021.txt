@@ -1,0 +1,11 @@
+halaman registrasi member since disembunyikan
+deposit hanya 1 USDT
+
+withdraw :
+	- BNB
+	- ETH
+	- BTC
+	- TRON
+	- EDITRADE (UPDATE)
+
+minimal Withdraw 100 USDT

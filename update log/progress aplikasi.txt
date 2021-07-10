@@ -1,0 +1,49 @@
+[2021-06-19] Progress Aplikasi:
+
+[MEMBER]
+- Templating system member
+- Templating system admin
+- Registrasi Member
+- Aktivasi registrasi member via email
+- Login member 
+- OTP via email Login member
+- Fitur lupa password member
+- OTP via email lupa password
+- Fitur Reset password member
+- Dashboard member
+     - Info total asset
+	 - Info total downline
+	 - Info total asset trade manager
+	 - Info total asset Crypto Asset
+     - List downline (10 data)
+- Log Recruitment
+
+[ADMIN]
+- Templating system admin
+- Login admin 
+- OTP via email Login admin
+- Fitur lupa password admin
+- OTP via email lupa password
+- Fitur Reset password admin
+- Dashboard admin
+     - Info total asset semua member
+	 - Info total semua member
+	 - Info total asset trade manager semua member
+	 - Info total asset Crypto Asset semua member
+     - List member terbaru (10 data)
+- CRUD (Create Read Update Delete) Founder Management
+- RU (Read Update) Member Management
+- Log Recruitment
+
+[ONGOING]
+
+[MEMBER]
+- Trade Manager
+     - Pilih paket
+	 - Checkout dengan pembayaran menggunakan API COINPAYMENT
+	 - Terima pembayaran otomatis dari API COINPAYMENT
+	 - Aktivasi paket setelah pembayaran selesai
+
+[ADMIN]
+- Trade Manager
+     - Manual Aktivasi paket Trade Manager (untuk backup jika ada kendala di API COINPAYMENT)
