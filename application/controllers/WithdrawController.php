@@ -339,9 +339,9 @@ class WithdrawController extends CI_Controller
 		$receive_coin = $this->input->get('receive_coin');
 
 		$where = [
-			'id_member' => $this->id_member,
+			'id_member'    => $this->id_member,
 			'receive_coin' => $receive_coin,
-			'deleted_at' => null,
+			'deleted_at'   => null,
 		];
 		$arr = $this->M_core->get('member_wallet', '*', $where, 'updated_at', 'desc', null, 0, 'wallet_host');
 
@@ -397,10 +397,10 @@ class WithdrawController extends CI_Controller
 			return show_error('Failed to get Balances on Coinpayment. Please try again!', 500, "An Error Was Encountered");
 		}
 
-		$x = strtoupper($receive_coin);
+		$x        = strtoupper($receive_coin);
 		$balancef = $get_coin_balance['result'][$x]['balancef'];
 		if ($amount >= $balancef) {
-			$email_alert = $this->_send_alert_balance($receive_coin, $amount);
+			$this->_send_alert_balance($receive_coin, $amount);
 			$this->db->trans_commit();
 		}
 

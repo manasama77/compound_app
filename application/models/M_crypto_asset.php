@@ -2,13 +2,13 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class M_trade_manager extends CI_Model
+class M_crypto_asset extends CI_Model
 {
 
 	public function latest_sequence()
 	{
 		return $this->db->select('sequence as max_sequence')
-			->from('member_trade_manager')
+			->from('member_crypto_asset')
 			->where("state IN ('waiting payment', 'active', 'inactive', 'cancel', 'expired')", null, true)
 			->where("DATE(created_at) = '" . date('Y-m-d') . "'", null, true)
 			->where('deleted_at', null)
@@ -41,25 +41,25 @@ class M_trade_manager extends CI_Model
 	{
 		return $this->db
 			->select([
-				'member_trade_manager.invoice',
-				'member_trade_manager.id_member',
-				'member_trade_manager.id_package',
-				'member_trade_manager.item_name',
-				'member_trade_manager.buyer_email',
-				'member_trade_manager.buyer_name',
-				'member_trade_manager.amount_usd',
+				'member_crypto_asset.invoice',
+				'member_crypto_asset.id_member',
+				'member_crypto_asset.id_package',
+				'member_crypto_asset.item_name',
+				'member_crypto_asset.buyer_email',
+				'member_crypto_asset.buyer_name',
+				'member_crypto_asset.amount_usd',
 			])
-			->from('member_trade_manager')
-			->join('et_member', 'et_member.id = et_member_trade_manager.id_member', 'left')
-			->where('et_member_trade_manager.id_member !=', $id_member)
-			->where('et_member_trade_manager.is_qualified', 'no')
-			->where('et_member_trade_manager.state', 'active')
-			->where('et_member_trade_manager.deleted_at', null)
+			->from('member_crypto_asset')
+			->join('et_member', 'et_member.id = et_member_crypto_asset.id_member', 'left')
+			->where('et_member_crypto_asset.id_member !=', $id_member)
+			->where('et_member_crypto_asset.is_qualified', 'no')
+			->where('et_member_crypto_asset.state', 'active')
+			->where('et_member_crypto_asset.deleted_at', null)
 			->where('et_member.id_upline', $id_upline)
 			->where('et_member.is_active', 'yes')
 			->where('et_member.deleted_at', null)
-			->order_by('et_member_trade_manager.created_at', 'asc')
-			->group_by('member_trade_manager.id_member')
+			->order_by('et_member_crypto_asset.created_at', 'asc')
+			->group_by('member_crypto_asset.id_member')
 			->limit(1)
 			->get();
 	}
@@ -69,16 +69,16 @@ class M_trade_manager extends CI_Model
 		return $this->db->set('total_omset', 'total_omset + ' . $total_omset, false)->where('id_member', $id_member)->update('member_balance');
 	}
 
-	public function get_member_trade_manager($id_member = null, $invoice = null)
+	public function get_member_crypto_asset($id_member = null, $invoice = null)
 	{
 		$this->db->select('
 			mtm.invoice,
 			mtm.item_name AS package,
 			mtm.amount_usd AS amount,
+			mtm.profit_self_per_day AS profit_per_day,
 			mtm.state,
 			mtm.created_at,
 			mtm.expired_at,
-			mtm.is_extend,
 			mtm.payment_method,
 			mtm.txn_id,
 			mtm.amount_coin as amount_transfer,
@@ -92,8 +92,8 @@ class M_trade_manager extends CI_Model
 			ptm.share_company_percentage AS profit_company_percentage,
 			mtm.profit_company_per_day AS profit_company_value 
 		', false);
-		$this->db->from('et_member_trade_manager AS mtm');
-		$this->db->join('et_package_trade_manager AS ptm', 'ptm.id = mtm.id_package', 'left');
+		$this->db->from('et_member_crypto_asset AS mtm');
+		$this->db->join('et_package_crypto_asset AS ptm', 'ptm.id = mtm.id_package', 'left');
 		$this->db->where('mtm.deleted_at', null);
 
 		if ($id_member != null) {
@@ -111,23 +111,23 @@ class M_trade_manager extends CI_Model
 			foreach ($query->result() as $key) {
 				$invoice                   = $key->invoice;
 				$package                   = $key->package;
-				$amount                    = check_float($key->amount);
+				$amount                    = number_format($key->amount, 0);
+				$profit_per_day            = number_format($key->profit_per_day, 8);
 				$state                     = $key->state;
 				$created_at                = $key->created_at;
 				$expired_at                = $key->expired_at;
 				$is_extend                 = $key->is_extend;
 				$payment_method            = $key->payment_method;
 				$txn_id                    = $key->txn_id;
-				$amount_transfer           = check_float($key->amount_transfer);
-				$profit_montly_percentage  = check_float($key->profit_montly_percentage);
-				$profit_montly_value       = check_float($key->profit_montly_value);
-				$profit_per_day            = check_float($key->profit_montly_value / 30);
-				$profit_self_percentage    = check_float($key->profit_self_percentage);
-				$profit_self_value         = check_float($key->profit_self_value);
-				$profit_upline_percentage  = check_float($key->profit_upline_percentage);
-				$profit_upline_value       = check_float($key->profit_upline_value);
-				$profit_company_percentage = check_float($key->profit_company_percentage);
-				$profit_company_value      = check_float($key->profit_company_value);
+				$amount_transfer           = number_format($key->amount_transfer, 8);
+				$profit_montly_percentage  = number_format($key->profit_montly_percentage, 2);
+				$profit_montly_value       = number_format($key->profit_montly_value, 8);
+				$profit_self_percentage    = number_format($key->profit_self_percentage, 2);
+				$profit_self_value         = number_format($key->profit_self_value, 8);
+				$profit_upline_percentage  = number_format($key->profit_upline_percentage, 2);
+				$profit_upline_value       = number_format($key->profit_upline_value, 8);
+				$profit_company_percentage = number_format($key->profit_company_percentage, 2);
+				$profit_company_value      = number_format($key->profit_company_value, 8);
 
 				$nested = [
 					'invoice'                   => $invoice,
@@ -157,23 +157,6 @@ class M_trade_manager extends CI_Model
 
 		return $result;
 	}
-
-	public function get_expired_trade_manager()
-	{
-		return $this->db
-			->select('*')
-			->from('et_member_trade_manager AS mtm')
-			->where('mtm.deleted_at', null)
-			->where('mtm.state', 'active')
-			->where('mtm.expired_at <=', date('Y-m-d'))
-			->where('mtm.is_extend', 'manual')
-			->get();
-	}
-
-	public function update_state($data)
-	{
-		return $this->db->update_batch('member_trade_manager', $data, 'invoice');
-	}
 }
                         
-/* End of file M_trade_manager.php */
+/* End of file M_crypto_asset.php */

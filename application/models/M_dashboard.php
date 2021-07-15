@@ -110,8 +110,8 @@ class M_dashboard extends CI_Model
 				$fullname_upline = $key->fullname_upline;
 				$email_upline    = $key->email_upline;
 				$generation      = $key->generation;
-				$total_omset     = number_format($key->total_omset, 8);
-				$total_downline  = number_format($key->total_downline, 0);
+				$total_omset     = check_float($key->total_omset);
+				$total_downline  = check_float($key->total_downline);
 
 				$nested = [
 					'id'              => $id,
