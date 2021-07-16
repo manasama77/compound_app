@@ -15,6 +15,8 @@ class DashboardController extends CI_Controller
 		$this->load->model('M_dashboard');
 		$this->load->model('M_member');
 		$this->load->model('M_tree');
+		$this->load->helper('Floating_helper');
+
 
 		$this->id_member = $this->session->userdata(SESI . 'id');
 
@@ -64,8 +66,8 @@ class DashboardController extends CI_Controller
 		if ($arr_package->num_rows() > 0) {
 			foreach ($arr_package->result() as $key) {
 				$item_name           = $key->item_name;
-				$amount_usd          = number_format($key->amount_usd, 0);
-				$profit_self_per_day = number_format($key->profit_self_per_day, 8);
+				$amount_usd          = check_float($key->amount_usd);
+				$profit_self_per_day = check_float($key->profit_self_per_day);
 				$expired_at          = $key->expired_at;
 				$state               = $key->state;
 
@@ -118,11 +120,11 @@ class DashboardController extends CI_Controller
 
 	public function _card()
 	{
-		$data_balance = $this->_get_member_balance();
+		$data_balance       = $this->_get_member_balance();
 		$count_all_downline = $this->_count_all_downline();
 
 		$return = [
-			'data_balance' => $data_balance,
+			'data_balance'       => $data_balance,
 			'count_all_downline' => $count_all_downline,
 		];
 
@@ -137,11 +139,11 @@ class DashboardController extends CI_Controller
 		$arr_balance = $this->M_dashboard->get_member_balance($this->id_member);
 
 		if ($arr_balance->num_rows() > 0) {
-			$total_invest_trade_manager = number_format($arr_balance->row()->total_invest_trade_manager, 8);
-			$total_invest_crypto_asset  = number_format($arr_balance->row()->total_invest_crypto_asset, 8);
-			$profit                     = number_format($arr_balance->row()->profit, 8);
-			$bonus                      = number_format($arr_balance->row()->bonus, 8);
-			$total_omset                = number_format($arr_balance->row()->total_omset, 8);
+			$total_invest_trade_manager = check_float($arr_balance->row()->total_invest_trade_manager);
+			$total_invest_crypto_asset  = check_float($arr_balance->row()->total_invest_crypto_asset);
+			$profit                     = check_float($arr_balance->row()->profit);
+			$bonus                      = check_float($arr_balance->row()->bonus);
+			$total_omset                = check_float($arr_balance->row()->total_omset);
 
 			$data_balance = [
 				'total_invest_trade_manager' => $total_invest_trade_manager,
@@ -158,7 +160,7 @@ class DashboardController extends CI_Controller
 	public function _count_all_downline()
 	{
 		$count = $this->M_dashboard->count_all_downline($this->id_member);
-		return number_format($count->row()->count_all_downline, 0);
+		return check_float($count->row()->count_all_downline);
 	}
 
 	public function _latest_downline($id_member)

@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class TradeManagerController extends CI_Controller
+class CryptoAssetController extends CI_Controller
 {
 	protected $date;
 	protected $datetime;
@@ -23,18 +23,17 @@ class TradeManagerController extends CI_Controller
 		parent::__construct();
 		$this->load->library('L_member', null, 'template');
 		$this->load->library('Nested_set', null, 'tree');
-		$this->load->model('M_trade_manager');
+		$this->load->model('M_crypto_asset');
 		$this->load->model('M_log_send_email_member');
-		$this->load->helper('Floating_helper');
 
-		$this->date     		= date('Y-m-d');
+		$this->date 			= date('Y-m-d');
 		$this->datetime 		= date('Y-m-d H:i:s');
-		$this->api_link       	= 'https://www.coinpayments.net/api.php';
-		$this->public_key     	= '0d79d9c15454272a3ea638332ff716217b1530d57d2bb8023a0b5835a4c2c6bd';
-		$this->private_key    	= '90c986299927C62d1250999244da7fEF08263769818AA8875e90e446f5d78d30';
-		$this->merchant_id    	= '12d2c4c617ebe6fb9e401a92ed7039fd';
+		$this->api_link 		= 'https://www.coinpayments.net/api.php';
+		$this->public_key 		= '0d79d9c15454272a3ea638332ff716217b1530d57d2bb8023a0b5835a4c2c6bd';
+		$this->private_key 		= '90c986299927C62d1250999244da7fEF08263769818AA8875e90e446f5d78d30';
+		$this->merchant_id 		= '12d2c4c617ebe6fb9e401a92ed7039fd';
 		$this->ipn_secret_key 	= 'YmlvbmVyIElQTg==';
-		$this->id_member		= $this->session->userdata(SESI . 'id');
+		$this->id_member        = $this->session->userdata(SESI . 'id');
 
 		$this->from       = 'adam.pm59@gmail.com';
 		$this->from_alias = 'Admin Test';
@@ -48,14 +47,12 @@ class TradeManagerController extends CI_Controller
 
 	public function index()
 	{
-		echo site_url('coinpayment/ipn_trade_manager');
-		exit;
-		$data_trade_manager = $this->M_trade_manager->get_member_trade_manager($this->id_member);
+		$data_crypto_asset = $this->M_crypto_asset->get_member_crypto_asset($this->id_member);
 		$data = [
-			'title'              => APP_NAME . ' | List Trade Manager',
-			'content'            => 'trade_manager/main',
-			'vitamin_js'         => 'trade_manager/main_js',
-			'data_trade_manager' => $data_trade_manager,
+			'title'             => APP_NAME . ' | List Crypto Asset',
+			'content'           => 'crypto_asset/main',
+			'vitamin_js'        => 'crypto_asset/main_js',
+			'data_crypto_asset' => $data_crypto_asset,
 		];
 		$this->template->render($data);
 	}
@@ -72,16 +69,16 @@ class TradeManagerController extends CI_Controller
 			exit;
 		}
 
-		$data_trade_manager = $this->M_trade_manager->get_member_trade_manager(null, $invoice);
+		$data_crypto_asset = $this->M_crypto_asset->get_member_crypto_asset(null, $invoice);
 
-		if (count($data_trade_manager) == 0) {
+		if (count($data_crypto_asset) == 0) {
 			$msg = "Invoice Not Found";
 			echo json_encode(['code' => 404, 'msg' => $msg]);
 			exit;
 		}
 
 		$return = [];
-		foreach ($data_trade_manager as $key) {
+		foreach ($data_crypto_asset as $key) {
 			$package                   = $key['package'];
 			$amount                    = $key['amount'];
 			$profit_per_day            = $key['profit_per_day'];
@@ -135,7 +132,7 @@ class TradeManagerController extends CI_Controller
 			'is_active' => 'yes',
 			'deleted_at' => null,
 		];
-		$arr = $this->M_core->get('package_trade_manager', '*', $where);
+		$arr = $this->M_core->get('package_crypto_asset', '*', $where);
 
 		$arr_bg_color = [
 			'black',
@@ -143,11 +140,10 @@ class TradeManagerController extends CI_Controller
 			'red',
 			'green',
 			'yellow',
-			'light',
 		];
 
-		$where_member_trade_manager = ['id_member' => $this->session->userdata(SESI . 'id')];
-		$arr_member_trade_manager = $this->M_core->get('member_trade_manager', 'id_package, state', $where_member_trade_manager);
+		$where_member_crypto_asset = ['id_member' => $this->session->userdata(SESI . 'id')];
+		$arr_member_crypto_asset   = $this->M_core->get('member_crypto_asset', 'id_package, state', $where_member_crypto_asset);
 
 		$arr_state = [
 			'0',
@@ -158,82 +154,64 @@ class TradeManagerController extends CI_Controller
 			'0',
 		];
 
-		if ($arr_member_trade_manager->num_rows() > 0) {
-			foreach ($arr_member_trade_manager->result() as $key) {
+		if ($arr_member_crypto_asset->num_rows() > 0) {
+			foreach ($arr_member_crypto_asset->result() as $key) {
 				if ($key->id_package == 1) {
-					if (in_array($key->state, ['active'])) {
-						$arr_state[0] = '1';
-					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
-						$arr_state[0] = '2';
+					for ($x = 0; $x < 6; $x++) {
+						$arr_state[$x] = '0';
 					}
 				}
 
 				if ($key->id_package == 2) {
-					if (in_array($key->state, ['active'])) {
-						$arr_state[1] = '1';
-					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
-						$arr_state[1] = '2';
-					}
-
-					for ($x = 0; $x <= 1; $x++) {
-						$arr_state[$x] = '2';
+					for ($x = 0; $x < 1; $x++) {
+						if ($arr_state[$x] != '1') {
+							$arr_state[$x] = '2';
+						}
 					}
 				}
 
 				if ($key->id_package == 3) {
-					if (in_array($key->state, ['active'])) {
-						$arr_state[2] = '1';
-					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
-						$arr_state[2] = '2';
-					}
-
-					for ($x = 0; $x <= 2; $x++) {
-						$arr_state[$x] = '2';
+					for ($x = 0; $x < 2; $x++) {
+						if ($arr_state[$x] != '1') {
+							$arr_state[$x] = '2';
+						}
 					}
 				}
 
 				if ($key->id_package == 4) {
-					if (in_array($key->state, ['active'])) {
-						$arr_state[3] = '1';
-					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
-						$arr_state[3] = '2';
-					}
-
-					for ($x = 0; $x <= 3; $x++) {
-						$arr_state[$x] = '2';
+					for ($x = 0; $x < 3; $x++) {
+						if ($arr_state[$x] != '1') {
+							$arr_state[$x] = '2';
+						}
 					}
 				}
 
 				if ($key->id_package == 5) {
-					if (in_array($key->state, ['active'])) {
-						$arr_state[4] = '1';
-					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
-						$arr_state[4] = '2';
-					}
-
-					for ($x = 0; $x <= 4; $x++) {
-						$arr_state[$x] = '2';
+					for ($x = 0; $x < 4; $x++) {
+						if ($arr_state[$x] != '1') {
+							$arr_state[$x] = '2';
+						}
 					}
 				}
 
 				if ($key->id_package == 6) {
-					if (in_array($key->state, ['active'])) {
-						$arr_state[5] = '1';
-					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
-						$arr_state[5] = '2';
+					for ($x = 0; $x < 5; $x++) {
+						if ($arr_state[$x] != '1') {
+							$arr_state[$x] = '2';
+						}
 					}
+				}
 
-					for ($x = 0; $x <= 5; $x++) {
-						$arr_state[$x] = '2';
-					}
+				if (in_array($key->state, ['active', 'waiting payment', 'pending'])) {
+					$arr_state[$key->id_package - 1] = '1';
 				}
 			}
 		}
 
 		$data = [
-			'title'        => APP_NAME . ' | Add Trade Manager',
-			'content'      => 'trade_manager/add',
-			'vitamin_js'   => 'trade_manager/add_js',
+			'title'        => APP_NAME . ' | Add Crypto Asset',
+			'content'      => 'crypto_asset/add',
+			'vitamin_js'   => 'crypto_asset/add_js',
 			'arr'          => $arr,
 			'arr_bg_color' => $arr_bg_color,
 			'arr_state'    => $arr_state,
@@ -246,15 +224,16 @@ class TradeManagerController extends CI_Controller
 		$id = str_replace(UYAH, '', base64_decode($id));
 
 		$where_check = [
-			'id_member' 	=> $this->session->userdata(SESI . 'id'),
-			'id_package >' 	=> $id,
-			'state !=' 		=> 'cancel',
-			'deleted_at' 	=> null,
+			'id_member'     => $this->session->userdata(SESI . 'id'),
+			'id_package >'     => $id,
+			'state !='         => 'cancel',
+			'state !='         => 'expired',
+			'deleted_at'     => null,
 		];
-		$arr_check = $this->M_core->get('member_trade_manager', '*', $where_check);
+		$arr_check = $this->M_core->get('member_crypto_asset', '*', $where_check);
 
 		if ($arr_check->num_rows() > 0) {
-			return show_error("Trade Manager Package disabled because you can't pick a package that tier lower than active package!", 503, "Something wrong here...");
+			return show_error("Crypto Asset Package disabled because you can't pick a package that tier lower than active package!", 503, "Something wrong here...");
 		}
 
 		$where_check = [
@@ -262,14 +241,14 @@ class TradeManagerController extends CI_Controller
 			'id_package' => $id,
 			'deleted_at' => null,
 		];
-		$arr_check = $this->M_core->get('member_trade_manager', '*', $where_check);
+		$arr_check = $this->M_core->get('member_crypto_asset', '*', $where_check);
 
 		if ($arr_check->num_rows() > 0) {
 			foreach ($arr_check->result() as $key) {
 				$state = $key->state;
 
 				if (in_array($state, ['waiting payment', 'pending'])) {
-					return show_error("Trade Manager Package disabled because current package are still waiting for payment", 503, "Something wrong here...");
+					return show_error("Crypto Asset Package disabled because current package are still waiting for payment", 503, "Something wrong here...");
 				}
 			}
 		}
@@ -279,12 +258,12 @@ class TradeManagerController extends CI_Controller
 			'is_active'  => 'yes',
 			'deleted_at' => null,
 		];
-		$arr = $this->M_core->get('package_trade_manager', '*', $where);
+		$arr = $this->M_core->get('package_crypto_asset', '*', $where);
 
 		$data = [
-			'title'      => APP_NAME . ' | Add Trade Manager',
-			'content'    => 'trade_manager/pick',
-			'vitamin_js' => 'trade_manager/pick_js',
+			'title'      => APP_NAME . ' | Add Crypto Asset',
+			'content'    => 'crypto_asset/pick',
+			'vitamin_js' => 'crypto_asset/pick_js',
 			'id_package' => base64_encode(UYAH . $id),
 			'arr'        => $arr,
 		];
@@ -299,20 +278,20 @@ class TradeManagerController extends CI_Controller
 		$buyer_email    = $this->session->userdata(SESI . 'email');
 		$buyer_name     = $this->session->userdata(SESI . 'fullname');
 		$id_package     = str_replace(UYAH, '', base64_decode($this->input->post('id_package')));
-		$payment_method = 'coinpayment';
+		$payment_method = $this->input->post('payment_method');
 		$coin_type      = $this->input->post('coin_type');
 
 		$where_check = [
-			'id_member' 	=> $this->session->userdata(SESI . 'id'),
-			'id_package >' 	=> $id_package,
-			'state !=' 		=> 'cancel',
-			'state !=' 		=> 'expired',
-			'deleted_at' 	=> null,
+			'id_member'     => $this->session->userdata(SESI . 'id'),
+			'id_package >'     => $id_package,
+			'state !='         => 'cancel',
+			'state !='         => 'expired',
+			'deleted_at'     => null,
 		];
-		$arr_check = $this->M_core->get('member_trade_manager', '*', $where_check);
+		$arr_check = $this->M_core->get('member_crypto_asset', '*', $where_check);
 
 		if ($arr_check->num_rows() > 0) {
-			return show_error("Trade Manager Package disabled because you can't pick a package that tier lower than active package!", 503, "Something wrong here...");
+			return show_error("Crypto Asset Package disabled because you can't pick a package that tier lower than active package!", 503, "Something wrong here...");
 		}
 
 		$where_check = [
@@ -320,14 +299,14 @@ class TradeManagerController extends CI_Controller
 			'id_package' => $id_package,
 			'deleted_at' => null,
 		];
-		$arr_check = $this->M_core->get('member_trade_manager', '*', $where_check);
+		$arr_check = $this->M_core->get('member_crypto_asset', '*', $where_check);
 
 		if ($arr_check->num_rows() > 0) {
 			foreach ($arr_check->result() as $key) {
 				$state = $key->state;
 
 				if (in_array($state, ['waiting payment', 'pending'])) {
-					return show_error("Trade Manager Package disabled because current package are still waiting for payment", 503, "Something wrong here...");
+					return show_error("Crypto Asset Package disabled because current package are still waiting for payment", 503, "Something wrong here...");
 				}
 			}
 		}
@@ -356,7 +335,7 @@ class TradeManagerController extends CI_Controller
 			'is_active'  => 'yes',
 			'deleted_at' => null,
 		];
-		$arr_package = $this->M_core->get('package_trade_manager', 'amount, name, code, share_self_value, share_upline_value, share_company_value', $where, null, null, 1);
+		$arr_package = $this->M_core->get('package_crypto_asset', 'amount, name, code, share_self_value, share_upline_value, share_company_value', $where, null, null, 1);
 
 		if ($arr_package->num_rows() == 0) {
 			return show_error("Package Not Found", 404, "An Error Was Encountered!");
@@ -396,13 +375,13 @@ class TradeManagerController extends CI_Controller
 			'state'                  => 'waiting payment',
 			'expired_at'             => $expired_at,
 			'is_qualified'           => 'no',
-			'is_royalty'             => 'no',
+			'is_royalt'              => 'no',
 			'is_extend'              => 'auto',
 			'created_at'             => $this->datetime,
 			'updated_at'             => $this->datetime,
 			'deleted_at'             => null,
 		];
-		$exec = $this->M_core->store('member_trade_manager', $data_member_package);
+		$exec = $this->M_core->store('member_crypto_asset', $data_member_package);
 
 		if (!$exec) {
 			$this->db->trans_rollback();
@@ -438,7 +417,7 @@ class TradeManagerController extends CI_Controller
 			'status_url'              => $exec['data']['status_url'],
 			'qrcode_url'              => $exec['data']['qrcode_url'],
 		];
-		$exec = $this->M_core->update('member_trade_manager', $data, ['invoice' => $invoice]);
+		$exec = $this->M_core->update('member_crypto_asset', $data, ['invoice' => $invoice]);
 
 		if (!$exec) {
 			$this->db->trans_rollback();
@@ -449,7 +428,7 @@ class TradeManagerController extends CI_Controller
 			'id_member' => $id_member,
 			'invoice'   => $invoice,
 		];
-		$arr_log = $this->M_core->get('log_member_trade_manager', '*', $where_log);
+		$arr_log = $this->M_core->get('log_member_crypto_asset', '*', $where_log);
 
 		if ($arr_log->num_rows() == 0) {
 			$data_log = [
@@ -463,19 +442,19 @@ class TradeManagerController extends CI_Controller
 				'description'       => "[$this->datetime] Member $buyer_email Pick Package $item_name. Waiting for Payment Transfer",
 				'created_at'        => $this->datetime,
 			];
-			$this->M_core->store_uuid('log_member_trade_manager', $data_log);
+			$this->M_core->store_uuid('log_member_crypto_asset', $data_log);
 		} else {
 			$data_log = [
 				'state'             => 'waiting payment',
 				'description'       => "[$this->datetime] Member $buyer_email Pick Package $item_name. Waiting for Payment Transfer",
 				'updated_at'        => $this->datetime,
 			];
-			$this->M_core->update('log_member_trade_manager', $data_log, $where_log);
+			$this->M_core->update('log_member_crypto_asset', $data_log, $where_log);
 		}
 
 		$this->db->trans_commit();
 
-		redirect('trade_manager/checkout/' . base64_encode(UYAH . $invoice));
+		redirect('crypto_asset/checkout/' . base64_encode(UYAH . $invoice));
 	}
 
 	public function _create_transaction($data)
@@ -490,9 +469,9 @@ class TradeManagerController extends CI_Controller
 		$req['item_name']   = $data['item_name'];
 		$req['item_number'] = $data['item_number'];
 		$req['invoice']     = $data['invoice'];
-		$req['ipn_url']     = site_url('coinpayment/ipn_trade_manager');
-		$req['success_url'] = site_url('coinpayment/success_trade_manager');
-		$req['cance_url']   = site_url('coinpayment/cancel_trade_manager');
+		$req['ipn_url']     = site_url('coinpayment/ipn');
+		$req['success_url'] = site_url('coinpayment/success');
+		$req['cance_url']   = site_url('coinpayment/cancel');
 
 		$exec = $this->_coinpayments_api_call('create_transaction', $req);
 
@@ -509,7 +488,7 @@ class TradeManagerController extends CI_Controller
 				'deleted_at'       => null,
 			];
 
-			$this->M_core->store('coinpayment_ipn_trade_manager', $data);
+			$this->M_core->store('coinpayment_ipn', $data);
 		} else {
 			echo show_error($exec['error'], 500, "An Error Was Encountered");
 			exit;
@@ -526,7 +505,7 @@ class TradeManagerController extends CI_Controller
 
 	public function _get_new_sequence()
 	{
-		$exec = $this->M_trade_manager->latest_sequence();
+		$exec = $this->M_crypto_asset->latest_sequence();
 
 		if ($exec->num_rows() > 0) {
 			return $exec->row()->max_sequence + 1;
@@ -587,7 +566,7 @@ class TradeManagerController extends CI_Controller
 		$invoice = str_replace(UYAH, '', base64_decode($invoice));
 
 		$where = ['invoice' => $invoice];
-		$arr   = $this->M_core->get('member_trade_manager', '*', $where);
+		$arr   = $this->M_core->get('member_crypto_asset', '*', $where);
 
 		if ($arr->num_rows() == 0) {
 			return show_error("Data Invoice Not Found", 404, "An Error Was Encountered");
@@ -619,8 +598,8 @@ class TradeManagerController extends CI_Controller
 
 		$data = [
 			'title'       => APP_NAME . ' | Checkout',
-			'content'     => 'trade_manager/checkout',
-			'vitamin_js'  => 'trade_manager/checkout_js',
+			'content'     => 'crypto_asset/checkout',
+			'vitamin_js'  => 'crypto_asset/checkout_js',
 			'arr'         => $arr,
 			'time_left'   => $time_left,
 			'state'       => $state,
@@ -632,224 +611,223 @@ class TradeManagerController extends CI_Controller
 	public function get_tx_info()
 	{
 		header('Content-Type: application/json');
-		// $this->db->trans_begin();
+		$this->db->trans_begin();
 
-		// $code                = 200;
-		// $member_is_qualified = 'no';
-		// $member_is_royalty   = 'no';
+		$code                = 200;
+		$member_is_qualified = 'no';
+		$member_is_royalty   = 'no';
 
-		// $txn_id = $this->input->get('txid');
+		$txn_id = $this->input->get('txid');
 
-		// $where_state = ['txn_id' => $txn_id];
-		// $arr_state   = $this->M_core->get('member_trade_manager', '*', $where_state);
+		$req['txid'] = $txn_id;
+		$req['full'] = 0; // if set 1 will display checkout information
 
-		// $invoice      = $arr_state->row()->invoice;
-		// $id_member    = $arr_state->row()->id_member;
-		// $id_package   = $arr_state->row()->id_package;
-		// $amount_usd   = $arr_state->row()->amount_usd;
-		// $amount_coin  = $arr_state->row()->amount_coin;
-		// $currency2    = $arr_state->row()->currency2;
-		// $buyer_email  = $arr_state->row()->buyer_email;
-		// $buyer_name   = $arr_state->row()->buyer_name;
-		// $item_name    = $arr_state->row()->item_name;
-		// $state_trade  = $arr_state->row()->state;
-		// $is_qualified = $arr_state->row()->is_qualified;
-		// $is_royalty   = $arr_state->row()->is_royalty;
+		$where_state = ['txn_id' => $txn_id];
+		$arr_state   = $this->M_core->get('member_crypto_asset', '*', $where_state);
 
-		// $req['txid'] = $txn_id;
-		// // if set 1 will display checkout information
-		// $req['full'] = 0;
-		// $exec = $this->_coinpayments_api_call('get_tx_info', $req);
-		// if ($exec['error'] != "ok") {
-		// 	$this->db->trans_rollback();
-		// 	$return = [
-		// 		'code'        => 500,
-		// 		'status_text' => $exec['result']['status_text'],
-		// 	];
-		// 	echo json_encode($return);
-		// 	exit;
-		// }
+		$invoice      = $arr_state->row()->invoice;
+		$id_member    = $arr_state->row()->id_member;
+		$id_package   = $arr_state->row()->id_package;
+		$amount_usd   = $arr_state->row()->amount_usd;
+		$amount_coin  = $arr_state->row()->amount_coin;
+		$currency2    = $arr_state->row()->currency2;
+		$buyer_email  = $arr_state->row()->buyer_email;
+		$buyer_name   = $arr_state->row()->buyer_name;
+		$item_name    = $arr_state->row()->item_name;
+		$state_trade  = $arr_state->row()->state;
+		$is_qualified = $arr_state->row()->is_qualified;
+		$is_royalty   = $arr_state->row()->is_royalty;
 
-		// $status      = $exec['result']['status'];
-		// $status_text = $exec['result']['status_text'];
+		$exec = $this->_coinpayments_api_call('get_tx_info', $req);
+		if ($exec['error'] != "ok") {
+			$this->db->trans_rollback();
+			$return = [
+				'code'        => 500,
+				'status_text' => $exec['result']['status_text'],
+			];
+			echo json_encode($return);
+			exit;
+		}
 
-		// //adam debug only
-		// $status = 100; 
+		$status      = $exec['result']['status'];
+		$status_text = $exec['result']['status_text'];
 
-		// if ($status >= 100 || $status == 2) {
-		// 	// payment is complete or queued for nightly payout or success
-		// 	$state       = 'active';
-		// 	$badge_color = 'success';
-		// 	$description = "[$this->datetime] Member $buyer_email Package $item_name Active";
+		$status = 100; //adam debug only
 
-		// 	if ($state_trade != "active") {
-		// 		$arr_member = $this->M_core->get('member', 'id_upline', ['id' => $id_member]);
-		// 		$id_upline  = $arr_member->row()->id_upline;
+		if ($status >= 100 || $status == 2) {
+			// payment is complete or queued for nightly payout or success
+			$state       = 'active';
+			$badge_color = 'success';
+			$description = "[$this->datetime] Member $buyer_email Package $item_name Active";
 
-		// 		$arr_upline        = $this->M_core->get('member', 'email, fullname, deleted_at', ['id' => $id_upline]);
-		// 		$email_upline      = $arr_upline->row()->email;
-		// 		$fullname_upline   = $arr_upline->row()->fullname;
-		// 		$deleted_at_upline = $arr_upline->row()->deleted_at;
+			if ($state_trade != "active") {
+				$arr_member = $this->M_core->get('member', 'id_upline', ['id' => $id_member]);
+				$id_upline  = $arr_member->row()->id_upline;
 
-		// 		// PART BONUS SPONSOR START
-		// 		if ($arr_upline->num_rows() == 1) {
-		// 			$amount_bonus_upline = ($amount_usd * 10) / 100;
+				$arr_upline        = $this->M_core->get('member', 'email, fullname, deleted_at', ['id' => $id_upline]);
+				$email_upline      = $arr_upline->row()->email;
+				$fullname_upline   = $arr_upline->row()->fullname;
+				$deleted_at_upline = $arr_upline->row()->deleted_at;
 
-		// 			if ($id_upline != null) {
+				// PART BONUS SPONSOR START
+				if ($arr_upline->num_rows() == 1) {
+					$amount_bonus_upline = ($amount_usd * 10) / 100;
 
-		// 				if ($deleted_at_upline == null) {
-		// 					$this->M_trade_manager->update_member_bonus($id_upline, $amount_bonus_upline);
+					if ($id_upline != null) {
 
-		// 					$id_upline_log = $id_upline;
-		// 					$desc_log      = "$fullname_upline ($email_upline) get bonus recruitment of member $buyer_name ($buyer_email) $amount_bonus_upline USDT";
-		// 				} else {
-		// 					$this->M_trade_manager->update_unknown_balance($amount_bonus_upline);
+						if ($deleted_at_upline == null) {
+							$this->M_crypto_asset->update_member_bonus($id_upline, $amount_bonus_upline);
 
-		// 					$id_upline_log = null;
-		// 					$desc_log      = "Unknown Balance get bonus recruitment of member $buyer_name ($buyer_email) $amount_bonus_upline USDT";
-		// 				}
+							$id_upline_log = $id_upline;
+							$desc_log      = "$fullname_upline ($email_upline) get bonus recruitment of member $buyer_name ($buyer_email) $amount_bonus_upline USDT";
+						} else {
+							$this->M_crypto_asset->update_unknown_balance($amount_bonus_upline);
 
-		// 				$data_log = [
-		// 					'id_member'      => $id_upline_log,
-		// 					'id_downline'    => $id_member,
-		// 					'type_package'   => 'trade manager',
-		// 					'invoice'        => $invoice,
-		// 					'id_package'     => $id_package,
-		// 					'package_name'   => $item_name,
-		// 					'package_amount' => $amount_usd,
-		// 					'state'          => 'get bonus',
-		// 					'description'    => $desc_log,
-		// 					'created_at'     => $this->datetime,
-		// 				];
-		// 				$this->M_core->store_uuid('log_bonus_recruitment', $data_log);
-		// 			}
-		// 		}
-		// 		// PART BONUS SPONSOR END
+							$id_upline_log = null;
+							$desc_log      = "Unknown Balance get bonus recruitment of member $buyer_name ($buyer_email) $amount_bonus_upline USDT";
+						}
 
-		// 		// PART QUALIFIKASI LEVEL START
-		// 		if ($is_qualified == "no") {
-		// 			// adamx
-		// 			$member_is_qualified = $this->_update_qualified($id_member, $id_upline, $amount_usd, $invoice, $id_package, $item_name);
-		// 		}
-		// 		// PART QUALIFIKASI LEVEL END
+						$data_log = [
+							'id_member'      => $id_upline_log,
+							'id_downline'    => $id_member,
+							'type_package'   => 'trade manager',
+							'invoice'        => $invoice,
+							'id_package'     => $id_package,
+							'package_name'   => $item_name,
+							'package_amount' => $amount_usd,
+							'state'          => 'get bonus',
+							'description'    => $desc_log,
+							'created_at'     => $this->datetime,
+						];
+						$this->M_core->store_uuid('log_bonus_recruitment', $data_log);
+					}
+				}
+				// PART BONUS SPONSOR END
 
-		// 		// PART ROYALTY START
-		// 		if ($is_royalty == "no") {
-		// 			$member_is_royalty = $this->_update_royalty($id_member, $amount_usd, $invoice, $id_package, $item_name);
-		// 		}
-		// 		// PART ROYALTY END
+				// PART QUALIFIKASI LEVEL START
+				if ($is_qualified == "no") {
+					// adamx
+					$member_is_qualified = $this->_update_qualified($id_member, $id_upline, $amount_usd, $invoice, $id_package, $item_name);
+				}
+				// PART QUALIFIKASI LEVEL END
 
-		// 		// UPDATE TOTAL OMSET START
-		// 		$update_omset = $this->_update_omset($id_member, $amount_usd);
-		// 		if ($update_omset === false) {
-		// 			$this->db->trans_rollback();
-		// 			$return = [
-		// 				'code'        => 500,
-		// 				'status_text' => "Failed to Update Upline Sales Turnover",
-		// 			];
-		// 			echo json_encode($return);
-		// 			exit;
-		// 		}
-		// 		// UPDATE TOTAL OMSET END
-		// 	}
+				// PART ROYALTY START
+				if ($is_royalty == "no") {
+					$member_is_royalty = $this->_update_royalty($id_member, $amount_usd, $invoice, $id_package, $item_name);
+				}
+				// PART ROYALTY END
 
-		// 	$this->_send_package_active($id_member, $buyer_email, $invoice, $item_name);
-		// } else if ($status < 0) {
-		// 	//payment error, this is usually final but payments will sometimes be reopened if there was no exchange rate conversion or with seller consent
-		// 	$state = 'cancel';
-		// 	$badge_color = 'warning';
-		// 	$description = "[$this->datetime] Member $buyer_email Package $item_name Payment Timeout";
-		// } else {
-		// 	//payment is pending, you can optionally add a note to the order page
-		// 	$state = 'waiting payment';
-		// 	$badge_color = 'secondary';
-		// 	$description = "[$this->datetime] Member $buyer_email Pick Package $item_name. Waiting for Payment Transfer";
-		// }
+				// UPDATE TOTAL OMSET START
+				$update_omset = $this->_update_omset($id_member, $amount_usd);
+				if ($update_omset === false) {
+					$this->db->trans_rollback();
+					$return = [
+						'code'        => 500,
+						'status_text' => "Failed to Update Upline Sales Turnover",
+					];
+					echo json_encode($return);
+					exit;
+				}
+				// UPDATE TOTAL OMSET END
+			}
 
-		// $state_badge = '<span class="badge badge-' . $badge_color . '">' . strtoupper($state) . '</span>';
+			$this->_send_package_active($id_member, $buyer_email, $invoice, $item_name);
+		} else if ($status < 0) {
+			//payment error, this is usually final but payments will sometimes be reopened if there was no exchange rate conversion or with seller consent
+			$state = 'cancel';
+			$badge_color = 'warning';
+			$description = "[$this->datetime] Member $buyer_email Package $item_name Payment Timeout";
+		} else {
+			//payment is pending, you can optionally add a note to the order page
+			$state = 'waiting payment';
+			$badge_color = 'secondary';
+			$description = "[$this->datetime] Member $buyer_email Pick Package $item_name. Waiting for Payment Transfer";
+		}
 
-		// $where = ['txn_id' => $txn_id];
-		// $data  = [
-		// 	'state'       => $state,
-		// 	'status_code' => $status,
-		// 	'updated_at'  => $this->datetime,
-		// ];
-		// $this->M_core->update('coinpayment_ipn_trade_manager', $data, $where);
+		$state_badge = '<span class="badge badge-' . $badge_color . '">' . strtoupper($state) . '</span>';
 
-		// $data = [
-		// 	'state'        => $state,
-		// 	'is_qualified' => $member_is_qualified,
-		// 	'is_royalty'   => $member_is_royalty,
-		// 	'updated_at'   => $this->datetime,
-		// ];
-		// $where = ['txn_id' => $txn_id];
-		// $this->M_core->update('member_trade_manager', $data, $where);
+		$where = ['txn_id' => $txn_id];
+		$data  = [
+			'state'       => $state,
+			'status_code' => $status,
+			'updated_at'  => $this->datetime,
+		];
+		$this->M_core->update('coinpayment_ipn', $data, $where);
 
-		// $where = [
-		// 	'id_member' => $this->session->userdata(SESI . 'id'),
-		// 	'state'     => 'active',
-		// ];
-		// $arr = $this->M_core->get('member_trade_manager', 'amount_usd, state', $where);
+		$data = [
+			'state'        => $state,
+			'is_qualified' => $member_is_qualified,
+			'is_royalty'   => $member_is_royalty,
+			'updated_at'   => $this->datetime,
+		];
+		$where = ['txn_id' => $txn_id];
+		$this->M_core->update('member_crypto_asset', $data, $where);
 
-		// $total_invest_trade_manager = 0;
-		// $count_trade_manager        = 0;
+		$where = [
+			'id_member' => $this->session->userdata(SESI . 'id'),
+			'state'     => 'active',
+		];
+		$arr = $this->M_core->get('member_crypto_asset', 'amount_usd, state', $where);
 
-		// if ($arr->num_rows() > 0) {
-		// 	foreach ($arr->result() as $key) {
-		// 		$total_invest_trade_manager += $key->amount_usd;
-		// 		$count_trade_manager++;
-		// 	}
-		// }
+		$total_invest_crypto_asset = 0;
+		$count_crypto_asset        = 0;
 
-		// $data = [
-		// 	'total_invest_trade_manager' => $total_invest_trade_manager,
-		// 	'count_trade_manager'        => $count_trade_manager,
-		// 	'updated_at'                 => $this->datetime,
-		// ];
-		// $where = ['id_member' => $this->session->userdata(SESI . 'id')];
-		// $this->M_core->update('member_balance', $data, $where);
+		if ($arr->num_rows() > 0) {
+			foreach ($arr->result() as $key) {
+				$total_invest_crypto_asset += $key->amount_usd;
+				$count_crypto_asset++;
+			}
+		}
 
-		// $where_count = [
-		// 	'id_member' => $this->session->userdata(SESI . 'id'),
-		// 	'invoice'   => $invoice,
-		// ];
-		// $arr_count = $this->M_core->get('log_member_trade_manager', 'id', $where_count, null, null, 1);
+		$data = [
+			'total_invest_crypto_asset' => $total_invest_crypto_asset,
+			'count_crypto_asset'        => $count_crypto_asset,
+			'updated_at'                 => $this->datetime,
+		];
+		$where = ['id_member' => $this->session->userdata(SESI . 'id')];
+		$this->M_core->update('member_balance', $data, $where);
 
-		// if ($arr_count->num_rows() == 0) {
-		// 	$data_log = [
-		// 		'id_member'         => $this->session->userdata(SESI . 'id'),
-		// 		'invoice'           => $invoice,
-		// 		'amount_invest'     => $amount_usd,
-		// 		'amount_transfer'   => $amount_coin,
-		// 		'currency_transfer' => $currency2,
-		// 		'txn_id'            => $txn_id,
-		// 		'state'             => $state,
-		// 		'description'       => $description,
-		// 		'created_at'        => $this->datetime,
-		// 		'updated_at'        => $this->datetime,
-		// 	];
-		// 	$this->M_core->store_uuid('log_member_trade_manager', $data_log);
-		// } else {
-		// 	$data_log = [
-		// 		'state'             => $state,
-		// 		'description'       => $description,
-		// 		'updated_at'        => $this->datetime,
-		// 	];
-		// 	$this->M_core->update('log_member_trade_manager', $data_log, $where_count);
-		// }
+		$where_count = [
+			'id_member' => $this->session->userdata(SESI . 'id'),
+			'invoice'   => $invoice,
+		];
+		$arr_count = $this->M_core->get('log_member_crypto_asset', 'id', $where_count, null, null, 1);
 
-		// $return = [
-		// 	'code'        => $code,
-		// 	'state'       => $state,
-		// 	'status_text' => $status_text,
-		// 	'receivedf'   => $exec['result']['receivedf'],
-		// 	'coin'        => $exec['result']['coin'],
-		// 	'exec'        => $exec,
-		// 	'state_badge' => $state_badge,
-		// ];
+		if ($arr_count->num_rows() == 0) {
+			$data_log = [
+				'id_member'         => $this->session->userdata(SESI . 'id'),
+				'invoice'           => $invoice,
+				'amount_invest'     => $amount_usd,
+				'amount_transfer'   => $amount_coin,
+				'currency_transfer' => $currency2,
+				'txn_id'            => $txn_id,
+				'state'             => $state,
+				'description'       => $description,
+				'created_at'        => $this->datetime,
+				'updated_at'        => $this->datetime,
+			];
+			$this->M_core->store_uuid('log_member_crypto_asset', $data_log);
+		} else {
+			$data_log = [
+				'state'             => $state,
+				'description'       => $description,
+				'updated_at'        => $this->datetime,
+			];
+			$this->M_core->update('log_member_crypto_asset', $data_log, $where_count);
+		}
 
-		// $this->db->trans_commit();
-		// echo json_encode($return);
+		$return = [
+			'code'        => $code,
+			'state'       => $state,
+			'status_text' => $status_text,
+			'receivedf'   => $exec['result']['receivedf'],
+			'coin'        => $exec['result']['coin'],
+			'exec'        => $exec,
+			'state_badge' => $state_badge,
+		];
+
+		$this->db->trans_commit();
+		echo json_encode($return);
 	}
 
 	protected function _update_qualified($id_member, $id_upline, $amount_usd, $invoice, $id_package, $item_name)
@@ -861,7 +839,7 @@ class TradeManagerController extends CI_Controller
 		$email_member    = $arr_member->row()->email;
 		$fullname_member = $arr_member->row()->fullname;
 
-		$arr_ql_sibling = $this->M_trade_manager->get_ql_sibling($id_member, $id_upline);
+		$arr_ql_sibling = $this->M_crypto_asset->get_ql_sibling($id_member, $id_upline);
 
 		if ($arr_ql_sibling->num_rows() > 0) {
 			$invoice_ql_sibling     = $arr_ql_sibling->row()->invoice;
@@ -889,22 +867,22 @@ class TradeManagerController extends CI_Controller
 					if ($id_grand_upline != null) {
 
 						if ($is_active_grand_upline == "yes") {
-							$this->M_trade_manager->update_member_bonus($id_grand_upline, $new_bonus_grand_upline);
+							$this->M_crypto_asset->update_member_bonus($id_grand_upline, $new_bonus_grand_upline);
 
 							$desc_log_member1 = "$fullname_grand_upline ($email_grand_upline) get bonus royalty of member $fullname_member ($email_member) $bonus_grand_upline USDT";
 
 							$desc_log_member2 = "$fullname_grand_upline ($email_grand_upline) get bonus royalty of member $buyer_name_ql_sibling ($buyer_email_ql_sibling) $amount_usd_ql_sibling_as_bonus USDT";
 						} else {
-							$this->M_trade_manager->update_unknown_balance($new_bonus_grand_upline);
+							$this->M_crypto_asset->update_unknown_balance($new_bonus_grand_upline);
 
 							$desc_log_member1 = "Unknown Balance get bonus royalty of member $fullname_member ($email_member) $bonus_grand_upline USDT";
 
 							$desc_log_member2 = "Unknown Balance get bonus royalty of member $buyer_name_ql_sibling ($buyer_email_ql_sibling) $amount_usd_ql_sibling_as_bonus USDT";
 						}
 
-						$data_update_member_trade_manager  = ['is_qualified' => 'yes', 'updated_at' => $this->datetime];
-						$where_update_member_trade_manager = ['invoice'      => $invoice_ql_sibling];
-						$this->M_core->update('member_trade_manager', $data_update_member_trade_manager, $where_update_member_trade_manager);
+						$data_update_member_crypto_asset  = ['is_qualified' => 'yes', 'updated_at' => $this->datetime];
+						$where_update_member_crypto_asset = ['invoice'      => $invoice_ql_sibling];
+						$this->M_core->update('member_crypto_asset', $data_update_member_crypto_asset, $where_update_member_crypto_asset);
 
 						$data_log1 = [
 							'id_member'      => $id_grand_upline,
@@ -984,12 +962,12 @@ class TradeManagerController extends CI_Controller
 					}
 
 					if ($is_active_gen == "yes") {
-						$this->M_trade_manager->update_member_bonus($id_gen, $bonus_royalty);
+						$this->M_crypto_asset->update_member_bonus($id_gen, $bonus_royalty);
 
 						$id_member_log = $id_gen;
 						$desc_log = "$fullname_gen ($email_gen) get bonus royalty of member $fullname_member ($email_member) $bonus_royalty USDT";
 					} else {
-						$this->M_trade_manager->update_unknown_bonus($bonus_royalty);
+						$this->M_crypto_asset->update_unknown_bonus($bonus_royalty);
 
 						$id_member_log = null;
 						$desc_log = "Unknown Balance get bonus royalty of member $fullname_member ($email_member) $bonus_royalty USDT";
@@ -1012,9 +990,9 @@ class TradeManagerController extends CI_Controller
 				$itteration_gen++;
 			}
 
-			$data_update_member_trade_manager  = ['is_royalty' => 'yes', 'updated_at' => $this->datetime];
-			$where_update_member_trade_manager = ['invoice'    => $invoice];
-			$this->M_core->update('member_trade_manager', $data_update_member_trade_manager, $where_update_member_trade_manager);
+			$data_update_member_crypto_asset  = ['is_royalty' => 'yes', 'updated_at' => $this->datetime];
+			$where_update_member_crypto_asset = ['invoice'    => $invoice];
+			$this->M_core->update('member_crypto_asset', $data_update_member_crypto_asset, $where_update_member_crypto_asset);
 
 			$member_is_royalty = "yes";
 		}
@@ -1032,7 +1010,7 @@ class TradeManagerController extends CI_Controller
 		$this->email->to($to);
 		$this->email->subject($subject);
 
-		$data['arr_data'] = $this->M_core->get('member_trade_manager', '*', ['id_member' => $id]);
+		$data['arr_data'] = $this->M_core->get('member_crypto_asset', '*', ['id_member' => $id]);
 		$message = $this->load->view('emails/package_active_template', $data, TRUE);
 
 		$this->email->message($message);
@@ -1056,7 +1034,7 @@ class TradeManagerController extends CI_Controller
 		$rgt          = $arr_member->row()->rgt;
 
 		// update omset self start
-		$exec = $this->M_trade_manager->update_total_omset($id_member, $amount_usd);
+		$exec = $this->M_crypto_asset->update_total_omset($id_member, $amount_usd);
 		if (!$exec) {
 			return false;
 		}
@@ -1082,7 +1060,7 @@ class TradeManagerController extends CI_Controller
 				if ($arr_info->num_rows() > 0) {
 					foreach ($arr_info->result() as $key_info) {
 						$id_x = $key_info->id_x;
-						$exec2 = $this->M_trade_manager->update_total_omset($id_x, $amount_usd);
+						$exec2 = $this->M_crypto_asset->update_total_omset($id_x, $amount_usd);
 
 						if (!$exec2) {
 							return false;
@@ -1104,7 +1082,7 @@ class TradeManagerController extends CI_Controller
 			'id_member' => $this->id_member,
 			'invoice' => $invoice,
 		];
-		$arr_check = $this->M_core->get('member_trade_manager', '*', $where_count);
+		$arr_check = $this->M_core->get('member_crypto_asset', '*', $where_count);
 
 		if ($arr_check->num_rows() == 0) {
 			echo json_encode(['code' => 404, 'status_text' => "Invoice Not Found"]);
@@ -1121,7 +1099,7 @@ class TradeManagerController extends CI_Controller
 		}
 
 		$data = ['is_extend' => $is_extend];
-		$exec = $this->M_core->update('member_trade_manager', $data, $where_count);
+		$exec = $this->M_core->update('member_crypto_asset', $data, $where_count);
 
 		if (!$exec) {
 			echo json_encode(['code' => 500, 'status_text' => "Update Failed, please try again!"]);
@@ -1132,4 +1110,4 @@ class TradeManagerController extends CI_Controller
 	}
 }
         
-/* End of file  TradeManagerController.php */
+/* End of file  CryptoAssetController.php */

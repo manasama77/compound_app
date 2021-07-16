@@ -3,22 +3,25 @@
 		<div class="row mb-2">
 			<div class="col-sm-6">
 				<h1 class="m-0">Trade Manager - Checkout</h1>
-			</div>
+			</div><!-- /.col -->
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
 					<li class="breadcrumb-item"><a href="#">Trade Manager</a></li>
 					<li class="breadcrumb-item active">Add Trade Manager</li>
 				</ol>
-			</div>
-		</div>
-	</div>
+			</div><!-- /.col -->
+		</div><!-- /.row -->
+	</div><!-- /.container-fluid -->
 </div>
 
 <section class="content">
 	<div class="container-fluid">
 
+		<!-- Main row -->
 		<div class="row">
+
 			<div class="col-md-12">
+
 				<!-- PRODUCT LIST -->
 				<div class="card">
 					<div class="card-header">
@@ -30,6 +33,7 @@
 							</a>
 						</div>
 					</div>
+					<!-- /.card-header -->
 					<div class="card-body">
 						<?php if ($state != "active") { ?>
 							<div class="alert alert-warning" role="alert">
@@ -109,10 +113,10 @@
 										<div class="tab-pane fade show active" id="v-pills-q1" role="tabpanel">
 											<ol>
 												<li>
-													Please send <mark><?= $arr->row()->amount_coin; ?> <?= $arr->row()->currency2; ?></mark> to address <mark><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></mark>. <span class="text-danger">(Make sure to send enough to cover any coin transaction fees!)</span> You will need to initiate the payment using your software or online wallet and copy/paste the address and payment amount into it. We will email you when all funds have been received. If you send funds that don't confirm by the timeout or don't send enough coins you will receive an automatic email to claim your funds within 8 hours. If you don't receive the email contact us with the information below and CoinPayments.net will send you a refund:
+													Please send <mark>0.75638000 LTCT</mark> to address <mark><code class="text-dark">muRbCwnNwUsfxkGzMTRGDJwCVZrFNVXvBN</code></mark>. <span class="text-danger">(Make sure to send enough to cover any coin transaction fees!)</span> You will need to initiate the payment using your software or online wallet and copy/paste the address and payment amount into it. We will email you when all funds have been received. You have 1 hour, 14 minutes, 30 seconds for us to receive confirmed funds. If you send funds that don't confirm by the timeout or don't send enough coins you will receive an automatic email to claim your funds within 8 hours. If you don't receive the email contact us with the information below and CoinPayments.net will send you a refund:
 													<ul class="mb-3">
 														<li>The transaction ID: <mark><code class="text-dark"><?= $arr->row()->txn_id; ?></code></mark></li>
-														<li>A payment address to send the funds to <?= $arr->row()->receiver_wallet_address; ?>.</li>
+														<li>A payment address to send the funds to.</li>
 													</ul>
 												</li>
 												<li>
@@ -127,9 +131,14 @@
 								</div>
 							</div>
 						<?php } ?>
+
 					</div>
 				</div>
+
 			</div>
+			<!-- /.col -->
 		</div>
+		<!-- /.row -->
 	</div>
+	<!--/. container-fluid -->
 </section>

@@ -19,6 +19,9 @@ $route['forgot_password']					= 'LoginController/forgot_password';
 $route['send_forgot_password']				= 'LoginController/send_forgot_password';
 $route['reset_password/(:any)/(:any)'] 		= 'LoginController/reset_password/$1/$2';
 
+$route['test_get'] 		= 'LoginController/test_get';
+$route['test_get_delete'] 		= 'LoginController/test_get_delete';
+
 $route['dashboard']                 = 'DashboardController/index';
 $route['dashboard/downline_detail'] = 'DashboardController/downline_detail';
 
@@ -36,6 +39,9 @@ $route['trade_manager/checkout/(:any)']   		= 'TradeManagerController/checkout/$
 $route['trade_manager/get_tx_info']   			= 'TradeManagerController/get_tx_info';
 $route['trade_manager/detail']   				= 'TradeManagerController/detail';
 $route['trade_manager/update_extend']   		= 'TradeManagerController/update_extend';
+
+$route['crypto_asset']     = 'CryptoAssetController/index';
+$route['crypto_asset/add'] = 'CryptoAssetController/add';
 
 $route['downline']      = 'DownlineController/index';
 $route['downline/show'] = 'DownlineController/show';
@@ -81,13 +87,14 @@ $route['coinpayment/convert']                = 'CoinPayment/convert';
 $route['coinpayment/convert_limits']         = 'CoinPayment/convert_limits';
 $route['coinpayment/get_withdrawal_history'] = 'CoinPayment/get_withdrawal_history';
 $route['coinpayment/get_withdrawal_info']    = 'CoinPayment/get_withdrawal_info';
-$route['coinpayment/ipn']                    = 'CoinPayment/ipn';
-$route['coinpayment/success']                = 'CoinPayment/success_trade_manager';
-$route['coinpayment/cancel']                 = 'CoinPayment/cancel_trade_manager';
+$route['coinpayment/ipn_trade_manager']      = 'CoinPayment/ipn_trade_manager';
+$route['coinpayment/success_trade_manager']  = 'CoinPayment/success_trade_manager';
+$route['coinpayment/cancel_trade_manager']   = 'CoinPayment/cancel_trade_manager';
 
 $route['blockio/get_new_address'] = 'BlockController/get_new_address';
 
 
-$route['scheduler/profit_daily_trade_manager'] = 'TaskSchedulerController/profit_daily_trade_manager';
-$route['scheduler/withdraw']                   = 'TaskSchedulerController/withdraw';
-$route['scheduler/reward']                     = 'TaskSchedulerController/reward';
+$route['scheduler/profit_daily_trade_manager']  = 'TaskSchedulerController/profit_daily_trade_manager';
+$route['scheduler/withdraw']                    = 'TaskSchedulerController/withdraw';
+$route['scheduler/reward']                      = 'TaskSchedulerController/reward';
+$route['scheduler/check_trade_manager_expired'] = 'TaskSchedulerController/check_trade_manager_expired';

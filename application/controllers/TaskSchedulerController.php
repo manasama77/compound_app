@@ -4,6 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class TaskSchedulerController extends CI_Controller
 {
+	protected $date;
 	protected $datetime;
 	protected $api_link;
 	protected $public_key;
@@ -27,7 +28,8 @@ class TaskSchedulerController extends CI_Controller
 
 		$this->Nested_set->setControlParams('tree', 'lft', 'rgt', 'id_member', 'id_upline', 'email');
 
-		$this->datetime = date('Y-m-d H:i:s');
+		$this->date           = date('Y-m-d');
+		$this->datetime       = date('Y-m-d H:i:s');
 		$this->api_link       = 'https://www.coinpayments.net/api.php';
 		$this->public_key     = '0d79d9c15454272a3ea638332ff716217b1530d57d2bb8023a0b5835a4c2c6bd';
 		$this->private_key    = '90c986299927C62d1250999244da7fEF08263769818AA8875e90e446f5d78d30';
@@ -231,10 +233,9 @@ class TaskSchedulerController extends CI_Controller
 
 	protected function _check_reward($id_member, $lft, $rgt, $depth, $limit)
 	{
-		// cari downline g1 yang total omset lebih dari LIMIT_REWARD_1
+		// cari downline g1 yang total omset lebih dari LIMIT_REWARD_X
 		$arr_d_reward_1 = $this->M_member->get_data_member_reward(null, $lft, $rgt, $depth + 1, $limit, 1);
-
-		// jika 1 downline g1 nya ada yang rewardnya minimal 12k
+		// example jika 1 downline g1 nya ada yang rewardnya minimal Xk
 		if ($arr_d_reward_1->num_rows() > 0) {
 			$sum_main_line_1 = $arr_d_reward_1->row()->total_omset;
 
@@ -273,10 +274,17 @@ class TaskSchedulerController extends CI_Controller
 		if ($arr->num_rows() > 0) {
 			$this->db->trans_begin();
 			foreach ($arr->result() as $key) {
-				$tx_id = $key->tx_id;
+				$id_member    = $key->id_member;
+				$email_member = $this->M_core->get('member', 'email', ['id' => $id_member])->row()->email;
+				$invoice      = $key->invoice;
+				$amount_1     = $key->amount_1 . " " . $key->currency_1;
+				$amount_2     = $key->amount_2 . " " . $key->currency_1;
+				$tx_id        = $key->tx_id;
 
 				$req = ['id' => $tx_id];
 				$arr_check = $this->_coinpayments_api_call('get_withdrawal_info', $req);
+				echo '<pre>' . print_r($arr_check, 1) . '</pre>';
+				exit;
 
 				if ($arr_check['error'] == "ok") {
 					if ($arr_check['result']['status'] == 2) {
@@ -293,8 +301,7 @@ class TaskSchedulerController extends CI_Controller
 						}
 
 						// SEND EMAIL
-						$this->_send_withdraw_success($id_member, $email_member, $invoice, $tx_id);
-
+						$this->_send_withdraw_success($id_member, $email_member, $invoice, $amount_1, $amount_2, $tx_id);
 						$this->db->trans_commit();
 					}
 				}
@@ -302,6 +309,97 @@ class TaskSchedulerController extends CI_Controller
 		}
 	}
 
+	protected function _send_withdraw_success($id, $to, $invoice, $amount_1, $amount_2, $tx_id): bool
+	{
+		$subject = APP_NAME . " | Withdraw Success";
+		$message = "";
+
+		$this->email->set_newline("\r\n");
+		$this->email->from($this->from, $this->from_alias);
+		$this->email->to($to);
+		$this->email->subject($subject);
+
+		$data['invoice']  = $invoice;
+		$data['amount_1'] = $amount_1;
+		$data['amount_2'] = $amount_2;
+		$data['tx_id']    = $tx_id;
+		return $this->load->view('emails/withdraw_success_template', $data, FALSE);
+		// $message         = $this->load->view('emails/withdraw_success_template', $data, TRUE);
+
+		$this->email->message($message);
+
+		$is_success = ($this->email->send()) ? 'yes' : 'no';
+
+		$this->M_log_send_email_member->write_log($to, $subject, $message, $is_success);
+
+		if ($is_success == "yes") {
+			return true;
+		}
+
+		return false;
+	}
+
+	/*
+	==================================
+	Execute Every Day at Every 6 Hour
+	==================================
+	*/
+	public function check_trade_manager_expired()
+	{
+		$this->db->trans_begin();
+		$arr = $this->M_trade_manager->get_expired_trade_manager();
+
+		if ($arr->num_rows() > 0) {
+			$data = [];
+			foreach ($arr->result() as $key) {
+				$invoice     = $key->invoice;
+				$id_member   = $key->id_member;
+				$buyer_email = $key->buyer_email;
+				$item_name   = $key->item_name;
+				$amount_usd  = $key->amount_usd;
+				$state       = 'expired';
+
+				$this->M_trade_manager->update_member_profit($id_member, $amount_usd);
+
+				$data_log = [
+					'id_member'         => $id_member,
+					'invoice'           => $invoice,
+					'amount_invest'     => 0,
+					'amount_transfer'   => $amount_usd,
+					'currency_transfer' => 'USDT',
+					'txn_id'            => null,
+					'state'             => 'expired',
+					'description'       => "[$this->datetime] Member $buyer_email Package $item_name Expired at $this->date. Investment $amount_usd USDT already move to profit",
+					'created_at'        => $this->datetime,
+					'updated_at'        => $this->datetime,
+				];
+				$this->M_core->store_uuid('log_member_trade_manager', $data_log);
+
+				$nested = compact([
+					'invoice',
+					'state',
+				]);
+
+				array_push($data, $nested);
+			}
+
+			$exec = $this->M_trade_manager->update_state($data);
+
+			if (!$exec) {
+				$this->db->trans_rollback();
+				exit;
+			}
+
+			$this->db->trans_commit();
+		}
+	}
+
+
+	/*
+	============================
+	MASTER COINPAYMENT API CALL
+	============================
+	*/
 	protected function _coinpayments_api_call($cmd, $req = array())
 	{
 		// Set the API command and required fields
@@ -347,34 +445,6 @@ class TaskSchedulerController extends CI_Controller
 		}
 
 		curl_close($ch);
-	}
-
-	protected function _send_withdraw_success($id, $to, $invoice, $tx_id): bool
-	{
-		$subject = APP_NAME . " | Withdraw Success";
-		$message = "";
-
-		$this->email->set_newline("\r\n");
-		$this->email->from($this->from, $this->from_alias);
-		$this->email->to($to);
-		$this->email->subject($subject);
-
-		$data['invoice'] = $invoice;
-		$data['tx_id']   = $tx_id;
-		$message         = $this->load->view('emails/withdraw_success_template', $data, TRUE);
-
-		$this->email->message($message);
-
-		$is_success = ($this->email->send()) ? 'yes' : 'no';
-
-		$this->M_core->update('member', ['otp' => $otp], ['id' => $id]);
-		$this->M_log_send_email_member->write_log($to, $subject, $message, $is_success);
-
-		if ($is_success == "yes") {
-			return true;
-		}
-
-		return false;
 	}
 }
         

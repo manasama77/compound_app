@@ -1,5 +1,4 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-	<!-- Brand Logo -->
 	<a href="<?= site_url('dashboard'); ?>" class="brand-link">
 		<img src="<?= base_url('public/img/logo.png'); ?>" alt="<?= APP_NAME; ?> LOGO" class="img-fluid brand-image" style="opacity: .8; max-width: 60px;">
 		<span class="brand-text font-weight-bold text-white"><?= APP_NAME; ?></span>
@@ -7,7 +6,6 @@
 
 	<!-- Sidebar -->
 	<div class="sidebar">
-		<!-- Sidebar user panel (optional) -->
 		<div class="user-panel mt-3 pb-3 mb-3 d-flex">
 			<div class="image">
 				<img src="<?= $this->session->userdata(SESI . 'profile_picture'); ?>" class="img-circle elevation-2" alt="Member Image">
@@ -71,19 +69,19 @@
 					</a>
 					<ul class="nav nav-treeview">
 						<li class="nav-item">
-							<a href="<?= site_url('login'); ?> list_crypto_asset.html" class="nav-link">
+							<a href="<?= site_url('crypto_asset'); ?>" class="nav-link">
 								<i class="fas fa-list nav-icon"></i>
 								<p>List Crypto Asset</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('login'); ?> add_crypto_asset.html" class="nav-link">
+							<a href="<?= site_url('crypto_asset/add'); ?>" class="nav-link">
 								<i class="fas fa-plus nav-icon"></i>
 								<p>Add Crypto Asset</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('login'); ?> claim_reward.html" class="nav-link">
+							<a href="<?= site_url('crypto_asset/claim'); ?>" class="nav-link">
 								<i class="fas fa-gift nav-icon"></i>
 								<p>Claim Reward</p>
 							</a>

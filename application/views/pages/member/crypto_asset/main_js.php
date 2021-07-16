@@ -5,17 +5,17 @@
 		})
 
 		$("#table_data").DataTable({
-			"scrollX": "300px",
-			"scrollY": "300px",
+			// "scrollX": "300px",
+			// "scrollY": "300px",
 			order: [
 				[0, 'asc']
 			],
-			responsive: false,
+			responsive: true,
 			lengthChange: false,
 			autoWidth: false,
 			buttons: ["copy", "csv", "excel", "pdf"],
 			columnDefs: [{
-				targets: [8],
+				targets: [7],
 				orderable: false
 			}]
 		}).buttons().container().appendTo('#table_data_wrapper .col-md-6:eq(0)');
@@ -97,7 +97,7 @@
 				});
 			} else if (e.code == 200) {
 				$('#package').html(e.result.package);
-				$('#amount').html(e.result.amount + " <small>USDT</small>");
+				$('#amount').html(e.result.amount);
 				$('#created_at').html(e.result.created_at);
 				$('#expired_at').html(`${e.result.expired_at} 00:00:00`);
 				$('#state').html(e.result.state.toUpperCase());
@@ -105,9 +105,9 @@
 
 				let profit_montly_text = `${e.result.profit_montly_value} <small>USDT</small> (15 %)`;
 				let profit_daily_text = `${e.result.profit_per_day} <small>USDT</small> (0.5 %)`;
-				let profit_self_text = `${e.result.profit_self_value} <small>USDT per day</small> (${e.result.profit_self_percentage} %)`;
-				let profit_upline_text = `${e.result.profit_upline_value} <small>USDT per day</small> (${e.result.profit_upline_percentage} %)`;
-				let profit_company_text = `${e.result.profit_upline_value} <small>USDT per day</small> (${e.result.profit_company_percentage} %)`;
+				let profit_self_text = `${e.result.profit_self_value} <small>USDT</small> (${e.result.profit_self_percentage} %)`;
+				let profit_upline_text = `${e.result.profit_upline_value} <small>USDT</small> (${e.result.profit_upline_percentage} %)`;
+				let profit_company_text = `${e.result.profit_upline_value} <small>USDT</small> (${e.result.profit_company_percentage} %)`;
 				let payment_text = `${e.result.payment_method.toUpperCase()} - ${e.result.txn_id}<br/>Amount Transfer ${e.result.amount_transfer} <small>USDT</small>`;
 
 				$('#profit_monthly').html(profit_montly_text);

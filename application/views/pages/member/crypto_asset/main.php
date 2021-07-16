@@ -3,12 +3,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">List Trade Manager</h1>
+				<h1 class="m-0">List Crypto Asset</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Trade Manager</a></li>
-					<li class="breadcrumb-item active">List Trade Manager</li>
+					<li class="breadcrumb-item"><a href="#">Crypto Asset</a></li>
+					<li class="breadcrumb-item active">List Crypto Asset</li>
 				</ol>
 			</div>
 		</div>
@@ -23,7 +23,7 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">List Trade Manager</h3>
+						<h3 class="card-title">List Crypto Asset</h3>
 
 						<div class="card-tools">
 							<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -38,8 +38,8 @@
 									<tr>
 										<th class="align-middle">Invoice</th>
 										<th class="align-middle">Package</th>
-										<th class="align-middle">Investment</th>
-										<th class="align-middle">Profit/Day</th>
+										<th class="align-middle">Amount</th>
+										<th class="align-middle">Profit /Day</th>
 										<th class="text-center align-middle">Join At</th>
 										<th class="text-center align-middle">Expired At</th>
 										<th class="text-center align-middle">Extend Mode</th>
@@ -49,9 +49,9 @@
 								</thead>
 								<tbody>
 
-									<?php if (count($data_trade_manager) > 0) : ?>
+									<?php if (count($data_crypto_asset) > 0) : ?>
 										<?php
-										foreach ($data_trade_manager as $key) :
+										foreach ($data_crypto_asset as $key) :
 										?>
 
 											<tr>
@@ -129,12 +129,10 @@
 																<button class="dropdown-item" onclick="showDetail('<?= $key['invoice']; ?>');">
 																	<i class="fas fa-eye fa-fw"></i> Detail
 																</button>
-																<?php if ($key['state'] == "active") { ?>
-																	<hr />
-																	<button class="dropdown-item" onclick="showExtend('<?= $key['invoice']; ?>', '<?= $key['package']; ?>', '<?= $key['is_extend']; ?>');">
-																		<i class="fas fa-business-time fa-fw"></i> Change Extend Mode
-																	</button>
-																<?php } ?>
+																<hr />
+																<button class="dropdown-item" onclick="showExtend('<?= $key['invoice']; ?>', '<?= $key['package']; ?>', '<?= $key['is_extend']; ?>');">
+																	<i class="fas fa-business-time fa-fw"></i> Change Extend Mode
+																</button>
 															</div>
 														</div>
 													</div>
@@ -175,7 +173,7 @@
 					<table class="table">
 						<thead>
 							<tr>
-								<th>Investment</th>
+								<th>Amount</th>
 								<th>:</th>
 								<th id="amount"></th>
 							</tr>
