@@ -82,8 +82,8 @@ $route['coinpayment/convert_limits']         = 'CoinPayment/convert_limits';
 $route['coinpayment/get_withdrawal_history'] = 'CoinPayment/get_withdrawal_history';
 $route['coinpayment/get_withdrawal_info']    = 'CoinPayment/get_withdrawal_info';
 $route['coinpayment/ipn']                    = 'CoinPayment/ipn';
-$route['coinpayment/success']                = 'CoinPayment/success';
-$route['coinpayment/cancel']                 = 'CoinPayment/cancel';
+$route['coinpayment/success']                = 'CoinPayment/success_trade_manager';
+$route['coinpayment/cancel']                 = 'CoinPayment/cancel_trade_manager';
 
 $route['blockio/get_new_address'] = 'BlockController/get_new_address';
 

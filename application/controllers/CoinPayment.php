@@ -409,9 +409,55 @@ class CoinPayment extends CI_Controller
 		$merchant_id    = $this->merchant_id;
 		$ipn_secret_key = $this->ipn_secret_key;
 
-		//These would normally be loaded from your database, the most common way is to pass the Order ID through the 'custom' POST field.
-		$order_currency = 'USD';
-		$order_total = 100;
+		// HMAC Signature verified at this point, load some variables.
+		$ipn_version       = $_POST['ipn_version'];
+		$ipn_type          = $_POST['ipn_type'];
+		$ipn_mode          = $_POST['ipn_mode'];
+		$ipn_id            = $_POST['ipn_id'];
+		$merchant          = $_POST['merchant'];
+		$status            = intval($_POST['status']);
+		$status_text       = $_POST['status_text'];
+		$txn_id            = $_POST['txn_id'];
+		$currency1         = $_POST['currency1'];
+		$currency2         = $_POST['currency2'];
+		$amount1           = floatval($_POST['amount1']);
+		$amount2           = floatval($_POST['amount2']);
+		$fee               = $_POST['fee'];
+		$buyer_name        = $_POST['buyer_name'];
+		$email             = $_POST['email'];
+		$item_name         = $_POST['item_name'];
+		$item_number       = $_POST['item_number'];
+		$invoice           = $_POST['invoice'];
+		$received_amount   = floatval($_POST['received_amount']);
+		$received_confirms = floatval($_POST['received_confirms']);
+
+		if (!isset($_POST['ipn_mode']) || $_POST['ipn_mode'] != 'hmac') {
+			$object = [
+				'ipn_version'       => $ipn_version,
+				'ipn_type'          => $ipn_type,
+				'ipn_mode'          => $ipn_mode,
+				'ipn_id'            => $ipn_id,
+				'merchant'          => $merchant,
+				'description'       => 'IPN Mode is not HMAC',
+				'status'            => $status,
+				'status_text'       => $status_text,
+				'txn_id'            => $txn_id,
+				'currency1'         => $currency1,
+				'currency2'         => $currency2,
+				'amount1'           => $amount1,
+				'amount2'           => $amount2,
+				'fee'               => $fee,
+				'buyer_name'        => $buyer_name,
+				'email'             => $email,
+				'item_name'         => $item_name,
+				'item_number'       => $item_number,
+				'invoice'           => $invoice,
+				'received_amount'   => $received_amount,
+				'received_confirms' => $received_confirms,
+				'created_at'        => $this->datetime,
+			];
+			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
+			$this->db->trans_commit();
 
 		if (!isset($_POST['ipn_mode']) || $_POST['ipn_mode'] != 'hmac') {
 			$this->errorAndDie('IPN Mode is not HMAC');

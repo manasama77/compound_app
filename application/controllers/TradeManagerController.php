@@ -47,6 +47,8 @@ class TradeManagerController extends CI_Controller
 
 	public function index()
 	{
+		echo site_url('coinpayment/ipn_trade_manager');
+		exit;
 		$data_trade_manager = $this->M_trade_manager->get_member_trade_manager($this->id_member);
 		$data = [
 			'title'              => APP_NAME . ' | List Trade Manager',
