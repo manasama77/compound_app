@@ -90,19 +90,12 @@
 										</div>
 									</div>
 									<div class="form-group row">
-										<label for="coin_type" class="col-form-label col-md-4">Coin Type</label>
+										<label for="coin_type" class="col-form-label col-md-4">Payment Coin</label>
 										<div class="col-md-7">
 											<select class="form-control" id="coin_type" name="coin_type" required>
+												<option value="USDT.ERC20">Tether USD - ERC20 (USDT.ERC20)</option>
+												<option value="USDT.BEP20">Tether USD - BSC Chain (USDT.BEP20)</option>
 												<option value="LTCT">Lite Coin Test (LTCT)</option>
-												<option value="BTC">BTC</option>
-											</select>
-										</div>
-									</div>
-									<div class="form-group row">
-										<label for="payment_method" class="col-form-label col-md-4">Payment Method</label>
-										<div class="col-md-7">
-											<select class="form-control" id="payment_method" name="payment_method" required>
-												<option value="coinpayment">Coin Payment</option>
 											</select>
 										</div>
 									</div>

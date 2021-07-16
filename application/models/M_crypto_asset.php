@@ -41,15 +41,15 @@ class M_crypto_asset extends CI_Model
 	{
 		return $this->db
 			->select([
-				'member_crypto_asset.invoice',
-				'member_crypto_asset.id_member',
-				'member_crypto_asset.id_package',
-				'member_crypto_asset.item_name',
-				'member_crypto_asset.buyer_email',
-				'member_crypto_asset.buyer_name',
-				'member_crypto_asset.amount_usd',
+				'et_member_crypto_asset.invoice',
+				'et_member_crypto_asset.id_member',
+				'et_member_crypto_asset.id_package',
+				'et_member_crypto_asset.item_name',
+				'et_member_crypto_asset.buyer_email',
+				'et_member_crypto_asset.buyer_name',
+				'et_member_crypto_asset.amount_usd',
 			])
-			->from('member_crypto_asset')
+			->from('et_member_crypto_asset')
 			->join('et_member', 'et_member.id = et_member_crypto_asset.id_member', 'left')
 			->where('et_member_crypto_asset.id_member !=', $id_member)
 			->where('et_member_crypto_asset.is_qualified', 'no')
@@ -58,8 +58,8 @@ class M_crypto_asset extends CI_Model
 			->where('et_member.id_upline', $id_upline)
 			->where('et_member.is_active', 'yes')
 			->where('et_member.deleted_at', null)
+			->group_by('et_member_crypto_asset.id_member')
 			->order_by('et_member_crypto_asset.created_at', 'asc')
-			->group_by('member_crypto_asset.id_member')
 			->limit(1)
 			->get();
 	}

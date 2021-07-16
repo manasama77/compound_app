@@ -58,8 +58,8 @@ class M_trade_manager extends CI_Model
 			->where('et_member.id_upline', $id_upline)
 			->where('et_member.is_active', 'yes')
 			->where('et_member.deleted_at', null)
-			->order_by('et_member_trade_manager.created_at', 'asc')
 			->group_by('member_trade_manager.id_member')
+			->order_by('et_member_trade_manager.created_at', 'asc')
 			->limit(1)
 			->get();
 	}
@@ -173,6 +173,15 @@ class M_trade_manager extends CI_Model
 	public function update_state($data)
 	{
 		return $this->db->update_batch('member_trade_manager', $data, 'invoice');
+	}
+
+	public function update_member_trade_manager_asset($id_member, $amount)
+	{
+		return $this->db
+			->set('total_invest_trade_manager', 'total_invest_trade_manager + ' . $amount, false)
+			->set('count_trade_manager', 'count_trade_manager + 1', false)
+			->where('id_member', $id_member)
+			->update('member_balance');
 	}
 }
                         

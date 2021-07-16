@@ -12,7 +12,7 @@
 			$('#time_left').html('0s');
 		}
 
-		checkStatusPayment('<?= $arr->row()->txn_id; ?>');
+		// checkStatusPayment('<?= $arr->row()->txn_id; ?>');
 		console.log(state);
 		if (arr_state_except.includes(state) == false) {
 			console.log("timer on");
@@ -55,74 +55,76 @@
 	}
 
 	function checkStatusPayment(txid) {
-		$.ajax({
-			url: '<?= site_url('trade_manager/get_tx_info'); ?>',
-			method: 'get',
-			dataType: 'json',
-			data: {
-				txid: txid
-			},
-			beforeSend: function() {
-				$.blockUI();
-			}
-		}).always(function() {
-			$.unblockUI();
-		}).fail(function(e) {
-			console.log(e);
-			if (e.responseText != '') {
-				Swal.fire({
-					icon: 'error',
-					title: 'Oops...',
-					html: e.responseText,
-				});
-			}
-		}).done(function(e) {
-			console.log(e);
-			let showText = "";
-			if (e.code == 500) {
-				Swal.fire({
-					icon: 'warning',
-					title: 'Failed to connect to Coinpayment',
-					html: e.status_text,
-				}).then(() => {
-					window.location.reload();
-				});
-			} else if (e.code == 200) {
-				$('#state_badge').html(e.state_badge);
-				$('#receivedf').html(e.receivedf);
-				$('#coin').html(e.coin);
+		// $.ajax({
+		// 	url: '<?= site_url('trade_manager/get_tx_info'); ?>',
+		// 	method: 'get',
+		// 	dataType: 'json',
+		// 	data: {
+		// 		txid: txid
+		// 	},
+		// 	beforeSend: function() {
+		// 		$.blockUI();
+		// 	}
+		// }).always(function() {
+		// 	$.unblockUI();
+		// }).fail(function(e) {
+		// 	console.log(e);
+		// 	if (e.responseText != '') {
+		// 		Swal.fire({
+		// 			icon: 'error',
+		// 			title: 'Oops...',
+		// 			html: e.responseText,
+		// 		});
+		// 	}
+		// }).done(function(e) {
+		// 	console.log(e);
+		// 	let showText = "";
+		// 	if (e.code == 500) {
+		// 		Swal.fire({
+		// 			icon: 'warning',
+		// 			title: 'Failed to connect to Coinpayment',
+		// 			html: e.status_text,
+		// 		}).then(() => {
+		// 			window.location.reload();
+		// 		});
+		// 	} else if (e.code == 200) {
+		// 		$('#state_badge').html(e.state_badge);
+		// 		$('#receivedf').html(e.receivedf);
+		// 		$('#coin').html(e.coin);
 
-				if (e.state == "active") {
-					Swal.fire({
-						position: 'top-end',
-						icon: 'success',
-						title: 'Success...',
-						text: "Package Trade Manager Already Active",
-						showConfirmButton: true,
-						timer: 0,
-						timerProgressBar: true,
-					}).then(() => {
-						$("#state_badge").html(e.state_badge);
-						window.location.replace('<?= site_url('trade_manager'); ?>');
-					});
-				} else if (e.state == "cancel") {
-					Swal.fire({
-						position: 'top-end',
-						icon: 'warning',
-						title: 'Payment Warning',
-						text: e.status_text,
-						toast: true,
-						showConfirmButton: false,
-						timer: 5000,
-						timerProgressBar: true,
-					}).then(() => {
-						$("#state_badge").html(e.state_badge);
-						window.location.replace('<?= site_url('trade_manager'); ?>');
-					});
-				}
+		// 		if (e.state == "active") {
+		// 			Swal.fire({
+		// 				position: 'top-end',
+		// 				icon: 'success',
+		// 				title: 'Success...',
+		// 				text: "Package Trade Manager Already Active",
+		// 				showConfirmButton: true,
+		// 				timer: 0,
+		// 				timerProgressBar: true,
+		// 			}).then(() => {
+		// 				$("#state_badge").html(e.state_badge);
+		// 				window.location.replace('<?= site_url('trade_manager'); ?>');
+		// 			});
+		// 		} else if (e.state == "cancel") {
+		// 			Swal.fire({
+		// 				position: 'top-end',
+		// 				icon: 'warning',
+		// 				title: 'Payment Warning',
+		// 				text: e.status_text,
+		// 				toast: true,
+		// 				showConfirmButton: false,
+		// 				timer: 5000,
+		// 				timerProgressBar: true,
+		// 			}).then(() => {
+		// 				$("#state_badge").html(e.state_badge);
+		// 				window.location.replace('<?= site_url('trade_manager'); ?>');
+		// 			});
+		// 		}
 
 
-			}
-		});
+		// 	}
+		// });
+
+		window.location.reload();
 	}
 </script>
