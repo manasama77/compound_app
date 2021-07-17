@@ -405,13 +405,111 @@ class CoinPayment extends CI_Controller
 		}
 	}
 
-	public function ipn_trade_manager()
+	public function ipn()
 	{
 		$this->db->trans_begin();
 
 		// Fill these in with the information from your CoinPayments.net account.
 		$merchant_id    = $this->merchant_id;
 		$ipn_secret_key = $this->ipn_secret_key;
+
+		if (!isset($_POST['ipn_mode']) || $_POST['ipn_mode'] != 'hmac') {
+			$object = [
+				'ipn_version' => $_POST['ipn_version'],
+				'ipn_type'    => $_POST['ipn_type'],
+				'ipn_mode'    => $_POST['ipn_mode'],
+				'ipn_id'      => $_POST['ipn_id'],
+				'merchant'    => $_POST['merchant'],
+				'description' => 'IPN Mode is not HMAC',
+				'created_at'  => $this->datetime,
+			];
+			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
+			$this->db->trans_commit();
+
+			$this->errorAndDie('IPN Mode is not HMAC');
+		}
+
+		if (!isset($_SERVER['HTTP_HMAC']) || empty($_SERVER['HTTP_HMAC'])) {
+			$object = [
+				'ipn_version' => $_POST['ipn_version'],
+				'ipn_type'    => $_POST['ipn_type'],
+				'ipn_mode'    => $_POST['ipn_mode'],
+				'ipn_id'      => $_POST['ipn_id'],
+				'merchant'    => $_POST['merchant'],
+				'description' => 'No HMAC signature sent.',
+				'created_at'  => $this->datetime,
+			];
+			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
+			$this->db->trans_commit();
+
+			$this->errorAndDie('No HMAC signature sent.');
+		}
+
+		$request = file_get_contents('php://input');
+		if ($request === FALSE || empty($request)) {
+			$object = [
+				'ipn_version' => $_POST['ipn_version'],
+				'ipn_type'    => $_POST['ipn_type'],
+				'ipn_mode'    => $_POST['ipn_mode'],
+				'ipn_id'      => $_POST['ipn_id'],
+				'merchant'    => $_POST['merchant'],
+				'description' => 'Error reading POST data',
+				'created_at'  => $this->datetime,
+			];
+			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
+			$this->db->trans_commit();
+
+			$this->errorAndDie('Error reading POST data');
+		}
+
+		if (!isset($merchant) || $merchant != trim($merchant_id)) {
+			$object = [
+				'ipn_version' => $_POST['ipn_version'],
+				'ipn_type'    => $_POST['ipn_type'],
+				'ipn_mode'    => $_POST['ipn_mode'],
+				'ipn_id'      => $_POST['ipn_id'],
+				'merchant'    => $_POST['merchant'],
+				'description' => 'No or incorrect Merchant ID passed',
+				'created_at'  => $this->datetime,
+			];
+			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
+			$this->db->trans_commit();
+
+			$this->errorAndDie('No or incorrect Merchant ID passed');
+		}
+
+		$hmac = hash_hmac("sha512", $request, trim($ipn_secret_key));
+		if (!hash_equals($hmac, $_SERVER['HTTP_HMAC'])) {
+			$object = [
+				'ipn_version' => $_POST['ipn_version'],
+				'ipn_type'    => $_POST['ipn_type'],
+				'ipn_mode'    => $_POST['ipn_mode'],
+				'ipn_id'      => $_POST['ipn_id'],
+				'merchant'    => $_POST['merchant'],
+				'description' => 'HMAC signature does not match',
+				'created_at'  => $this->datetime,
+			];
+			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
+			$this->db->trans_commit();
+
+			$this->errorAndDie('HMAC signature does not match');
+		}
+
+		if ($_POST['ipn_type'] != 'api') {
+			$object = [
+				'ipn_version' => $_POST['ipn_version'],
+				'ipn_type'    => $_POST['ipn_type'],
+				'ipn_mode'    => $_POST['ipn_mode'],
+				'ipn_id'      => $_POST['ipn_id'],
+				'merchant'    => $_POST['merchant'],
+				'description' => 'IPN OK: Not a API payment',
+				'created_at'  => $this->datetime,
+			];
+			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
+			$this->db->trans_commit();
+
+			$this->errorAndDie('IPN OK: Not a API payment');
+		}
 
 		// HMAC Signature verified at this point, load some variables.
 		$ipn_version       = $_POST['ipn_version'];
@@ -434,194 +532,7 @@ class CoinPayment extends CI_Controller
 		$invoice           = $_POST['invoice'];
 		$received_amount   = floatval($_POST['received_amount']);
 		$received_confirms = floatval($_POST['received_confirms']);
-
-		if (!isset($ipn_mode) || $ipn_mode != 'hmac') {
-			$object = [
-				'ipn_version'       => $ipn_version,
-				'ipn_type'          => $ipn_type,
-				'ipn_mode'          => $ipn_mode,
-				'ipn_id'            => $ipn_id,
-				'merchant'          => $merchant,
-				'description'       => 'IPN Mode is not HMAC',
-				'status'            => $status,
-				'status_text'       => $status_text,
-				'txn_id'            => $txn_id,
-				'currency1'         => $currency1,
-				'currency2'         => $currency2,
-				'amount1'           => $amount1,
-				'amount2'           => $amount2,
-				'fee'               => $fee,
-				'buyer_name'        => $buyer_name,
-				'email'             => $email,
-				'item_name'         => $item_name,
-				'item_number'       => $item_number,
-				'invoice'           => $invoice,
-				'received_amount'   => $received_amount,
-				'received_confirms' => $received_confirms,
-				'created_at'        => $this->datetime,
-			];
-			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
-			$this->db->trans_commit();
-
-			$this->errorAndDie('IPN Mode is not HMAC');
-		}
-
-		if (!isset($_SERVER['HTTP_HMAC']) || empty($_SERVER['HTTP_HMAC'])) {
-			$object = [
-				'ipn_version'       => $ipn_version,
-				'ipn_type'          => $ipn_type,
-				'ipn_mode'          => $ipn_mode,
-				'ipn_id'            => $ipn_id,
-				'merchant'          => $merchant,
-				'description'       => 'No HMAC signature sent.',
-				'status'            => $status,
-				'status_text'       => $status_text,
-				'txn_id'            => $txn_id,
-				'currency1'         => $currency1,
-				'currency2'         => $currency2,
-				'amount1'           => $amount1,
-				'amount2'           => $amount2,
-				'fee'               => $fee,
-				'buyer_name'        => $buyer_name,
-				'email'             => $email,
-				'item_name'         => $item_name,
-				'item_number'       => $item_number,
-				'invoice'           => $invoice,
-				'received_amount'   => $received_amount,
-				'received_confirms' => $received_confirms,
-				'created_at'        => $this->datetime,
-			];
-			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
-			$this->db->trans_commit();
-
-			$this->errorAndDie('No HMAC signature sent.');
-		}
-
-		$request = file_get_contents('php://input');
-		if ($request === FALSE || empty($request)) {
-			$object = [
-				'ipn_version'       => $ipn_version,
-				'ipn_type'          => $ipn_type,
-				'ipn_mode'          => $ipn_mode,
-				'ipn_id'            => $ipn_id,
-				'merchant'          => $merchant,
-				'description'       => 'Error reading POST data',
-				'status'            => $status,
-				'status_text'       => $status_text,
-				'txn_id'            => $txn_id,
-				'currency1'         => $currency1,
-				'currency2'         => $currency2,
-				'amount1'           => $amount1,
-				'amount2'           => $amount2,
-				'fee'               => $fee,
-				'buyer_name'        => $buyer_name,
-				'email'             => $email,
-				'item_name'         => $item_name,
-				'item_number'       => $item_number,
-				'invoice'           => $invoice,
-				'received_amount'   => $received_amount,
-				'received_confirms' => $received_confirms,
-				'created_at'        => $this->datetime,
-			];
-			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
-			$this->db->trans_commit();
-
-			$this->errorAndDie('Error reading POST data');
-		}
-
-		if (!isset($merchant) || $merchant != trim($merchant_id)) {
-			$object = [
-				'ipn_version'       => $ipn_version,
-				'ipn_type'          => $ipn_type,
-				'ipn_mode'          => $ipn_mode,
-				'ipn_id'            => $ipn_id,
-				'merchant'          => $merchant,
-				'description'       => 'No or incorrect Merchant ID passed',
-				'status'            => $status,
-				'status_text'       => $status_text,
-				'txn_id'            => $txn_id,
-				'currency1'         => $currency1,
-				'currency2'         => $currency2,
-				'amount1'           => $amount1,
-				'amount2'           => $amount2,
-				'fee'               => $fee,
-				'buyer_name'        => $buyer_name,
-				'email'             => $email,
-				'item_name'         => $item_name,
-				'item_number'       => $item_number,
-				'invoice'           => $invoice,
-				'received_amount'   => $received_amount,
-				'received_confirms' => $received_confirms,
-				'created_at'        => $this->datetime,
-			];
-			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
-			$this->db->trans_commit();
-
-			$this->errorAndDie('No or incorrect Merchant ID passed');
-		}
-
-		$hmac = hash_hmac("sha512", $request, trim($ipn_secret_key));
-		if (!hash_equals($hmac, $_SERVER['HTTP_HMAC'])) {
-			$object = [
-				'ipn_version'       => $ipn_version,
-				'ipn_type'          => $ipn_type,
-				'ipn_mode'          => $ipn_mode,
-				'ipn_id'            => $ipn_id,
-				'merchant'          => $merchant,
-				'description'       => 'HMAC signature does not match',
-				'status'            => $status,
-				'status_text'       => $status_text,
-				'txn_id'            => $txn_id,
-				'currency1'         => $currency1,
-				'currency2'         => $currency2,
-				'amount1'           => $amount1,
-				'amount2'           => $amount2,
-				'fee'               => $fee,
-				'buyer_name'        => $buyer_name,
-				'email'             => $email,
-				'item_name'         => $item_name,
-				'item_number'       => $item_number,
-				'invoice'           => $invoice,
-				'received_amount'   => $received_amount,
-				'received_confirms' => $received_confirms,
-				'created_at'        => $this->datetime,
-			];
-			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
-			$this->db->trans_commit();
-
-			$this->errorAndDie('HMAC signature does not match');
-		}
-
-		if ($ipn_type != 'api') {
-			$object = [
-				'ipn_version'       => $ipn_version,
-				'ipn_type'          => $ipn_type,
-				'ipn_mode'          => $ipn_mode,
-				'ipn_id'            => $ipn_id,
-				'merchant'          => $merchant,
-				'description'       => 'IPN OK: Not a API payment',
-				'status'            => $status,
-				'status_text'       => $status_text,
-				'txn_id'            => $txn_id,
-				'currency1'         => $currency1,
-				'currency2'         => $currency2,
-				'amount1'           => $amount1,
-				'amount2'           => $amount2,
-				'fee'               => $fee,
-				'buyer_name'        => $buyer_name,
-				'email'             => $email,
-				'item_name'         => $item_name,
-				'item_number'       => $item_number,
-				'invoice'           => $invoice,
-				'received_amount'   => $received_amount,
-				'received_confirms' => $received_confirms,
-				'created_at'        => $this->datetime,
-			];
-			$this->M_core->store_uuid('log_ipn_trade_manager', $object);
-			$this->db->trans_commit();
-
-			$this->errorAndDie('IPN OK: Not a API payment');
-		}
+		$custom            = $_POST['custom'];
 
 		//These would normally be loaded from your database, the most common way is to pass the Order ID through the 'custom' POST field.
 		$where_order = [
@@ -629,7 +540,12 @@ class CoinPayment extends CI_Controller
 			'txn_id'     => $txn_id,
 			'deleted_at' => null
 		];
-		$arr_order = $this->M_core->get('member_trade_manager', '*', $where_order);
+
+		if ($custom == 'trade_manager') {
+			$arr_order = $this->M_core->get('member_trade_manager', '*', $where_order);
+		} else {
+			$arr_order = $this->M_core->get('member_crypto_asset', '*', $where_order);
+		}
 
 		if ($arr_order->num_rows() == 0) {
 			$object = [
@@ -1153,7 +1069,7 @@ class CoinPayment extends CI_Controller
 		die('IPN OK');
 	}
 
-	function errorAndDie($error_msg)
+	public function errorAndDie($error_msg)
 	{
 		$cp_debug_email = $this->debug_email;
 		if (!empty($cp_debug_email)) {
@@ -1165,14 +1081,15 @@ class CoinPayment extends CI_Controller
 			mail($cp_debug_email, 'CoinPayments IPN Error', $report);
 		}
 		die('IPN Error: ' . $error_msg);
+		exit;
 	}
 
-	public function success_trade_manager()
+	public function success()
 	{
 		echo "Success";
 	}
 
-	public function cancel_trade_manager()
+	public function cancel()
 	{
 		echo "Cancel";
 	}

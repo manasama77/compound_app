@@ -490,9 +490,10 @@ class TradeManagerController extends CI_Controller
 		$req['item_name']   = $data['item_name'];
 		$req['item_number'] = $data['item_number'];
 		$req['invoice']     = $data['invoice'];
-		$req['ipn_url']     = site_url('coinpayment/ipn_trade_manager');
-		$req['success_url'] = site_url('coinpayment/success_trade_manager');
-		$req['cance_url']   = site_url('coinpayment/cancel_trade_manager');
+		$req['custom']      = 'trade_manager';
+		$req['ipn_url']     = site_url('coinpayment/ipn');
+		$req['success_url'] = site_url('coinpayment/success');
+		$req['cance_url']   = site_url('coinpayment/cancel');
 
 		$exec = $this->_coinpayments_api_call('create_transaction', $req);
 
