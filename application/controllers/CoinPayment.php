@@ -419,7 +419,6 @@ class CoinPayment extends CI_Controller
 				'ipn_type'    => $_POST['ipn_type'],
 				'ipn_mode'    => $_POST['ipn_mode'],
 				'ipn_id'      => $_POST['ipn_id'],
-				'merchant'    => $_POST['merchant'],
 				'description' => 'IPN Mode is not HMAC',
 				'created_at'  => $this->datetime,
 			];
@@ -435,7 +434,6 @@ class CoinPayment extends CI_Controller
 				'ipn_type'    => $_POST['ipn_type'],
 				'ipn_mode'    => $_POST['ipn_mode'],
 				'ipn_id'      => $_POST['ipn_id'],
-				'merchant'    => $_POST['merchant'],
 				'description' => 'No HMAC signature sent.',
 				'created_at'  => $this->datetime,
 			];
@@ -452,7 +450,6 @@ class CoinPayment extends CI_Controller
 				'ipn_type'    => $_POST['ipn_type'],
 				'ipn_mode'    => $_POST['ipn_mode'],
 				'ipn_id'      => $_POST['ipn_id'],
-				'merchant'    => $_POST['merchant'],
 				'description' => 'Error reading POST data',
 				'created_at'  => $this->datetime,
 			];

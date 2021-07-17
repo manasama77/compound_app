@@ -491,7 +491,8 @@ class TradeManagerController extends CI_Controller
 		$req['item_number'] = $data['item_number'];
 		$req['invoice']     = $data['invoice'];
 		$req['custom']      = 'trade_manager';
-		$req['ipn_url']     = site_url('coinpayment/ipn');
+		// $req['ipn_url']     = site_url('coinpayment/ipn');
+		$req['ipn_url']     = 'https://webhook.site/5b5b363f-78de-43fc-9842-c1341319a84d';
 		$req['success_url'] = site_url('coinpayment/success');
 		$req['cance_url']   = site_url('coinpayment/cancel');
 
