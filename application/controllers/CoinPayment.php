@@ -462,7 +462,7 @@ class CoinPayment extends CI_Controller
 			$this->errorAndDie('Error reading POST data');
 		}
 
-		if (!isset($merchant) || $merchant != trim($merchant_id)) {
+		if (!isset($_POST['merchant']) || $_POST['merchant'] != trim($merchant_id)) {
 			$object = [
 				'ipn_version' => $_POST['ipn_version'],
 				'ipn_type'    => $_POST['ipn_type'],
