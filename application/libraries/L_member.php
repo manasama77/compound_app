@@ -92,8 +92,9 @@ class L_member
 	{
 		if (file_exists(APPPATH . 'views/pages/member/' . $data['content'] . '.php')) {
 			$where_trade_manager               = [
-				'id_member' => $this->ci->session->userdata(SESI . 'id'),
-				'state'     => 'active',
+				'id_member'  => $this->ci->session->userdata(SESI . 'id'),
+				'state'      => 'active',
+				'deleted_at' => null,
 			];
 			$data['aside_count_trade_manager'] = $this->ci->M_core->count('member_trade_manager', $where_trade_manager);
 			$this->ci->load->view('layouts/member/main', $data, FALSE);

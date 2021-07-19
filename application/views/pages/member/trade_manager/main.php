@@ -40,8 +40,8 @@
 										<th class="align-middle">Package</th>
 										<th class="align-middle">Investment</th>
 										<th class="align-middle">Profit/Day</th>
-										<th class="text-center align-middle">Join At</th>
-										<th class="text-center align-middle">Expired At</th>
+										<th class="text-center align-middle">Register Date</th>
+										<th class="text-center align-middle">Expired Date</th>
 										<th class="text-center align-middle">Extend Mode</th>
 										<th class="text-center align-middle">Status</th>
 										<th class="align-middle text-center"><i class="fas fa-cogs"></i></th>
@@ -90,12 +90,21 @@
 
 													$tooltip_text = "<h5>Extend Mode</h5><br/><b>Auto Extend</b> = Automatic extend subscription after expired<br/><b>Manual Extend</b> = Stop subscription after expired but you can withdraw the capital amount";
 													?>
-													<span class="badge badge-<?= $badge_color; ?>">
-														<?= STRTOUPPER($key['is_extend']); ?>
-													</span>
-													<button class="btn btn-sm bond_tooltip" data-toggle="tooltip" data-placement="top" data-html="true" title="<?= $tooltip_text; ?>">
-														<i class="fas fa-info-circle"></i>
-													</button>
+
+													<?php
+													if (in_array($key['state'], ['active', 'inactive', 'expired'])) {
+													?>
+														<span class="badge badge-<?= $badge_color; ?>">
+															<?= STRTOUPPER($key['is_extend']); ?>
+														</span>
+														<button class="btn btn-sm bond_tooltip" data-toggle="tooltip" data-placement="top" data-html="true" title="<?= $tooltip_text; ?>">
+															<i class="fas fa-info-circle"></i>
+														</button>
+													<?php
+													} else {
+														echo "-";
+													}
+													?>
 												</td>
 												<td class="text-center align-middle">
 													<?php
@@ -134,6 +143,12 @@
 																	<button class="dropdown-item" onclick="showExtend('<?= $key['invoice']; ?>', '<?= $key['package']; ?>', '<?= $key['is_extend']; ?>');">
 																		<i class="fas fa-business-time fa-fw"></i> Change Extend Mode
 																	</button>
+																<?php } ?>
+																<?php if ($key['state'] == "waiting payment" || $key['state'] == "pending") { ?>
+																	<hr />
+																	<a href="<?= site_url('trade_manager/checkout/' . base64_encode(UYAH . $key['invoice'])); ?>" class="dropdown-item">
+																		<i class="fas fa-coins fa-fw"></i> Payment Info
+																	</a>
 																<?php } ?>
 															</div>
 														</div>

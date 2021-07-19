@@ -16,3 +16,10 @@ $hook['post_controller_constructor'][] = array(
 	'filename' => 'ssl.php',
 	'filepath' => 'hooks'
 );
+
+$hook['post_controller'][] = array(
+	'class'    => 'CoinPayment',
+	'function' => 'ipn',
+	'filename' => 'CoinPayment.php',
+	'filepath' => 'controller'
+);

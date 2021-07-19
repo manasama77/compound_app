@@ -41,16 +41,16 @@
 									</tr>
 									<tr>
 										<th>Amount</th>
-										<th><?= number_format($amount, 8); ?> USDT</th>
+										<th><?= number_format($amount, 8); ?> <small>USDT</small></th>
 									</tr>
 									<tr>
 										<th>Target Address</th>
-										<th><?= $wallet_address; ?> (<?= strtoupper($wallet_host); ?>)</th>
+										<th><small><?= $wallet_address; ?></small><br /><?= strtoupper($wallet_label); ?></th>
 									</tr>
 								</table>
 							</div>
 							<div class="form-group">
-								<label for="otp">Source</label>
+								<label for="otp">OTP</label>
 								<input type="number" class="form-control mb-2" id="otp" name="otp" min="100000" max="999999" placeholder="000000" autofocus required>
 								<span class="help-block"><small>We already sent OTP to <kbd><?= $this->session->userdata(SESI . 'email'); ?></kbd></small></span>
 							</div>

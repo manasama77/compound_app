@@ -51,14 +51,14 @@ $route['wallet/store']   = 'WalletController/store';
 $route['wallet/update']  = 'WalletController/update';
 $route['wallet/destroy'] = 'WalletController/destroy';
 
-$route['withdraw']                         = 'WithdrawController/index';
-$route['withdraw_auth']                    = 'WithdrawController/auth';
-$route['withdraw_rates']                   = 'WithdrawController/rates';
-$route['withdraw_generate_wallet_host']    = 'WithdrawController/generate_wallet_host';
-$route['withdraw_generate_wallet_address'] = 'WithdrawController/generate_wallet_address';
-$route['withdraw/otp']                     = 'WithdrawController/otp';
-$route['withdraw/process']                 = 'WithdrawController/process';
-$route['withdraw/success/(:any)']          = 'WithdrawController/success/$1';
+$route['withdraw'] 							= 'WithdrawController/index';
+$route['withdraw_auth'] 					= 'WithdrawController/auth';
+$route['withdraw_rates'] 					= 'WithdrawController/rates';
+$route['withdraw_render_wallet_label'] 		= 'WithdrawController/render_wallet_label';
+$route['withdraw_render_wallet_address'] 	= 'WithdrawController/render_wallet_address';
+$route['withdraw/otp'] 						= 'WithdrawController/otp';
+$route['withdraw/process'] 					= 'WithdrawController/process';
+$route['withdraw/success/(:any)'] 			= 'WithdrawController/success/$1';
 
 $route['rewards'] = 'RewardsController/index';
 
@@ -87,12 +87,13 @@ $route['coinpayment/convert']                = 'CoinPayment/convert';
 $route['coinpayment/convert_limits']         = 'CoinPayment/convert_limits';
 $route['coinpayment/get_withdrawal_history'] = 'CoinPayment/get_withdrawal_history';
 $route['coinpayment/get_withdrawal_info']    = 'CoinPayment/get_withdrawal_info';
-
 $route['coinpayment/ipn']      = 'CoinPayment/ipn';
-$route['coinpayment/success']  = 'CoinPayment/success';
-$route['coinpayment/cancel']   = 'CoinPayment/cancel';
+
+$route['coinpayment/success/(:any)']  = 'CoinPayment/success/$1';
+$route['coinpayment/cancel/(:any)']   = 'CoinPayment/cancel/$1';
 
 $route['scheduler/profit_daily_trade_manager']  = 'TaskSchedulerController/profit_daily_trade_manager';
 $route['scheduler/withdraw']                    = 'TaskSchedulerController/withdraw';
 $route['scheduler/reward']                      = 'TaskSchedulerController/reward';
 $route['scheduler/check_trade_manager_expired'] = 'TaskSchedulerController/check_trade_manager_expired';
+$route['scheduler/coinpayment_tx_info_tm'] 	    = 'TaskSchedulerController/coinpayment_tx_info_tm';

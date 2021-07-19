@@ -76,7 +76,8 @@
 											<div class="input-group">
 												<?php
 												$readonly = "";
-												$min      = "10001";
+												// $min      = "10001";
+												$min      = "10";
 												if (str_replace(UYAH, "", base64_decode($id_package)) != "6") {
 													$readonly = "readonly";
 													$min = "1";

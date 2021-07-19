@@ -183,6 +183,15 @@ class M_trade_manager extends CI_Model
 			->where('id_member', $id_member)
 			->update('member_balance');
 	}
+
+	public function get_tm_unpaid()
+	{
+		return $this->db
+			->from('member_trade_manager')
+			->where('deleted_at', null)
+			->where('state in', "('waiting payment', 'pending')", false)
+			->get();
+	}
 }
                         
 /* End of file M_trade_manager.php */

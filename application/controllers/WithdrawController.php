@@ -25,11 +25,11 @@ class WithdrawController extends CI_Controller
 		$this->datetime       = date('Y-m-d H:i:s');
 		$this->id_member      = $this->session->userdata(SESI . 'id');
 		$this->email_member   = $this->session->userdata(SESI . 'email');
-		$this->api_link       = 'https://www.coinpayments.net/api.php';
-		$this->public_key     = '0d79d9c15454272a3ea638332ff716217b1530d57d2bb8023a0b5835a4c2c6bd';
-		$this->private_key    = '90c986299927C62d1250999244da7fEF08263769818AA8875e90e446f5d78d30';
-		$this->merchant_id    = '12d2c4c617ebe6fb9e401a92ed7039fd';
-		$this->ipn_secret_key = 'YmlvbmVyIElQTg == ';
+		$this->api_link       = CP_API_LINK;
+		$this->public_key     = CP_PUB_KEY;
+		$this->private_key    = CP_PRV_KEY;
+		$this->merchant_id    = CP_MERCH_ID;
+		$this->ipn_secret_key = CP_IPN_SEC_KEY;
 		$this->from           = EMAIL_ADMIN;
 		$this->from_alias     = 'Admin Test';
 		$this->ip_address     = $this->input->ip_address();
@@ -60,64 +60,6 @@ class WithdrawController extends CI_Controller
 		$this->template->render($data);
 	}
 
-	public function otp()
-	{
-		$source         = $this->session->userdata(SESI . 'source');
-		$amount         = $this->session->userdata(SESI . 'amount');
-		$receive_coin   = $this->session->userdata(SESI . 'receive_coin');
-		$id_wallet      = $this->session->userdata(SESI . 'id_wallet');
-		$wallet_host    = $this->session->userdata(SESI . 'wallet_host');
-		$wallet_address = $this->session->userdata(SESI . 'wallet_address');
-
-		if (!isset($source) && !isset($amount) && !isset($receive_coin) && !isset($id_wallet) && !isset($wallet_host) && !isset($wallet_address)) {
-			$this->_unset_session();
-			redirect('withdraw');
-			exit;
-		}
-
-		$arr_wallet = $this->get_arr_wallet($id_wallet);
-		if ($arr_wallet === false) {
-			return show_error("Wallet not found or has been updated, try again!", 404, "An Error was Encountered");
-		}
-
-		$data = [
-			'title'          => APP_NAME . ' | Withdraw OTP',
-			'content'        => 'withdraw/otp',
-			'vitamin_js'     => 'withdraw/otp_js',
-			'source'         => $source,
-			'amount'         => $amount,
-			'wallet_host'    => $wallet_host,
-			'wallet_address' => $wallet_address,
-		];
-		$this->template->render($data);
-	}
-
-	public function _set_session($source, $amount, $receive_coin, $id_wallet, $wallet_host, $wallet_address)
-	{
-		$data_session = [
-			SESI . 'source'         => $source,
-			SESI . 'amount'         => $amount,
-			SESI . 'receive_coin'   => $receive_coin,
-			SESI . 'id_wallet'      => $id_wallet,
-			SESI . 'wallet_host'    => $wallet_host,
-			SESI . 'wallet_address' => $wallet_address,
-		];
-		$this->session->set_userdata($data_session);
-	}
-
-	public function _unset_session()
-	{
-		$data_session = [
-			SESI . 'source',
-			SESI . 'amount',
-			SESI . 'receive_coin',
-			SESI . 'id_wallet',
-			SESI . 'wallet_source',
-			SESI . 'wallet_address',
-		];
-		$this->session->unset_userdata($data_session);
-	}
-
 	public function auth()
 	{
 		$this->_unset_session();
@@ -125,10 +67,10 @@ class WithdrawController extends CI_Controller
 		$profit = $arr->row()->profit;
 		$bonus  = $arr->row()->bonus;
 
-		$source       = $this->input->post('source');
-		$amount       = $this->input->post('amount');
-		$receive_coin = $this->input->post('receive_coin');
-		$id_wallet    = $this->input->post('wallet_address');
+		$source    = $this->input->post('source');
+		$amount    = $this->input->post('amount');
+		$coin_type = $this->input->post('coin_type');
+		$id_wallet = $this->input->post('wallet_address');
 
 		$code = 500;
 		$msg  = "Can't Connect to Database, please try again!";
@@ -156,11 +98,69 @@ class WithdrawController extends CI_Controller
 				echo json_encode(['code' => $code, 'message' => "Wallet not found or has been updated, try again!"]);
 				exit;
 			}
-			$this->_set_session($source, $amount, $receive_coin, $id_wallet, $arr_wallet->row()->wallet_host, $arr_wallet->row()->wallet_address);
+			$this->_set_session($source, $amount, $coin_type, $id_wallet, $arr_wallet->row()->wallet_label, $arr_wallet->row()->wallet_address);
 			$this->_send_otp($this->id_member, $this->email_member);
 		}
 
 		echo json_encode(['code' => $code, 'message' => $msg]);
+	}
+
+	public function otp()
+	{
+		$source         = $this->session->userdata(SESI . 'source');
+		$amount         = $this->session->userdata(SESI . 'amount');
+		$coin_type      = $this->session->userdata(SESI . 'coin_type');
+		$id_wallet      = $this->session->userdata(SESI . 'id_wallet');
+		$wallet_label   = $this->session->userdata(SESI . 'wallet_label');
+		$wallet_address = $this->session->userdata(SESI . 'wallet_address');
+
+		if (!isset($source) && !isset($amount) && !isset($coin_type) && !isset($id_wallet) && !isset($wallet_label) && !isset($wallet_address)) {
+			$this->_unset_session();
+			redirect('withdraw');
+			exit;
+		}
+
+		$arr_wallet = $this->get_arr_wallet($id_wallet);
+		if ($arr_wallet === false) {
+			return show_error("Wallet not found or has been updated, try again!", 404, "An Error was Encountered");
+		}
+
+		$data = [
+			'title'          => APP_NAME . ' | Withdraw OTP',
+			'content'        => 'withdraw/otp',
+			'vitamin_js'     => 'withdraw/otp_js',
+			'source'         => $source,
+			'amount'         => $amount,
+			'wallet_label'   => $wallet_label,
+			'wallet_address' => $wallet_address,
+		];
+		$this->template->render($data);
+	}
+
+	public function _set_session($source, $amount, $coin_type, $id_wallet, $wallet_label, $wallet_address)
+	{
+		$data_session = [
+			SESI . 'source'         => $source,
+			SESI . 'amount'         => $amount,
+			SESI . 'coin_type'   => $coin_type,
+			SESI . 'id_wallet'      => $id_wallet,
+			SESI . 'wallet_label'    => $wallet_label,
+			SESI . 'wallet_address' => $wallet_address,
+		];
+		$this->session->set_userdata($data_session);
+	}
+
+	public function _unset_session()
+	{
+		$data_session = [
+			SESI . 'source',
+			SESI . 'amount',
+			SESI . 'coin_type',
+			SESI . 'id_wallet',
+			SESI . 'wallet_source',
+			SESI . 'wallet_address',
+		];
+		$this->session->unset_userdata($data_session);
 	}
 
 	public function get_arr_wallet($id_wallet)
@@ -170,7 +170,7 @@ class WithdrawController extends CI_Controller
 			'id_member'  => $this->id_member,
 			'deleted_at' => null,
 		];
-		$arr_wallet = $this->M_core->get('member_wallet', 'wallet_host, wallet_address', $where_wallet);
+		$arr_wallet = $this->M_core->get('member_wallet', 'wallet_label, wallet_address', $where_wallet);
 
 		if ($arr_wallet->num_rows() == 0) {
 			return false;
@@ -210,11 +210,12 @@ class WithdrawController extends CI_Controller
 
 	public function rates()
 	{
-		$amount       = $this->input->get('amount');
-		$receive_coin = $this->input->get('receive_coin');
+		// header('Content-Type: application/json');
+		$amount    = $this->input->get('amount');
+		$coin_type = $this->input->get('coin_type');
 
 		$req = [
-			'short' => 0,
+			'short'    => 0,
 			'accepted' => 1
 		];
 		$exec = $this->_coinpayments_api_call('rates', $req);
@@ -240,7 +241,7 @@ class WithdrawController extends CI_Controller
 
 			$rate_x = 0;
 			$tx_fee = 0;
-			if ($receive_coin == "trx") {
+			if ($coin_type == "TRX") {
 				foreach ($exec['result']['TRX'] as $key => $val) {
 					if ($key == "rate_btc") {
 						$rate_x = $val;
@@ -250,8 +251,8 @@ class WithdrawController extends CI_Controller
 						$tx_fee = $val;
 					}
 				}
-			} elseif ($receive_coin == "bnb") {
-				foreach ($exec['result']['BNB'] as $key => $val) {
+			} elseif ($coin_type == "BNB.BSC") {
+				foreach ($exec['result']['BNB.BSC'] as $key => $val) {
 					if ($key == "rate_btc") {
 						$rate_x = $val;
 					}
@@ -260,7 +261,7 @@ class WithdrawController extends CI_Controller
 						$tx_fee = $val;
 					}
 				}
-			} elseif ($receive_coin == "ltct") {
+			} elseif ($coin_type == "LTCT") {
 				foreach ($exec['result']['LTCT'] as $key => $val) {
 					if ($key == "rate_btc") {
 						$rate_x = $val;
@@ -278,7 +279,7 @@ class WithdrawController extends CI_Controller
 
 			echo json_encode([
 				'code'      => $code,
-				'result'    => number_format($result, 8) . " " . strtoupper($receive_coin),
+				'result'    => number_format($result, 8) . " " . strtoupper($coin_type),
 				'amount'    => $amount,
 				'rate_usdt' => $rate_usdt,
 				'rate_x'    => $rate_x,
@@ -287,63 +288,16 @@ class WithdrawController extends CI_Controller
 		}
 	}
 
-	public function _coinpayments_api_call($cmd, $req = array())
+	public function render_wallet_label()
 	{
-		// Set the API command and required fields
-		$req['version'] = 1;
-		$req['cmd']     = $cmd;
-		$req['key']     = $this->public_key;
-		$req['format']  = 'json';
-
-		// Generate the URL query string
-		$post_data = http_build_query($req, '', '&');
-
-		// Hash $post_data + $private_key
-		$hmac = hash_hmac('sha512', $post_data, $this->private_key);
-
-		// Create cURL handle and initialize
-		$ch = NULL;
-		$ch = curl_init($this->api_link);
-		curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('HMAC: ' . $hmac));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-
-		// Execute the call
-		$data = curl_exec($ch);
-
-		// Parse and return data if successful.
-		if ($data !== FALSE) {
-			if (PHP_INT_SIZE < 8 && version_compare(PHP_VERSION, '5.4.0') >= 0) {
-				// We are on 32-bit PHP, so use the bigint as string option. If you are using any API calls with Satoshis it is highly NOT recommended to use 32-bit PHP
-				$result = json_decode($data, TRUE, 512, JSON_BIGINT_AS_STRING);
-			} else {
-				$result = json_decode($data, TRUE);
-			}
-			if ($result !== NULL && count($result)) {
-				return $result;
-			} else {
-				// If you are using PHP 5.5.0 or higher you can use json_last_error_msg() for a better error message
-				return array('error' => 'Unable to parse JSON result (' . json_last_error_msg() . ')');
-			}
-		} else {
-			return array('error' => 'cURL error: ' . curl_error($ch));
-		}
-
-		curl_close($ch);
-	}
-
-	public function generate_wallet_host()
-	{
-		$receive_coin = $this->input->get('receive_coin');
+		$coin_type = $this->input->get('coin_type');
 
 		$where = [
-			'id_member'    => $this->id_member,
-			'receive_coin' => $receive_coin,
-			'deleted_at'   => null,
+			'id_member'  => $this->id_member,
+			'coin_type'  => $coin_type,
+			'deleted_at' => null,
 		];
-		$arr = $this->M_core->get('member_wallet', '*', $where, 'updated_at', 'desc', null, 0, 'wallet_host');
+		$arr = $this->M_core->get('member_wallet', 'wallet_label', $where, 'updated_at', 'desc', 1);
 
 		if ($arr->num_rows() == 0) {
 			$code = 404;
@@ -356,16 +310,16 @@ class WithdrawController extends CI_Controller
 		echo json_encode(['code' => $code, 'data' => $data]);
 	}
 
-	public function generate_wallet_address()
+	public function render_wallet_address()
 	{
-		$wallet_host = $this->input->get('wallet_host');
+		$wallet_label = $this->input->get('wallet_label');
 
 		$where = [
-			'id_member'   => $this->id_member,
-			'wallet_host' => $wallet_host,
-			'deleted_at'  => null,
+			'id_member'    => $this->id_member,
+			'wallet_label' => $wallet_label,
+			'deleted_at'   => null,
 		];
-		$arr = $this->M_core->get('member_wallet', '*', $where, 'updated_at', 'desc');
+		$arr = $this->M_core->get('member_wallet', '*', $where, 'updated_at', 'desc', 1);
 
 		if ($arr->num_rows() == 0) {
 			$code = 404;
@@ -384,9 +338,9 @@ class WithdrawController extends CI_Controller
 
 		$source         = $this->session->userdata(SESI . 'source');
 		$amount         = $this->session->userdata(SESI . 'amount');
-		$receive_coin   = $this->session->userdata(SESI . 'receive_coin');
+		$coin_type      = $this->session->userdata(SESI . 'coin_type');
 		$id_wallet      = $this->session->userdata(SESI . 'id_wallet');
-		$wallet_host    = $this->session->userdata(SESI . 'wallet_host');
+		$wallet_label   = $this->session->userdata(SESI . 'wallet_label');
 		$wallet_address = $this->session->userdata(SESI . 'wallet_address');
 
 		$req = ['all' => 1];
@@ -397,19 +351,19 @@ class WithdrawController extends CI_Controller
 			return show_error('Failed to get Balances on Coinpayment. Please try again!', 500, "An Error Was Encountered");
 		}
 
-		$x        = strtoupper($receive_coin);
+		$x        = strtoupper($coin_type);
 		$balancef = $get_coin_balance['result'][$x]['balancef'];
 		if ($amount >= $balancef) {
-			$this->_send_alert_balance($receive_coin, $amount);
+			$this->_send_alert_balance($coin_type, $amount);
 			$this->db->trans_commit();
 		}
 
-		$note = "Withdraw from $source worth $amount USDT convert to " . strtoupper($receive_coin) . " to wallet address $wallet_address (" . strtoupper($wallet_host) . ")";
+		$note = "Withdraw from $source worth $amount USDT convert to " . strtoupper($coin_type) . " to wallet address $wallet_address (" . strtoupper($wallet_label) . ")";
 
 		$req = [
 			'amount'       => $amount,
 			'add_tx_fee'   => 0,
-			'currency'     => $receive_coin,
+			'currency'     => $coin_type,
 			'currency2'    => 'usdt',
 			'address'      => $wallet_address,
 			'auto_confirm' => 1,
@@ -440,10 +394,10 @@ class WithdrawController extends CI_Controller
 			'amount_1'       => $amount,
 			'amount_2'       => $amount_2,
 			'currency_1'     => 'usdt',
-			'currency_2'     => $receive_coin,
+			'currency_2'     => $coin_type,
 			'source'         => $source,
 			'id_wallet'      => $id_wallet,
-			'wallet_host'    => $wallet_host,
+			'wallet_label'   => $wallet_label,
 			'wallet_address' => $wallet_address,
 			'state'          => 'pending',
 			'tx_id'          => $tx_id,
@@ -473,9 +427,9 @@ class WithdrawController extends CI_Controller
 		redirect('withdraw/success/' . $tx_id);
 	}
 
-	public function _send_alert_balance($receive_coin, $amount): bool
+	public function _send_alert_balance($coin_type, $amount): bool
 	{
-		$subject = APP_NAME . " | Alert Balance " . strtoupper($receive_coin);
+		$subject = APP_NAME . " | Alert Balance " . strtoupper($coin_type);
 		$message = "";
 
 		$this->email->set_newline("\r\n");
@@ -483,7 +437,7 @@ class WithdrawController extends CI_Controller
 		$this->email->to(EMAIL_ADMIN);
 		$this->email->subject($subject);
 
-		$data['receive_coin'] = $receive_coin;
+		$data['coin_type'] = $coin_type;
 		$data['amount']       = $amount;
 		$message = $this->load->view('emails/alert_balance_template', $data, TRUE);
 
@@ -553,6 +507,54 @@ class WithdrawController extends CI_Controller
 			'arr'     => $arr,
 		];
 		$this->template->render($data);
+	}
+
+
+	public function _coinpayments_api_call($cmd, $req = array())
+	{
+		// Set the API command and required fields
+		$req['version'] = 1;
+		$req['cmd']     = $cmd;
+		$req['key']     = $this->public_key;
+		$req['format']  = 'json';
+
+		// Generate the URL query string
+		$post_data = http_build_query($req, '', '&');
+
+		// Hash $post_data + $private_key
+		$hmac = hash_hmac('sha512', $post_data, $this->private_key);
+
+		// Create cURL handle and initialize
+		$ch = NULL;
+		$ch = curl_init($this->api_link);
+		curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('HMAC: ' . $hmac));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+
+		// Execute the call
+		$data = curl_exec($ch);
+
+		// Parse and return data if successful.
+		if ($data !== FALSE) {
+			if (PHP_INT_SIZE < 8 && version_compare(PHP_VERSION, '5.4.0') >= 0) {
+				// We are on 32-bit PHP, so use the bigint as string option. If you are using any API calls with Satoshis it is highly NOT recommended to use 32-bit PHP
+				$result = json_decode($data, TRUE, 512, JSON_BIGINT_AS_STRING);
+			} else {
+				$result = json_decode($data, TRUE);
+			}
+			if ($result !== NULL && count($result)) {
+				return $result;
+			} else {
+				// If you are using PHP 5.5.0 or higher you can use json_last_error_msg() for a better error message
+				return array('error' => 'Unable to parse JSON result (' . json_last_error_msg() . ')');
+			}
+		} else {
+			return array('error' => 'cURL error: ' . curl_error($ch));
+		}
+
+		curl_close($ch);
 	}
 }
         

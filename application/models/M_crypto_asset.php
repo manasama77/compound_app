@@ -116,7 +116,6 @@ class M_crypto_asset extends CI_Model
 				$state                     = $key->state;
 				$created_at                = $key->created_at;
 				$expired_at                = $key->expired_at;
-				$is_extend                 = $key->is_extend;
 				$payment_method            = $key->payment_method;
 				$txn_id                    = $key->txn_id;
 				$amount_transfer           = number_format($key->amount_transfer, 8);
@@ -137,7 +136,6 @@ class M_crypto_asset extends CI_Model
 					'state'                     => $state,
 					'created_at'                => $created_at,
 					'expired_at'                => $expired_at,
-					'is_extend'                 => $is_extend,
 					'payment_method'            => $payment_method,
 					'txn_id'                    => $txn_id,
 					'amount_transfer'           => $amount_transfer,
@@ -156,6 +154,40 @@ class M_crypto_asset extends CI_Model
 		}
 
 		return $result;
+	}
+
+	public function get_expired_crypto_asset()
+	{
+		return $this->db
+			->select('*')
+			->from('et_member_crypto_asset AS mca')
+			->where('mca.deleted_at', null)
+			->where('mca.state', 'active')
+			->where('mca.expired_at <=', date('Y-m-d'))
+			->get();
+	}
+
+	public function update_state($data)
+	{
+		return $this->db->update_batch('member_cryoto_asset', $data, 'invoice');
+	}
+
+	public function update_member_crypto_asset_asset($id_member, $amount)
+	{
+		return $this->db
+			->set('total_invest_crypto_asset', 'total_invest_crypto_asset + ' . $amount, false)
+			->set('count_crypto_asset', 'count_crypto_asset + 1', false)
+			->where('id_member', $id_member)
+			->update('member_balance');
+	}
+
+	public function get_ca_unpaid()
+	{
+		return $this->db
+			->from('member_crypto_asset')
+			->where('deleted_at', null)
+			->where('state in', "('waiting payment', 'pending')", false)
+			->get();
 	}
 }
                         

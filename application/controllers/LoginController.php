@@ -683,17 +683,6 @@ class LoginController extends CI_Controller
 			return $this->load->view('reset_password_success', $data);
 		}
 	}
-
-	public function test_get()
-	{
-		$this->load->view('test_get');
-	}
-
-	public function test_get_delete()
-	{
-		echo $this->input->post('username') . "<br/>";
-		echo $this->input->post('password') . "<br/>";
-	}
 }
         
 /* End of file  LoginController.php */

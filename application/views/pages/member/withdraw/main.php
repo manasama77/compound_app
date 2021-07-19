@@ -72,19 +72,19 @@
 							<div class="form-group">
 								<label for="amount">Amount</label>
 								<div class="input-group mb-2">
-									<input type="number" class="form-control" id="amount" name="amount" step="0.00000001" min="100" placeholder="Amount" value="<?= set_value('amount'); ?>" required>
+									<input type="number" class="form-control" id="amount" name="amount" step="0.00000001" min="<?= LIMIT_WITHDRAW; ?>" placeholder="Amount" value="<?= set_value('amount'); ?>" required>
 									<div class="input-group-append">
-										<div class="input-group-text">USDT</div>
+										<div class="input-group-text bg-primary">USDT</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="receive_coin">Coin Receive</label>
-								<select class="form-control" id="receive_coin" name="receive_coin" required>
-									<option value="" disabled selected>-Pick Coin Receive-</option>
-									<option value="trx">Tron Coin Mainnet (TRX)</option>
-									<option value="bnb">Binance Coin Mainnet (BNB)</option>
-									<option value="ltct">Litecoin Testnet (LTCT)</option>
+								<label for="coin_type">Coin Type</label>
+								<select class="form-control" id="coin_type" name="coin_type" required>
+									<option value="" disabled selected>-Pick Coin Type-</option>
+									<option value="BNB.BSC">BNB.BEP20 - BSC</option>
+									<option value="TRX">TRON</option>
+									<option value="LTCT">Litecoin Testnet</option>
 								</select>
 							</div>
 							<div class="form-group">
@@ -92,9 +92,9 @@
 								<input type="text" class="form-control" id="estimation" name="estimation" required readonly>
 							</div>
 							<div class="form-group">
-								<label for="wallet_host">Wallet Host</label>
-								<select class="form-control" id="wallet_host" name="wallet_host" required>
-									<option value="" disabled selected>-Select Wallet Host-</option>
+								<label for="wallet_label">Wallet Label</label>
+								<select class="form-control" id="wallet_label" name="wallet_label" required>
+									<option value="" disabled selected>-Select Wallet Label-</option>
 								</select>
 							</div>
 							<div class="form-group">
@@ -102,7 +102,17 @@
 								<select class="form-control" id="wallet_address" name="wallet_address" required>
 									<option value="" disabled selected>-Select Wallet Address-</option>
 								</select>
-								<small class="form-text text-danger"><i class="fas fa-info-circle fa-fw"></i>Please make sure your wallet address are valid address. We can't responsible and cover for invalid wallet address or fail withdraw transaction</small>
+							</div>
+							<div class="alert alert-warning p-1">
+								<small>
+									<strong>Notes:</strong><br />
+									<ul class="p-3">
+										<li>BNB.BEP20 are Binance that run on Binance Smart Chain Network. It different from BNB.BEP2 that run on Binance Chain Network</li>
+										<li>Make sure the wallet address you are input are valid</li>
+										<li>Also Make sure the wallet address are support for receive with the coin type. If not the withdrawal coin transaction will be burn / permanent lost</li>
+										<li><?= APP_NAME; ?> did not responsible for all your mistake input for invalid address or wrong target address</li>
+									</ul>
+								</small>
 							</div>
 							<button type="submit" class="btn btn-primary btn-block elevation-2">Withdraw</button>
 						</div>
