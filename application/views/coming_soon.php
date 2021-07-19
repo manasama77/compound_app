@@ -15,6 +15,7 @@
 	<link href="<?= base_url(); ?>public/coming_soon_ext/css/bootstrap.min.css?ver=1.2.0" rel="stylesheet">
 	<link href="<?= base_url(); ?>public/coming_soon_ext/css/font-awesome/css/all.min.css?ver=1.2.0" rel="stylesheet">
 	<link href="<?= base_url(); ?>public/coming_soon_ext/css/main.css?ver=1.2.0" rel="stylesheet">
+	<link rel="icon" href="<?= base_url(); ?>public/img/logo.png">
 </head>
 
 <body id="top">
