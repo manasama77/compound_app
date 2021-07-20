@@ -358,7 +358,7 @@
 								<td class="logo" style="text-align: center;">
 									<h1>
 										<a href="<?= site_url(); ?>">
-											<img src="<?= base_url('public/img/logo.png'); ?>" alt="<?= APP_NAME; ?> LOGO">
+											<img src="<?= base_url(); ?>public/img/logo.png" alt="<?= APP_NAME; ?> LOGO">
 										</a>
 									</h1>
 								</td>
@@ -368,7 +368,7 @@
 				</tr><!-- end tr -->
 				<tr>
 					<td valign="middle" class="hero bg_white" style="padding: 3em 0 2em 0;">
-						<img src="<?= base_url('public/img/undraw_Checklist__re_2w7v.svg'); ?>" alt="Logo Activation" style="width: 300px; max-width: 600px; height: auto; margin: auto; display: block;">
+						<img src="<?= base_url(); ?>public/img/undraw_Checklist__re_2w7v.svg" alt="Logo Activation" style="width: 300px; max-width: 600px; height: auto; margin: auto; display: block;">
 					</td>
 				</tr><!-- end tr -->
 				<tr>
