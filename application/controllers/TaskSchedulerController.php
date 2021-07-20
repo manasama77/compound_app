@@ -45,17 +45,15 @@ class TaskSchedulerController extends CI_Controller
 
 	/*
 	==============================
-	Execute Every Day at 00:00 AM
+	Execute Every Day at 01:05 AM
 	==============================
 	*/
 	public function profit_daily_trade_manager()
 	{
 		if (!$this->input->is_cli_request()) {
-			echo "greet my only be accessed from the command line";
+			echo "profit_daily_trade_manager can only be accessed from the command line";
 			exit;
 		}
-		$key = "";
-		$pass = "";
 
 		$where_arr = [
 			'state'      => 'active',
@@ -73,93 +71,98 @@ class TaskSchedulerController extends CI_Controller
 		$this->db->trans_begin();
 
 		foreach ($arr as $key) {
-			$invoice             = $key->invoice;
-			$id_member           = $key->id_member;
-			$id_package          = $key->id_package;
-			$amount_usd          = $key->amount_usd;
-			$profit_self_per_day = $key->profit_self_per_day;
-			$currency1           = $key->currency1;
-			$buyer_email         = $key->buyer_email;
-			$buyer_name          = $key->buyer_name;
-			$item_name           = $key->item_name;
-			$expired_at          = $key->expired_at;
+			$invoice                = $key->invoice;
+			$id_member              = $key->id_member;
+			$id_package             = $key->id_package;
+			$amount_usd             = $key->amount_usd;
+			$profit_self_per_day    = $key->profit_self_per_day;
+			$profit_upline_per_day  = $key->profit_upline_per_day;
+			$profit_company_per_day = $key->profit_company_per_day;
+			$currency1              = $key->currency1;
+			$buyer_email            = $key->buyer_email;
+			$buyer_name             = $key->buyer_name;
+			$item_name              = $key->item_name;
+			$expired_at             = $key->expired_at;
 
 			$current_datetime_obj = new DateTime($this->datetime);
 			$expired_datetime_obj = new DateTime($expired_at);
 			$diff                 = $current_datetime_obj->diff($expired_datetime_obj);
 
-			$arr_upline = $this->M_core->get('member', 'id_upline, email, fullname', ['id' => $id_member]);
+			$id_upline = $this->M_core->get('member', 'id_upline', ['id' => $id_member])->row()->id_upline;
 
-			$id_upline       = "";
-			$email_upline    = "";
-			$fullname_upline = "";
+			$email_upline    = null;
+			$fullname_upline = null;
+			if ($id_upline != null) {
+				$where_upline = [
+					'id'         => $id_upline,
+					'is_active'  => 'yes',
+					'deleted_at' => null,
+				];
+				$arr_upline = $this->M_core->get('member', 'email, fullname', $where_upline);
 
-			if ($arr_upline->row()->id_upline != null) {
-				$id_upline       = $arr_upline->row()->id_upline;
-				$email_upline    = $arr_upline->row()->email;
-				$fullname_upline = $arr_upline->row()->fullname;
-			}
-
-			$select_trade_manager     = 'share_upline_percentage, share_upline_value, share_company_percentage, share_company_value';
-			$where_trade_manager      = ['id' => $id_package];
-			$arr_trade_manager        = $this->M_core->get('package_trade_manager', $select_trade_manager, $where_trade_manager);
-			$share_upline_percentage  = $arr_trade_manager->row()->share_upline_percentage;
-			$share_upline_value       = $arr_trade_manager->row()->share_upline_value;
-			$share_company_percentage = $arr_trade_manager->row()->share_company_percentage;
-			$share_company_value      = $arr_trade_manager->row()->share_company_value;
-
-			if ($id_package == 6) {
-				$share_upline_value = ($amount_usd * $share_upline_percentage) / 100;
-				$share_company_value = ($amount_usd * $share_company_percentage) / 100;
+				if ($arr_upline->num_rows() == 1) {
+					$email_upline    = $arr_upline->row()->email;
+					$fullname_upline = $arr_upline->row()->fullname;
+				}
 			}
 
 			$profit_self_per_day_formated = number_format($profit_self_per_day, 8);
-			$share_upline_value_formated  = number_format($share_upline_value, 8);
-			$share_company_value_formated = number_format($share_company_value, 8);
+			$share_upline_value_formated  = number_format($profit_upline_per_day, 8);
+			$share_company_value_formated = number_format($profit_company_per_day, 8);
 
-			$description1 = "$buyer_name ($buyer_email) get daily profit from trade manager package $item_name for $profit_self_per_day_formated $currency1";
-			$description2a  = "$fullname_upline ($email_upline) get daily profit from downline $buyer_name ($buyer_email) trade manager package $item_name for $share_upline_value_formated $currency1";
+			$description1  = "$buyer_name ($buyer_email) get daily profit from trade manager package $item_name for $profit_self_per_day_formated $currency1";
+			$description2a = "$fullname_upline ($email_upline) get daily profit from downline $buyer_name ($buyer_email) trade manager package $item_name for $share_upline_value_formated $currency1";
 			$description2b = "Unknown Balance get daily profit from downline $buyer_name ($buyer_email) trade manager package $item_name for $share_upline_value_formated $currency1";
-			$description3 = "Unknown Balance get daily profit from downline $buyer_name ($buyer_email) trade manager package $item_name for $share_company_value_formated $currency1";
+			$description3  = "Unknown Balance get daily profit from downline $buyer_name ($buyer_email) trade manager package $item_name for $share_company_value_formated $currency1";
 
 			if ($diff->format('%R') == "+") {
-				//member get profit start
+				// MEMBER GET PROFIT START
+				/* UPDATE MEMBER BALANCE START */
 				$exec1 = $this->M_trade_manager->update_member_profit($id_member, $profit_self_per_day);
+				/* UPDATE MEMBER BALANCE END */
 
-				/* LOG start */
+				/* LOG START */
 				$data1 = [
 					'id_member'    => $id_member,
 					'invoice'      => $invoice,
 					'id_package'   => $id_package,
 					'package_name' => $item_name,
 					'profit'       => $profit_self_per_day,
-					'state'        => 'get bonus',
+					'state'        => 'get',
 					'description'  => $description1,
 					'created_at'   => $this->datetime,
 				];
 				$this->M_core->store_uuid('log_profit_trade_manager', $data1);
-				/* LOG end */
-				//member get profit end
+				/* LOG END */
 
-				//upline get profit start
+				/* EMAIL SEND START */
+				$this->_send_daily_profit($buyer_email, $item_name, $profit_self_per_day);
+				/* EMAIL SEND END */
+				// MEMBER GET PROFIT END
+
+				// UPLINE GET PROFIT START
 				if ($id_upline != null) {
-					$exec2 = $this->M_trade_manager->update_member_profit($id_upline, $share_upline_value);
+					$exec2 = $this->M_trade_manager->update_member_profit($id_upline, $profit_upline_per_day);
 
-					/* LOG start */
+					/* LOG START */
 					$data1 = [
 						'id_member'    => $id_upline,
 						'invoice'      => $invoice,
 						'id_package'   => $id_package,
 						'package_name' => $item_name,
-						'profit'       => $share_upline_value,
-						'state'        => 'get bonus',
+						'profit'       => $profit_upline_per_day,
+						'state'        => 'get',
 						'description'  => $description2a,
 						'created_at'   => $this->datetime,
 					];
 					$this->M_core->store_uuid('log_profit_trade_manager', $data1);
-					/* LOG end */
+					/* LOG END */
+
+					/* EMAIL SEND START */
+					$this->_send_daily_profit($email_upline, $item_name, $profit_upline_per_day);
+					/* EMAIL SEND END */
 				} else {
-					$exec2 = $this->M_trade_manager->update_unknown_profit($share_upline_value);
+					$exec2 = $this->M_trade_manager->update_unknown_profit($profit_upline_per_day);
 
 					/* LOG start */
 					$data1 = [
@@ -167,7 +170,7 @@ class TaskSchedulerController extends CI_Controller
 						'invoice'      => $invoice,
 						'id_package'   => $id_package,
 						'package_name' => $item_name,
-						'profit'       => $share_upline_value,
+						'profit'       => $profit_upline_per_day,
 						'state'        => 'get bonus',
 						'description'  => $description2b,
 						'created_at'   => $this->datetime,
@@ -175,10 +178,10 @@ class TaskSchedulerController extends CI_Controller
 					$this->M_core->store_uuid('log_profit_trade_manager', $data1);
 					/* LOG end */
 				}
-				//upline get profit end
+				// UPLINE GET PROFIT END
 
-				//company get profit start
-				$exec3 = $this->M_trade_manager->update_unknown_profit($share_company_value);
+				// COMPANY GET PROFIT START
+				$exec3 = $this->M_trade_manager->update_unknown_profit($profit_company_per_day);
 
 				/* LOG start */
 				$data1 = [
@@ -186,14 +189,14 @@ class TaskSchedulerController extends CI_Controller
 					'invoice'      => $invoice,
 					'id_package'   => $id_package,
 					'package_name' => $item_name,
-					'profit'       => $share_company_value,
-					'state'        => 'get bonus',
+					'profit'       => $profit_company_per_day,
+					'state'        => 'get',
 					'description'  => $description3,
 					'created_at'   => $this->datetime,
 				];
 				$this->M_core->store_uuid('log_profit_trade_manager', $data1);
 				/* LOG end */
-				//company get profit end
+				// COMPANY GET PROFIT END
 
 				if (!$exec1 && !$exec2 && !$exec3) {
 					$this->db->trans_rollback();
@@ -215,8 +218,6 @@ class TaskSchedulerController extends CI_Controller
 			echo "greet my only be accessed from the command line";
 			exit;
 		}
-		$key  = "";
-		$pass = "";
 
 		$arr = $this->M_member->get_data_member_reward();
 
@@ -359,9 +360,9 @@ class TaskSchedulerController extends CI_Controller
 	}
 
 	/*
-	==================================
-	Execute Every Day at Every 6 Hour
-	==================================
+	====================================
+	Execute Every Day at Every 00:05 AM
+	====================================
 	*/
 	public function check_trade_manager_expired()
 	{
@@ -377,33 +378,62 @@ class TaskSchedulerController extends CI_Controller
 			foreach ($arr->result() as $key) {
 				$invoice     = $key->invoice;
 				$id_member   = $key->id_member;
+				$id_package  = $key->id_package;
 				$buyer_email = $key->buyer_email;
+				$buyer_name  = $key->buyer_name;
 				$item_name   = $key->item_name;
 				$amount_usd  = $key->amount_usd;
+				$expired_at  = $key->expired_at;
+				$is_extend   = $key->is_extend;
 				$state       = 'expired';
 
-				$this->M_trade_manager->update_member_profit($id_member, $amount_usd);
+				if ($is_extend == "manual") {
+					// REDUCE MEMBER TRADE MANAGER BALANCE START
+					$this->M_trade_manager->balance_expired($id_member, $amount_usd);
+					// REDUCE MEMBER TRADE MANAGER BALANCE END
 
-				$data_log = [
-					'id_member'         => $id_member,
-					'invoice'           => $invoice,
-					'amount_invest'     => 0,
-					'amount_transfer'   => $amount_usd,
-					'currency_transfer' => 'USDT',
-					'txn_id'            => null,
-					'state'             => 'expired',
-					'description'       => "[$this->datetime] Member $buyer_email Package $item_name Expired at $this->date. Investment $amount_usd USDT already move to profit",
-					'created_at'        => $this->datetime,
-					'updated_at'        => $this->datetime,
-				];
-				$this->M_core->store_uuid('log_member_trade_manager', $data_log);
+					// LOG START
+					$description = "[$this->datetime] Member $buyer_email ($buyer_name) Package $item_name has been Expired at $expired_at. Investment $amount_usd USDT already move to profit";
+					$data_log = [
+						'id_member'         => $id_member,
+						'invoice'           => $invoice,
+						'amount_invest'     => 0,
+						'amount_transfer'   => $amount_usd,
+						'currency_transfer' => 'USDT',
+						'txn_id'            => null,
+						'state'             => $state,
+						'description'       => $description,
+						'created_at'        => $this->datetime,
+						'updated_at'        => $this->datetime,
+					];
+					$this->M_core->store_uuid('log_member_trade_manager', $data_log);
+					// LOG END
 
-				$nested = compact([
-					'invoice',
-					'state',
-				]);
+					// EMAIL EXPIRED START
+					$this->_send_package_expired($buyer_email, $invoice, $item_name, $expired_at);
+					// EMAIL EXPIRED END
 
-				array_push($data, $nested);
+					$nested = compact([
+						'invoice',
+						'state',
+					]);
+					array_push($data, $nested);
+				} elseif ($is_extend == "auto") {
+					$now_obj = new DateTime('now');
+					$now_obj->modify('+365 day');
+
+					$new_expired = $now_obj->format('Y-m-d');
+					$obj         = ['expired_at' => $new_expired];
+					$where       = [
+						'invoice'   => $invoice,
+						'id_member' => $id_member,
+					];
+					$this->M_core->update('member_trade_manager', $obj, $where);
+
+					// EMAIL PERPANJANGAN START
+					$this->_send_package_extend($buyer_email, $invoice, $item_name, $new_expired);
+					// EMAIL PERPANJANGAN END
+				}
 			}
 
 			$exec = $this->M_trade_manager->update_state($data);
@@ -414,6 +444,8 @@ class TaskSchedulerController extends CI_Controller
 			}
 
 			$this->db->trans_commit();
+		} else {
+			echo "Tidak ada yang Expired Hari Ini";
 		}
 	}
 
@@ -1793,6 +1825,93 @@ class TaskSchedulerController extends CI_Controller
 		$data['arr_data'] = $this->M_core->get('member_trade_manager', '*', ['id_member' => $id]);
 		$message = $this->load->view('emails/package_active_template', $data, TRUE);
 
+		$this->email->message($message);
+
+		$is_success = ($this->email->send()) ? 'yes' : 'no';
+
+		$this->M_log_send_email_member->write_log($to, $subject, $message, $is_success);
+
+		if ($is_success == "yes") {
+			return true;
+		}
+
+		return false;
+	}
+
+	protected function _send_daily_profit($to, $item_name, $amount): bool
+	{
+		$subject = APP_NAME . " | Package $item_name Distribution Daily Profit Success";
+		$message = "";
+
+		$this->email->set_newline("\r\n");
+		$this->email->from($this->from, $this->from_alias);
+		$this->email->to($to);
+		$this->email->subject($subject);
+
+		$data = [
+			'item_name' => $item_name,
+			'amount'    => $amount,
+			'datetime'  => $this->datetime,
+		];
+		$message = $this->load->view('emails/distribution_profit', $data, TRUE);
+		$this->email->message($message);
+
+		$is_success = ($this->email->send()) ? 'yes' : 'no';
+
+		$this->M_log_send_email_member->write_log($to, $subject, $message, $is_success);
+
+		if ($is_success == "yes") {
+			return true;
+		}
+
+		return false;
+	}
+
+	protected function _send_package_expired($to, $invoice, $item_name, $date_expired): bool
+	{
+		$subject = APP_NAME . " | Invoice $invoice Package $item_name Expired";
+		$message = "";
+
+		$this->email->set_newline("\r\n");
+		$this->email->from($this->from, $this->from_alias);
+		$this->email->to($to);
+		$this->email->subject($subject);
+
+		$data = [
+			'invoice'      => $invoice,
+			'item_name'    => $item_name,
+			'date_expired' => $date_expired,
+		];
+		$message = $this->load->view('emails/package_expired', $data, TRUE);
+		$this->email->message($message);
+
+		$is_success = ($this->email->send()) ? 'yes' : 'no';
+
+		$this->M_log_send_email_member->write_log($to, $subject, $message, $is_success);
+
+		if ($is_success == "yes") {
+			return true;
+		}
+
+		return false;
+	}
+
+	protected function _send_package_extend($to, $invoice, $item_name, $date_expired): bool
+	{
+		$subject = APP_NAME . " | Invoice $invoice Package $item_name Extend";
+		$message = "";
+
+		$this->email->set_newline("\r\n");
+		$this->email->from($this->from, $this->from_alias);
+		$this->email->to($to);
+		$this->email->subject($subject);
+
+		$data = [
+			'invoice'      => $invoice,
+			'item_name'    => $item_name,
+			'date_expired' => $date_expired,
+		];
+		$message = $this->load->view('emails/package_extend', $data, TRUE);
 		$this->email->message($message);
 
 		$is_success = ($this->email->send()) ? 'yes' : 'no';

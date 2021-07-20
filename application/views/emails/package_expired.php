@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
 	<meta name="x-apple-disable-message-reformatting"> <!-- Disable auto-scale in iOS 10 Mail entirely -->
-	<title>Activation Account</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+	<title>Package Expired</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 
@@ -349,7 +349,6 @@
 			&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
 		</div>
 		<div style="max-width: 600px; margin: 0 auto;" class="email-container">
-			<!-- BEGIN BODY -->
 			<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
 				<tr>
 					<td valign="top" class="bg_white" style="padding: 1em 2.5em 0 2.5em;">
@@ -365,29 +364,41 @@
 							</tr>
 						</table>
 					</td>
-				</tr><!-- end tr -->
+				</tr>
 				<tr>
 					<td valign="middle" class="hero bg_white" style="padding: 1em 0 1em 0;">
-						<img src="<?= base_url(); ?>public/img/undraw_Checklist__re_2w7v.svg" alt="Logo Activation" style="width: 200px; max-width: 200px; height: auto; margin: auto; display: block;">
+						<img src="<?= base_url(); ?>public/img/undraw_warning_cyit.svg" alt="Logo Expired" style="width: 200px; max-width: 200px; height: auto; margin: auto; display: block;">
 					</td>
-				</tr><!-- end tr -->
+				</tr>
 				<tr>
 					<td valign="middle" class="hero bg_white" style="padding: 2em 0 4em 0;">
 						<table>
 							<tr>
 								<td>
-									<div class="text" style="padding: 0 2.5em; text-align: center;">
-										<h3>Activate Your Account</h3>
-										<h4><mark><a href="<?= site_url('activate/' . urlencode($email) . '/' . $activation_code); ?>"><?= site_url('activate/' . urlencode($email) . '/' . $activation_code); ?></a></mark></h4>
+									<div class="text" style="padding: 0 1.5em; text-align: center;">
+										<h3>Package Expired</h3>
+										<table border="1" cellpadding="10" style="width: 400px;">
+											<tr>
+												<th style="text-align: left; color: #000; width: 100px;">Invoice</th>
+												<th style="text-align: left; color: #000;"><small><?= $invoice; ?></small></th>
+											</tr>
+											<tr>
+												<th style="text-align: left; color: #000; width: 100px;">Package</th>
+												<th style="text-align: left; color: #000;"><small><?= $item_name; ?></small></th>
+											</tr>
+											<tr>
+												<th style="text-align: left; color: #000;">Date Expired</th>
+												<th style="text-align: left; color: #000;"><small><?= $date_expired; ?></small></th>
+											</tr>
+										</table>
+										<p style="color: crimson;">Since the package has expired,<br />We already move your initial investment to your profit.</p>
 									</div>
 								</td>
 							</tr>
 						</table>
 					</td>
-				</tr><!-- end tr -->
-				<!-- 1 Column Text + Button : END -->
+				</tr>
 			</table>
-
 		</div>
 	</center>
 </body>

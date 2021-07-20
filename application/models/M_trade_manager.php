@@ -166,7 +166,6 @@ class M_trade_manager extends CI_Model
 			->where('mtm.deleted_at', null)
 			->where('mtm.state', 'active')
 			->where('mtm.expired_at <=', date('Y-m-d'))
-			->where('mtm.is_extend', 'manual')
 			->get();
 	}
 
@@ -191,6 +190,16 @@ class M_trade_manager extends CI_Model
 			->where('deleted_at', null)
 			->where('state in', "('waiting payment', 'pending')", false)
 			->get();
+	}
+
+	public function balance_expired($id_member, $amount)
+	{
+		return $this->db
+			->set('total_invest_trade_manager', 'total_invest_trade_manager - ' . $amount, false)
+			->set('count_trade_manager', 'count_trade_manager - 1', false)
+			->set('profit', 'profit + ' . $amount, false)
+			->where('id_member', $id_member)
+			->update('member_balance');
 	}
 }
                         
