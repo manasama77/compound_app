@@ -50,6 +50,10 @@ class TaskSchedulerController extends CI_Controller
 	*/
 	public function profit_daily_trade_manager()
 	{
+		if (!$this->input->is_cli_request()) {
+			echo "greet my only be accessed from the command line";
+			exit;
+		}
 		$key = "";
 		$pass = "";
 
@@ -207,6 +211,10 @@ class TaskSchedulerController extends CI_Controller
 	*/
 	public function reward()
 	{
+		if (!$this->input->is_cli_request()) {
+			echo "greet my only be accessed from the command line";
+			exit;
+		}
 		$key  = "";
 		$pass = "";
 
@@ -262,12 +270,16 @@ class TaskSchedulerController extends CI_Controller
 	}
 
 	/*
-	==================================
-	Execute Every Day at Every 1 Hour
-	==================================
+	=======================================
+	Execute Every Day at Every 5 Minutes
+	=======================================
 	*/
 	public function withdraw()
 	{
+		if (!$this->input->is_cli_request()) {
+			echo "greet my only be accessed from the command line";
+			exit;
+		}
 		$state = "'pending'";
 		$arr = $this->M_withdraw->get_list(null, null, $state);
 
@@ -353,6 +365,10 @@ class TaskSchedulerController extends CI_Controller
 	*/
 	public function check_trade_manager_expired()
 	{
+		if (!$this->input->is_cli_request()) {
+			echo "greet my only be accessed from the command line";
+			exit;
+		}
 		$this->db->trans_begin();
 		$arr = $this->M_trade_manager->get_expired_trade_manager();
 
@@ -403,12 +419,16 @@ class TaskSchedulerController extends CI_Controller
 
 	/*
 	======================================
-	Execute Every Day at Every 30 Seconds
+	Execute Every Day Every Minutes
 	METHOD [GET]
 	======================================
 	*/
 	public function coinpayment_tx_info_tm()
 	{
+		if (!$this->input->is_cli_request()) {
+			echo "greet my only be accessed from the command line";
+			exit;
+		}
 		header('Content-Type: application/json');
 
 		$this->db->trans_begin();
@@ -810,7 +830,7 @@ class TaskSchedulerController extends CI_Controller
 		$this->coinpayment_tx_info_ca();
 	}
 
-	public function coinpayment_tx_info_ca()
+	protected function coinpayment_tx_info_ca()
 	{
 		$this->db->trans_begin();
 
