@@ -87,7 +87,7 @@
 												<div class="input-group-append">
 													<span class="input-group-text">USDT</span>
 												</div>
-												<?php if (str_replace(UYAH, "", base64_decode($id_package)) != "6") { ?>
+												<?php if (str_replace(UYAH, "", base64_decode($id_package)) == "6") { ?>
 													<small class="form-text text-muted">Minimum Total Investment <?= MIN_CROWN; ?> USDT</small>
 												<?php } ?>
 											</div>
