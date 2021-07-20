@@ -13,7 +13,6 @@ class TradeManagerController extends CI_Controller
 	protected $ipn_secret_key;
 	protected $from;
 	protected $from_alias;
-	protected $to;
 	protected $ip_address;
 	protected $user_agent;
 	protected $id_member;
@@ -29,16 +28,15 @@ class TradeManagerController extends CI_Controller
 
 		$this->date     		= date('Y-m-d');
 		$this->datetime 		= date('Y-m-d H:i:s');
-		$this->api_link       	= 'https://www.coinpayments.net/api.php';
-		$this->public_key     	= '0d79d9c15454272a3ea638332ff716217b1530d57d2bb8023a0b5835a4c2c6bd';
-		$this->private_key    	= '90c986299927C62d1250999244da7fEF08263769818AA8875e90e446f5d78d30';
-		$this->merchant_id    	= '12d2c4c617ebe6fb9e401a92ed7039fd';
-		$this->ipn_secret_key 	= 'YmlvbmVyIElQTg==';
+		$this->api_link       	= CP_API_LINK;
+		$this->public_key     	= CP_PUB_KEY;
+		$this->private_key    	= CP_PRV_KEY;
+		$this->merchant_id    	= CP_MERCH_ID;
+		$this->ipn_secret_key 	= CP_IPN_SEC_KEY;
 		$this->id_member		= $this->session->userdata(SESI . 'id');
 
-		$this->from       = 'adam.pm59@gmail.com';
-		$this->from_alias = 'Admin Test';
-		$this->to         = 'adam.pm77@gmail.com';
+		$this->from       = EMAIL_ADMIN;
+		$this->from_alias = EMAIL_ALIAS;
 		$this->ip_address = $this->input->ip_address();
 		$this->user_agent = $this->input->user_agent();
 

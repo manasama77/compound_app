@@ -8,7 +8,6 @@ class LoginController extends CI_Controller
 	protected $datetime;
 	protected $from;
 	protected $from_alias;
-	protected $to;
 	protected $ip_address;
 	protected $user_agent;
 
@@ -21,9 +20,8 @@ class LoginController extends CI_Controller
 		$this->load->model('M_log_send_email_member');
 
 		$this->datetime   = date('Y-m-d H:i:s');
-		$this->from       = 'adam.pm59@gmail.com';
-		$this->from_alias = 'Admin Test';
-		$this->to         = 'adam.pm77@gmail.com';
+		$this->from       = EMAIL_ADMIN;
+		$this->from_alias = EMAIL_ALIAS;
 		$this->ip_address = $this->input->ip_address();
 		$this->user_agent = $this->input->user_agent();
 
