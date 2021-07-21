@@ -378,26 +378,30 @@
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
 										<h3>Withdraw Success</h3>
-										<table>
+										<table border="1" cellpadding="10" style="width: 500px;">
 											<tr>
-												<th style="text-align: left;">Invoice</th>
-												<th style="text-align: left;"><?= $invoice; ?></th>
+												<th style="text-align: left; color: #000; width: 100px;">Invoice</th>
+												<th style="text-align: left; color: #000;"><?= $invoice; ?></th>
 											</tr>
 											<tr>
-												<th style="text-align: left;">Source</th>
-												<th style="text-align: left;"><?= strtoupper($source); ?></th>
+												<th style="text-align: left; color: #000;">Source</th>
+												<th style="text-align: left; color: #000;"><?= strtoupper($source); ?></th>
 											</tr>
 											<tr>
-												<th style="text-align: left;">From Coin</th>
-												<th style="text-align: left;"><?= $amount_1; ?></th>
+												<th style="text-align: left; color: #000;">From Coin</th>
+												<th style="text-align: left; color: #000;"><?= $amount_1; ?></th>
 											</tr>
 											<tr>
-												<th style="text-align: left;">To Coin</th>
-												<th style="text-align: left;"><?= $amount_2; ?></th>
+												<th style="text-align: left; color: #000;">To Coin</th>
+												<th style="text-align: left; color: #000;"><?= $amount_2; ?></th>
 											</tr>
 											<tr>
-												<th style="text-align: left;">To Wallet</th>
-												<th style="text-align: left;"><small><?= $wallet_address; ?></small><br /><?= $wallet_label; ?></th>
+												<th style="text-align: left; color: #000;">To Wallet</th>
+												<th style="text-align: left; color: #000;"><small><?= $wallet_address; ?></small><br /><?= $wallet_label; ?></th>
+											</tr>
+											<tr>
+												<th style="text-align: left; color: #000;">TX ID</th>
+												<th style="text-align: left; color: #000;"><small><?= $tx_id; ?></small></th>
 											</tr>
 										</table>
 									</div>

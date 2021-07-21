@@ -40,7 +40,7 @@
 										<th class="align-middle">Coin Type</th>
 										<th class="align-middle">Label</th>
 										<th class="align-middle">Address</th>
-										<th class="align-middle text-center" style="min-width: 120px !important;"><i class="fas fa-cogs"></i></th>
+										<th class="align-middle text-center" style="min-width: 140px !important;"><i class="fas fa-cogs"></i></th>
 									</tr>
 								</thead>
 								<tbody id="v_data">
@@ -52,10 +52,12 @@
 											<td class="text-center align-middle"><?= $itteration++; ?></td>
 											<td class="align-middle"><?= $key->coin_type; ?></td>
 											<td class="align-middle"><?= $key->wallet_label; ?></td>
-											<td class="align-middle"><?= $key->wallet_address; ?></td>
+											<td class="align-middle"><small><?= $key->wallet_address; ?></small></td>
 											<td class="text-center align-middle" style="width: 120px;">
-												<button type="button" class="btn btn-warning btn-sm" onclick="editData('<?= $key->id; ?>', '<?= $key->coin_type; ?>', '<?= $key->wallet_label; ?>', '<?= $key->wallet_address; ?>');">Edit</button>
-												<button type="button" class="btn btn-danger btn-sm" onclick="deleteData('<?= $key->id; ?>', '<?= $key->wallet_label; ?>', '<?= $key->wallet_address; ?>');">Delete</button>
+												<div class="btn-group">
+													<button type="button" class="btn btn-warning btn-sm" onclick="editData('<?= $key->id; ?>', '<?= $key->coin_type; ?>', '<?= $key->wallet_label; ?>', '<?= $key->wallet_address; ?>');"><i class="fas fa-pencil-alt fa-fw"></i> Edit</button>
+													<button type="button" class="btn btn-danger btn-sm" onclick="deleteData('<?= $key->id; ?>', '<?= $key->wallet_label; ?>', '<?= $key->wallet_address; ?>');"><i class="fas fa-trash-alt fa-fw"></i> Delete</button>
+												</div>
 											</td>
 										</tr>
 									<?php } ?>

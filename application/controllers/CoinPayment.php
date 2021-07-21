@@ -276,14 +276,14 @@ class CoinPayment extends CI_Controller
 		/*
 		The withdrawal ID to cancel. Note the withdrawal must be in the "Awaiting email confirmation" state to be able to be cancelled.
 		*/
-		$req['amount'] = 1;
-		$req['from'] = 'LTCT';
-		$req['to'] = 'LTC';
+		$req['amount'] = 3.25;
+		$req['from'] = 'USDT';
+		$req['to'] = 'ETH';
 
 		/*
 		The address to send the funds to. If blank or not included the coins will go to your CoinPayments Wallet.
 		*/
-		$req['address'] = '';
+		$req['address'] = '0xa96A468585c951EF1c33F9B987179d4d14d2ECBe';
 		$exec = $this->coinpayments_api_call('convert', $req);
 		if ($exec['error'] == "ok") {
 			$code = 200;
@@ -291,7 +291,7 @@ class CoinPayment extends CI_Controller
 
 		$result = [
 			'code' => $code,
-			'data' => $exec['result'],
+			'data' => $exec,
 		];
 
 		echo json_encode($result, JSON_PRETTY_PRINT);

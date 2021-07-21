@@ -21,6 +21,7 @@ class TaskSchedulerController extends CI_Controller
 		parent::__construct();
 		$this->load->library('Nested_set', null, 'Nested_set');
 		$this->load->helper('Custom_array_helper');
+		$this->load->helper('Floating_helper');
 		$this->load->model('M_trade_manager');
 		$this->load->model('M_crypto_asset');
 		$this->load->model('M_member');
@@ -455,21 +456,18 @@ class TaskSchedulerController extends CI_Controller
 		if ($arr->num_rows() > 0) {
 			$this->db->trans_begin();
 			foreach ($arr->result() as $key) {
-				$id_member    = $key->id_member;
-				$email_member = $this->M_core->get('member', 'email', ['id' => $id_member])->row()->email;
-				$invoice      = $key->invoice;
-				$amount_1     = $key->amount_1 . " " . $key->currency_1;
-				$amount_2     = $key->amount_2 . " " . $key->currency_2;
-				$tx_id        = $key->tx_id;
-				$source       = $key->source;
-				$currency_2   = $key->currency_2;
-				$id_wallet    = $key->id_wallet;
+				$id_member      = $key->id_member;
+				$email_member   = $this->M_core->get('member', 'email', ['id' => $id_member])->row()->email;
+				$invoice        = $key->invoice;
+				$amount_1       = check_float($key->amount_1) . " <small>" . $key->currency_1 . "</small>";
+				$amount_2       = check_float($key->amount_2) . " <small>" . $key->currency_2 . "</small>";
+				$tx_id          = $key->tx_id;
+				$source         = $key->source;
+				$id_wallet      = $key->id_wallet;
+				$wallet_label   = $key->wallet_label;
+				$wallet_address = $key->wallet_address;
 
-				$arr_wallet     = $this->M_core->get('member_wallet', '*', ['id' => $id_wallet]);
-				$wallet_label   = $arr_wallet->row()->wallet_label;
-				$wallet_address = $arr_wallet->row()->wallet_address;
-
-				$req = ['id' => $tx_id];
+				$req       = ['id' => $tx_id];
 				$arr_check = $this->_coinpayments_api_call('get_withdrawal_info', $req);
 
 				if ($arr_check['error'] == "ok") {
@@ -479,10 +477,12 @@ class TaskSchedulerController extends CI_Controller
 							'updated_at' => $this->datetime,
 						];
 						$where = ['tx_id' => $tx_id];
-						$exec = $this->M_core->update('member_withdraw', $data, $where);
+						$exec  = $this->M_core->update('member_withdraw', $data, $where);
 
 						if (!$exec) {
 							$this->db->trans_rollback();
+							echo "tx_id $tx_id Failed to update State Withdraw";
+							exit;
 						}
 
 						// SEND EMAIL
@@ -494,7 +494,7 @@ class TaskSchedulerController extends CI_Controller
 		}
 	}
 
-	protected function _send_withdraw_success($id, $to, $invoice, $amount_1, $amount_2, $tx_id, $source, $wallet_label, $wallet_address): bool
+	protected function _send_withdraw_success($id_member, $to, $invoice, $amount_1, $amount_2, $tx_id, $source, $wallet_label, $wallet_address): bool
 	{
 		$subject = APP_NAME . " | Withdraw Success";
 		$message = "";
@@ -1084,7 +1084,7 @@ class TaskSchedulerController extends CI_Controller
 						$this->M_core->store_uuid('log_member_trade_manager', $data_log);
 
 						// SEND EMAIL PACKAGE ACTIVE START
-						$this->_send_package_active($id_member, $buyer_email, $invoice, $item_name);
+						$this->_send_package_active($id_member, $buyer_email, $invoice, $item_name, 'trade_manager');
 						// SEND EMAIL PACKAGE ACTIVE END
 					} else {
 						$data_log = [
@@ -1399,7 +1399,6 @@ class TaskSchedulerController extends CI_Controller
 
 						// PART BONUS SPONSOR START
 						$amount_bonus_upline = ($amount_usd * 10) / 100;
-
 						$this->_distribusi_sponsor($id_upline, $deleted_at_upline, $amount_bonus_upline, $fullname_upline, $email_upline, $buyer_name, $buyer_email, $id_member, $invoice, $id_package, $item_name, $amount_usd);
 						// PART BONUS SPONSOR END
 
@@ -1456,7 +1455,7 @@ class TaskSchedulerController extends CI_Controller
 					// UPDATE MEMBER CRYPTO ASSET END
 
 					// UPDATE MEMBER BALANCE START
-					$this->M_trade_manager->update_member_trade_manager_asset($id_member, $amount_usd);
+					$this->M_crypto_asset->update_member_crypto_asset_asset($id_member, $amount_usd);
 					// UPDATE MEMBER BALANCE END
 
 					// STORE LOG MEMBER CRYPTO ASSET START
@@ -1484,7 +1483,7 @@ class TaskSchedulerController extends CI_Controller
 						$this->M_core->store_uuid('log_member_crypto_asset', $data_log);
 
 						// SEND EMAIL PACKAGE ACTIVE START
-						$this->_send_package_active($id_member, $buyer_email, $invoice, $item_name);
+						$this->_send_package_active($id_member, $buyer_email, $invoice, $item_name, 'crypto_asset');
 						// SEND EMAIL PACKAGE ACTIVE END
 					} else {
 						$data_log = [
@@ -1492,6 +1491,10 @@ class TaskSchedulerController extends CI_Controller
 							'updated_at'  => $this->datetime,
 						];
 						$this->M_core->update('log_member_crypto_asset', $data_log, $where_count);
+
+						// SEND EMAIL PACKAGE ACTIVE START
+						$this->_send_package_active($id_member, $buyer_email, $invoice, $item_name, 'crypto_asset');
+						// SEND EMAIL PACKAGE ACTIVE END
 					}
 					// STORE LOG MEMBER CRYPTO ASSET END
 				}
@@ -2051,7 +2054,7 @@ class TaskSchedulerController extends CI_Controller
 		return false;
 	}
 
-	protected function _send_package_active($id, $to, $invoice, $item_name): bool
+	protected function _send_package_active($id, $to, $invoice, $item_name, $type): bool
 	{
 		$subject = APP_NAME . " | $invoice - Package $item_name Active";
 		$message = "";
@@ -2061,7 +2064,16 @@ class TaskSchedulerController extends CI_Controller
 		$this->email->to($to);
 		$this->email->subject($subject);
 
-		$data['arr_data'] = $this->M_core->get('member_trade_manager', '*', ['id_member' => $id]);
+		$where = [
+			'id_member' => $id,
+			'invoice'   => $invoice,
+		];
+		if ($type == "trade_manager") {
+			$table = "member_trade_manager";
+		} else {
+			$table = "member_crypto_asset";
+		}
+		$data['arr_data'] = $this->M_core->get($table, '*', $where);
 		$message = $this->load->view('emails/package_active_template', $data, TRUE);
 
 		$this->email->message($message);
