@@ -11,7 +11,7 @@
  Target Server Version : 100419
  File Encoding         : 65001
 
- Date: 20/07/2021 00:51:47
+ Date: 21/07/2021 02:42:01
 */
 
 SET NAMES utf8mb4;
@@ -467,7 +467,7 @@ CREATE TABLE `et_log_profit_crypto_asset`  (
   `id_package` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'uuid',
   `package_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `package_amount` decimal(15, 8) NULL DEFAULT NULL COMMENT 'USDT',
-  `state` enum('get bonus','correction bonus') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'get bonus | correction bonus',
+  `state` enum('get','correction') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'get | correction',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'X get bonus recruitment of member (x) 000 USDT',
   `created_at` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
@@ -488,7 +488,7 @@ CREATE TABLE `et_log_profit_trade_manager`  (
   `id_package` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'uuid',
   `package_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `profit` decimal(15, 8) NULL DEFAULT NULL COMMENT 'USDT',
-  `state` enum('get bonus','correction bonus') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'get bonus | correction bonus',
+  `state` enum('get','correction') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'get | correction',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'X get bonus recruitment of member (x) 000 USDT',
   `created_at` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
@@ -497,12 +497,12 @@ CREATE TABLE `et_log_profit_trade_manager`  (
 -- ----------------------------
 -- Records of et_log_profit_trade_manager
 -- ----------------------------
-INSERT INTO `et_log_profit_trade_manager` VALUES ('767f1a31-e751-11eb-9ae2-037645f91062', '1294a713-e596-11eb-abed-ea7075f67258', 'INV-20210718-000001', '1', 'Starter Pack', 0.00250000, 'get bonus', 'Adam (adam.pm77@gmail.com) get daily profit from trade manager package Starter Pack for 0.00250000 USDT', '2021-07-18 05:51:03');
-INSERT INTO `et_log_profit_trade_manager` VALUES ('767f62b2-e751-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, 'get bonus', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 05:51:03');
-INSERT INTO `et_log_profit_trade_manager` VALUES ('767f8752-e751-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, 'get bonus', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 05:51:03');
-INSERT INTO `et_log_profit_trade_manager` VALUES ('88d0c636-e749-11eb-9ae2-037645f91062', '1294a713-e596-11eb-abed-ea7075f67258', 'INV-20210718-000001', '1', 'Starter Pack', 0.00250000, 'get bonus', 'Adam (adam.pm77@gmail.com) get daily profit from trade manager package Starter Pack for 0.00250000 USDT', '2021-07-18 04:54:17');
-INSERT INTO `et_log_profit_trade_manager` VALUES ('88d17471-e749-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, 'get bonus', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 04:54:17');
-INSERT INTO `et_log_profit_trade_manager` VALUES ('88d18b32-e749-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, 'get bonus', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 04:54:17');
+INSERT INTO `et_log_profit_trade_manager` VALUES ('767f1a31-e751-11eb-9ae2-037645f91062', '1294a713-e596-11eb-abed-ea7075f67258', 'INV-20210718-000001', '1', 'Starter Pack', 0.00250000, '', 'Adam (adam.pm77@gmail.com) get daily profit from trade manager package Starter Pack for 0.00250000 USDT', '2021-07-18 05:51:03');
+INSERT INTO `et_log_profit_trade_manager` VALUES ('767f62b2-e751-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, '', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 05:51:03');
+INSERT INTO `et_log_profit_trade_manager` VALUES ('767f8752-e751-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, '', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 05:51:03');
+INSERT INTO `et_log_profit_trade_manager` VALUES ('88d0c636-e749-11eb-9ae2-037645f91062', '1294a713-e596-11eb-abed-ea7075f67258', 'INV-20210718-000001', '1', 'Starter Pack', 0.00250000, '', 'Adam (adam.pm77@gmail.com) get daily profit from trade manager package Starter Pack for 0.00250000 USDT', '2021-07-18 04:54:17');
+INSERT INTO `et_log_profit_trade_manager` VALUES ('88d17471-e749-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, '', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 04:54:17');
+INSERT INTO `et_log_profit_trade_manager` VALUES ('88d18b32-e749-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, '', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 04:54:17');
 
 -- ----------------------------
 -- Table structure for et_log_send_email_admin

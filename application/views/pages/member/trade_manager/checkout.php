@@ -19,7 +19,6 @@
 
 		<div class="row">
 			<div class="col-md-12">
-				<!-- PRODUCT LIST -->
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Payment Information</h3>
@@ -112,7 +111,7 @@
 													Please send <mark><?= $arr->row()->amount_coin; ?> <?= $arr->row()->currency2; ?></mark> to address <mark><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></mark>. <span class="text-danger">(Make sure to send enough to cover any coin transaction fees!)</span> You will need to initiate the payment using your software or online wallet and copy/paste the address and payment amount into it. We will email you when all funds have been received. If you send funds that don't confirm by the timeout or don't send enough coins you will receive an automatic email to claim your funds within 8 hours. If you don't receive the email contact us with the information below and CoinPayments.net will send you a refund:
 													<ul class="mb-3">
 														<li>The transaction ID: <mark><code class="text-dark"><?= $arr->row()->txn_id; ?></code></mark></li>
-														<li>A payment address to send the funds to <?= $arr->row()->receiver_wallet_address; ?>.</li>
+														<li>A payment address to send the funds to <?= $arr->row()->receiver_wallet_address; ?></li>
 													</ul>
 												</li>
 												<li>

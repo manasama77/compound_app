@@ -42,13 +42,13 @@
 									<p class="card-text">
 									<ul>
 										<li>
-											Total Investment: <span id="total_investment"><?= number_format($arr->row()->amount, 0); ?></span> USDT
+											Total Investment: <span id="total_investment"><?= check_float($arr->row()->amount); ?></span> USDT
 										</li>
 										<li>
-											Profit per Month: <?= number_format($arr->row()->profit_per_month_percent, 0); ?>%
+											Profit per Month: <?= check_float($arr->row()->profit_per_month_percent); ?>%
 										</li>
 										<li>
-											Profit per Day: <span id="profit_per_day_x"><?= number_format($arr->row()->profit_per_day_value, 8); ?></span> USDT
+											Profit per Day: <span id="profit_per_day_x"><?= check_float($arr->row()->profit_per_day_value); ?></span> USDT
 										</li>
 										<li>
 											Contract Duration: <?= $arr->row()->contract_duration; ?> Day
@@ -57,13 +57,13 @@
 											Profit Share Rules:
 											<ul>
 												<li>
-													Self: <?= number_format($arr->row()->share_self_percentage, 0); ?>% (<span id="self_share"><?= number_format($arr->row()->share_self_value, 8); ?></span> USDT)
+													Self: <?= check_float($arr->row()->share_self_percentage); ?>% (<span id="self_share"><?= check_float($arr->row()->share_self_value); ?></span> USDT)
 												</li>
 												<li>
-													Upline: <?= number_format($arr->row()->share_upline_percentage, 0); ?>% (<span id="upline_share"><?= number_format($arr->row()->share_upline_value, 8); ?></span> USDT)
+													Upline: <?= check_float($arr->row()->share_upline_percentage); ?>% (<span id="upline_share"><?= check_float($arr->row()->share_upline_value); ?></span> USDT)
 												</li>
 												<li>
-													Company: <?= number_format($arr->row()->share_company_percentage, 0); ?>% (<span id="company_share"><?= number_format($arr->row()->share_company_value, 8); ?></span> USDT) </li>
+													Company: <?= check_float($arr->row()->share_company_percentage); ?>% (<span id="company_share"><?= check_float($arr->row()->share_company_value); ?></span> USDT) </li>
 											</ul>
 										</li>
 									</ul>
@@ -78,12 +78,14 @@
 												$readonly = "";
 												// $min      = "10001";
 												$min      = MIN_CROWN;
+												$type = "number";
 												if (str_replace(UYAH, "", base64_decode($id_package)) != "6") {
 													$readonly = "readonly";
 													$min = "1";
+													$type = "text";
 												}
 												?>
-												<input type="number" class="form-control" id="total_transfer" name="total_transfer" value="<?= $arr->row()->amount; ?>" required <?= $readonly; ?> min="<?= $min; ?>">
+												<input type="<?= $type; ?>" class="form-control" id="total_transfer" name="total_transfer" value="<?= $arr->row()->amount; ?>" required <?= $readonly; ?> min="<?= $min; ?>">
 												<div class="input-group-append">
 													<span class="input-group-text">USDT</span>
 												</div>

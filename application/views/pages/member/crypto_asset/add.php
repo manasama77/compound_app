@@ -32,7 +32,7 @@
 								<div class="col-md-5">
 									<img src="<?= base_url(); ?>public/img/package_logo/<?= $key->logo; ?>" class="img-fluid" alt="starter">
 									<?php if ($arr_state[$x] == 0) { ?>
-										<a href="<?= site_url('trade_manager/pick/' . base64_encode(UYAH . $key->id)); ?>" class="btn btn-dark btn-flat btn-block font-weight-bold">
+										<a href="<?= site_url('crypto_asset/pick/' . base64_encode(UYAH . $key->id)); ?>" class="btn btn-dark btn-flat btn-block font-weight-bold">
 											<i class="fas fa-toggle-off fa-fw"></i> Pick Package
 										</a>
 									<?php } elseif ($arr_state[$x] == 1) { ?>
@@ -53,13 +53,13 @@
 									<p class="card-text">
 									<ul>
 										<li>
-											Total Investment: <?= number_format($key->amount, 0); ?> USDT
+											Total Investment: <?= check_float($key->amount); ?> USDT
 										</li>
 										<li>
-											Profit (%) /Month: <?= number_format($key->profit_per_month_percent, 0); ?>%
+											Profit (%) /Month: <?= check_float($key->profit_per_month_percent); ?>%
 										</li>
 										<li>
-											Profit /Day: <?= $key->profit_per_day_value; ?> USDT
+											Profit /Day: <?= check_float($key->profit_per_day_value); ?> USDT
 										</li>
 										<li>
 											Contract Duration: <?= $key->contract_duration; ?> Day

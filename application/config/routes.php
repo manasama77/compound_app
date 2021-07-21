@@ -40,8 +40,11 @@ $route['trade_manager/get_tx_info']   			= 'TradeManagerController/get_tx_info';
 $route['trade_manager/detail']   				= 'TradeManagerController/detail';
 $route['trade_manager/update_extend']   		= 'TradeManagerController/update_extend';
 
-$route['crypto_asset']     = 'CryptoAssetController/index';
-$route['crypto_asset/add'] = 'CryptoAssetController/add';
+$route['crypto_asset']     						= 'CryptoAssetController/index';
+$route['crypto_asset/add'] 						= 'CryptoAssetController/add';
+$route['crypto_asset/pick/(:any)']             	= 'CryptoAssetController/pick/$1';
+$route['crypto_asset/checkout/coinpayment'] 	= 'CryptoAssetController/checkout_coinpayment';
+$route['crypto_asset/checkout/(:any)']   		= 'CryptoAssetController/checkout/$1';
 
 $route['downline']      = 'DownlineController/index';
 $route['downline/show'] = 'DownlineController/show';

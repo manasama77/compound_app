@@ -143,7 +143,7 @@ class TradeManagerController extends CI_Controller
 		];
 
 		$where_member_trade_manager = ['id_member' => $this->session->userdata(SESI . 'id')];
-		$arr_member_trade_manager = $this->M_core->get('member_trade_manager', 'id_package, state', $where_member_trade_manager);
+		$arr_member_trade_manager   = $this->M_core->get('member_trade_manager', 'id_package, state', $where_member_trade_manager);
 
 		$arr_state = [
 			'0',
@@ -345,7 +345,7 @@ class TradeManagerController extends CI_Controller
 			$new_sequence = "0" . $sequence;
 		}
 
-		$invoice = "INV-" . date('Ymd') . '-' . $new_sequence;
+		$invoice = "TM-" . date('Ymd') . '-' . $new_sequence;
 
 		$where = [
 			'id'         => $id_package,

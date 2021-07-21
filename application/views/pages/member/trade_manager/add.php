@@ -53,13 +53,13 @@
 									<p class="card-text">
 									<ul>
 										<li>
-											Total Investment: <?= number_format($key->amount, 0); ?> USDT
+											Total Investment: <?= check_float($key->amount); ?> USDT
 										</li>
 										<li>
-											Profit (%) /Month: <?= number_format($key->profit_per_month_percent, 0); ?>%
+											Profit (%) /Month: <?= check_float($key->profit_per_month_percent); ?>%
 										</li>
 										<li>
-											Profit /Day: <?= $key->profit_per_day_value; ?> USDT
+											Profit /Day: <?= check_float($key->profit_per_day_value); ?> USDT
 										</li>
 										<li>
 											Contract Duration: <?= $key->contract_duration; ?> Day
