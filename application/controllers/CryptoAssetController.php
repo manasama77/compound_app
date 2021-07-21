@@ -384,7 +384,7 @@ class CryptoAssetController extends CI_Controller
 			'state'                  => 'waiting payment',
 			'expired_at'             => $expired_at,
 			'is_qualified'           => 'no',
-			'is_royalt'              => 'no',
+			'is_royalty'             => 'no',
 			'is_extend'              => 'auto',
 			'created_at'             => $this->datetime,
 			'updated_at'             => $this->datetime,
