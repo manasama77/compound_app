@@ -64,7 +64,7 @@
 						<p>
 							Crypto Asset
 							<i class="right fas fa-angle-left"></i>
-							<span class="badge badge-success right">0</span>
+							<span class="badge badge-success right"><?= $aside_count_crypto_asset; ?></span>
 						</p>
 					</a>
 					<ul class="nav nav-treeview">

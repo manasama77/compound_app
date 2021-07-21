@@ -357,7 +357,7 @@
 								<td class="logo" style="text-align: center;">
 									<h1>
 										<a href="<?= site_url(); ?>">
-											<img src="<?= base_url(); ?>public/img/logo.png" alt="<?= APP_NAME; ?> LOGO" title="<?= APP_NAME; ?>">
+											<img src="https://cryptoperty.id/public/img/logo.png" alt="<?= APP_NAME; ?> LOGO" title="<?= APP_NAME; ?>">
 										</a>
 									</h1>
 								</td>
@@ -367,7 +367,7 @@
 				</tr>
 				<tr>
 					<td valign="middle" class="hero bg_white" style="padding: 1em 0 1em 0;">
-						<img src="<?= base_url(); ?>public/img/undraw_Checklist__re_2w7v.svg" alt="Logo Checklist" style="width: 200px; max-width: 200px; height: auto; margin: auto; display: block;">
+						<img src="https://cryptoperty.id/public/img/undraw_Checklist__re_2w7v.png" alt="Logo Checklist" style="width: 200px; max-width: 200px; height: auto; margin: auto; display: block;">
 					</td>
 				</tr>
 				<tr>

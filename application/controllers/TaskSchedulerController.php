@@ -37,7 +37,7 @@ class TaskSchedulerController extends CI_Controller
 		$this->merchant_id    = CP_MERCH_ID;
 		$this->ipn_secret_key = CP_IPN_SEC_KEY;
 		$this->from           = EMAIL_ADMIN;
-		$this->from_alias     = 'Admin Test';
+		$this->from_alias     = EMAIL_ALIAS;
 		$this->ip_address     = $this->input->ip_address();
 		$this->user_agent     = $this->input->user_agent();
 	}
@@ -63,6 +63,8 @@ class TaskSchedulerController extends CI_Controller
 
 		if ($arr->num_rows() > 0) {
 			$this->_distribusi_daily_trade_manager($arr->result());
+		} else {
+			echo "No Trade Manager Data";
 		}
 	}
 
@@ -227,6 +229,8 @@ class TaskSchedulerController extends CI_Controller
 
 		if ($arr->num_rows() > 0) {
 			$this->_distribusi_daily_crypto_asset($arr->result());
+		} else {
+			echo "No Crypto Asset Data";
 		}
 	}
 
@@ -282,7 +286,7 @@ class TaskSchedulerController extends CI_Controller
 			if ($diff->format('%R') == "+") {
 				// MEMBER GET PROFIT START
 				/* UPDATE MEMBER BALANCE START */
-				$exec1 = $this->M_crypto_asset->update_member_profit($id_member, $profit_self_per_day);
+				$exec1 = $this->M_crypto_asset->update_member_profit_crypto_asset($invoice, $profit_self_per_day);
 				/* UPDATE MEMBER BALANCE END */
 
 				/* LOG START */
@@ -335,7 +339,7 @@ class TaskSchedulerController extends CI_Controller
 						'id_package'   => $id_package,
 						'package_name' => $item_name,
 						'profit'       => $profit_upline_per_day,
-						'state'        => 'get bonus',
+						'state'        => 'get',
 						'description'  => $description2b,
 						'created_at'   => $this->datetime,
 					];
@@ -630,52 +634,50 @@ class TaskSchedulerController extends CI_Controller
 		if ($arr->num_rows() > 0) {
 			$data = [];
 			foreach ($arr->result() as $key) {
-				$invoice     = $key->invoice;
-				$id_member   = $key->id_member;
-				$id_package  = $key->id_package;
-				$buyer_email = $key->buyer_email;
-				$buyer_name  = $key->buyer_name;
-				$item_name   = $key->item_name;
-				$amount_usd  = $key->amount_usd;
-				$expired_at  = $key->expired_at;
-				$state       = 'expired';
+				$invoice      = $key->invoice;
+				$id_member    = $key->id_member;
+				$id_package   = $key->id_package;
+				$amount_usd   = $key->amount_usd;
+				$buyer_email  = $key->buyer_email;
+				$buyer_name   = $key->buyer_name;
+				$item_name    = $key->item_name;
+				$expired_at   = $key->expired_at;
+				$profit_asset = $key->profit_asset;
+				$state        = 'expired';
 
-				// perbaikan pindah saldo jadi reward untuk crypto asset
-				exit;
-
-				// REDUCE MEMBER TRADE MANAGER BALANCE START
-				$this->M_crypto_asset->balance_expired($id_member, $amount_usd);
-				// REDUCE MEMBER TRADE MANAGER BALANCE END
+				// UPDATE STATE START
+				$nested = [
+					'state'        => $state,
+					'can_claim'    => 'yes',
+					'profit_asset' => $profit_asset,
+					'updated_at'   => $this->datetime,
+				];
+				// UPDATE STATE END
 
 				// LOG START
-				$description = "[$this->datetime] Member $buyer_email ($buyer_name) Package $item_name has been Expired at $expired_at. Investment $amount_usd USDT already move to profit";
+				$description = "[$this->datetime] Member $buyer_email ($buyer_name) Package $item_name has been Expired at $expired_at. Member can claim the Asset.";
 				$data_log = [
 					'id_member'         => $id_member,
 					'invoice'           => $invoice,
 					'amount_invest'     => 0,
-					'amount_transfer'   => $amount_usd,
-					'currency_transfer' => 'USDT',
+					'amount_transfer'   => 0,
+					'currency_transfer' => null,
 					'txn_id'            => null,
 					'state'             => $state,
 					'description'       => $description,
 					'created_at'        => $this->datetime,
 					'updated_at'        => $this->datetime,
 				];
-				$this->M_core->store_uuid('log_member_trade_manager', $data_log);
+				$this->M_core->store_uuid('log_member_crypto_asset', $data_log);
 				// LOG END
 
 				// EMAIL EXPIRED START
-				$this->_send_package_expired($buyer_email, $invoice, $item_name, $expired_at);
+				$this->_send_package_expired_ca($buyer_email, $invoice, $item_name, $expired_at);
 				// EMAIL EXPIRED END
-
-				$nested = compact([
-					'invoice',
-					'state',
-				]);
 				array_push($data, $nested);
 			}
 
-			$exec = $this->M_trade_manager->update_state($data);
+			$exec = $this->M_crypto_asset->update_state($data);
 
 			if (!$exec) {
 				$this->db->trans_rollback();
@@ -684,7 +686,7 @@ class TaskSchedulerController extends CI_Controller
 
 			$this->db->trans_commit();
 		} else {
-			echo "Tidak ada yang Expired Hari Ini";
+			echo "Tidak ada yang Crypto Asset Expired Hari Ini";
 		}
 	}
 
@@ -715,7 +717,6 @@ class TaskSchedulerController extends CI_Controller
 				'code'    => 404,
 				'message' => "No Unpaid Trade Manager"
 			]);
-			exit;
 		}
 
 		foreach ($arr_list->result() as $key) :
@@ -1116,7 +1117,6 @@ class TaskSchedulerController extends CI_Controller
 				'code'    => 404,
 				'message' => "No Unpaid Crypto Asset"
 			]);
-			exit;
 		}
 
 		foreach ($arr_list->result() as $key) :
@@ -2122,6 +2122,35 @@ class TaskSchedulerController extends CI_Controller
 			'date_expired' => $date_expired,
 		];
 		$message = $this->load->view('emails/package_expired', $data, TRUE);
+		$this->email->message($message);
+
+		$is_success = ($this->email->send()) ? 'yes' : 'no';
+
+		$this->M_log_send_email_member->write_log($to, $subject, $message, $is_success);
+
+		if ($is_success == "yes") {
+			return true;
+		}
+
+		return false;
+	}
+
+	protected function _send_package_expired_ca($to, $invoice, $item_name, $date_expired): bool
+	{
+		$subject = APP_NAME . " | Invoice $invoice Package $item_name Expired";
+		$message = "";
+
+		$this->email->set_newline("\r\n");
+		$this->email->from($this->from, $this->from_alias);
+		$this->email->to($to);
+		$this->email->subject($subject);
+
+		$data = [
+			'invoice'      => $invoice,
+			'item_name'    => $item_name,
+			'date_expired' => $date_expired,
+		];
+		$message = $this->load->view('emails/package_expired_ca', $data, TRUE);
 		$this->email->message($message);
 
 		$is_success = ($this->email->send()) ? 'yes' : 'no';

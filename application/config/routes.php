@@ -100,7 +100,7 @@ $route['scheduler/profit_daily_crypto_asset']   = 'TaskSchedulerController/profi
 $route['scheduler/withdraw']                    = 'TaskSchedulerController/withdraw';
 $route['scheduler/reward']                      = 'TaskSchedulerController/reward';
 $route['scheduler/check_trade_manager_expired'] = 'TaskSchedulerController/check_trade_manager_expired';
-$route['scheduler/check_crypto_asset_expired'] = 'TaskSchedulerController/check_crypto_asset_expired';
+$route['scheduler/check_crypto_asset_expired'] 	= 'TaskSchedulerController/check_crypto_asset_expired';
 $route['scheduler/coinpayment_tx_info_tm'] 	    = 'TaskSchedulerController/coinpayment_tx_info_tm';
 
 $route['test'] = 'TestController/index';

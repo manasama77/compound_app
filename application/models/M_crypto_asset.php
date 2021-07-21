@@ -22,6 +22,11 @@ class M_crypto_asset extends CI_Model
 		return $this->db->set('profit', 'profit + ' . $profit, false)->where('id_member', $id_member)->update('member_balance');
 	}
 
+	public function update_member_profit_crypto_asset($invoice, $profit)
+	{
+		return $this->db->set('profit_asset', 'profit_asset + ' . $profit, false)->where('invoice', $invoice)->update('member_crypto_asset');
+	}
+
 	public function update_unknown_profit($profit)
 	{
 		return $this->db->set('amount_profit', 'amount_profit + ' . $profit, false)->where('id', 1)->update('unknown_balance');
