@@ -13,7 +13,6 @@ class CryptoAssetController extends CI_Controller
 	protected $ipn_secret_key;
 	protected $from;
 	protected $from_alias;
-	protected $to;
 	protected $ip_address;
 	protected $user_agent;
 	protected $id_member;
@@ -27,18 +26,17 @@ class CryptoAssetController extends CI_Controller
 		$this->load->model('M_log_send_email_member');
 		$this->load->helper('Floating_helper');
 
-		$this->date 			= date('Y-m-d');
+		$this->date     		= date('Y-m-d');
 		$this->datetime 		= date('Y-m-d H:i:s');
-		$this->api_link 		= 'https://www.coinpayments.net/api.php';
-		$this->public_key 		= '0d79d9c15454272a3ea638332ff716217b1530d57d2bb8023a0b5835a4c2c6bd';
-		$this->private_key 		= '90c986299927C62d1250999244da7fEF08263769818AA8875e90e446f5d78d30';
-		$this->merchant_id 		= '12d2c4c617ebe6fb9e401a92ed7039fd';
-		$this->ipn_secret_key 	= 'YmlvbmVyIElQTg==';
-		$this->id_member        = $this->session->userdata(SESI . 'id');
+		$this->api_link       	= CP_API_LINK;
+		$this->public_key     	= CP_PUB_KEY;
+		$this->private_key    	= CP_PRV_KEY;
+		$this->merchant_id    	= CP_MERCH_ID;
+		$this->ipn_secret_key 	= CP_IPN_SEC_KEY;
+		$this->id_member		= $this->session->userdata(SESI . 'id');
 
-		$this->from       = 'adam.pm59@gmail.com';
-		$this->from_alias = 'Admin Test';
-		$this->to         = 'adam.pm77@gmail.com';
+		$this->from       = EMAIL_ADMIN;
+		$this->from_alias = EMAIL_ALIAS;
 		$this->ip_address = $this->input->ip_address();
 		$this->user_agent = $this->input->user_agent();
 
@@ -86,7 +84,6 @@ class CryptoAssetController extends CI_Controller
 			$state                     = $key['state'];
 			$created_at                = $key['created_at'];
 			$expired_at                = $key['expired_at'];
-			$is_extend                 = $key['is_extend'];
 			$payment_method            = $key['payment_method'];
 			$txn_id                    = $key['txn_id'];
 			$amount_transfer           = $key['amount_transfer'];
@@ -106,7 +103,6 @@ class CryptoAssetController extends CI_Controller
 				'state'                     => $state,
 				'created_at'                => $created_at,
 				'expired_at'                => $expired_at,
-				'is_extend'                 => $is_extend,
 				'payment_method'            => $payment_method,
 				'txn_id'                    => $txn_id,
 				'amount_transfer'           => $amount_transfer,
@@ -296,7 +292,7 @@ class CryptoAssetController extends CI_Controller
 		$buyer_email    = $this->session->userdata(SESI . 'email');
 		$buyer_name     = $this->session->userdata(SESI . 'fullname');
 		$id_package     = str_replace(UYAH, '', base64_decode($this->input->post('id_package')));
-		$payment_method = $this->input->post('payment_method');
+		$payment_method = 'coinpayment';
 		$coin_type      = $this->input->post('coin_type');
 
 		$where_check = [
@@ -385,7 +381,6 @@ class CryptoAssetController extends CI_Controller
 			'expired_at'             => $expired_at,
 			'is_qualified'           => 'no',
 			'is_royalty'             => 'no',
-			'is_extend'              => 'auto',
 			'created_at'             => $this->datetime,
 			'updated_at'             => $this->datetime,
 			'deleted_at'             => null,
@@ -844,42 +839,6 @@ class CryptoAssetController extends CI_Controller
 		}
 
 		return true;
-	}
-
-	public function update_extend()
-	{
-		$invoice   = $this->input->post('invoice_extend');
-		$is_extend = $this->input->post('is_extend_mode');
-
-		$where_count = [
-			'id_member' => $this->id_member,
-			'invoice' => $invoice,
-		];
-		$arr_check = $this->M_core->get('member_crypto_asset', '*', $where_count);
-
-		if ($arr_check->num_rows() == 0) {
-			echo json_encode(['code' => 404, 'status_text' => "Invoice Not Found"]);
-			exit;
-		}
-
-		$current_obj = new DateTime('now');
-		$expired_obj = new DateTime($arr_check->row()->expired_at);
-		$diff        = $current_obj->diff($expired_obj);
-
-		if ($diff->format('%R') == "-") {
-			echo json_encode(['code' => 500, 'status_text' => "Package Expired"]);
-			exit;
-		}
-
-		$data = ['is_extend' => $is_extend];
-		$exec = $this->M_core->update('member_crypto_asset', $data, $where_count);
-
-		if (!$exec) {
-			echo json_encode(['code' => 500, 'status_text' => "Update Failed, please try again!"]);
-			exit;
-		}
-
-		echo json_encode(['code' => 200, 'status_text' => "Update Success"]);
 	}
 }
         

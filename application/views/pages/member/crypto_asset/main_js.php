@@ -5,12 +5,12 @@
 		})
 
 		$("#table_data").DataTable({
-			// "scrollX": "300px",
-			// "scrollY": "300px",
+			"scrollX": "300px",
+			"scrollY": "300px",
 			order: [
 				[0, 'asc']
 			],
-			responsive: true,
+			responsive: false,
 			lengthChange: false,
 			autoWidth: false,
 			buttons: ["copy", "csv", "excel", "pdf"],
@@ -19,55 +19,11 @@
 				orderable: false
 			}]
 		}).buttons().container().appendTo('#table_data_wrapper .col-md-6:eq(0)');
-
-		$('#form_extend').on('submit', function(e) {
-			e.preventDefault();
-
-			$.ajax({
-				url: '<?= site_url('trade_manager/update_extend'); ?>',
-				method: 'post',
-				dataType: 'json',
-				data: $('#form_extend').serialize(),
-				beforeSend: function() {
-					$.blockUI();
-				}
-			}).always(function(e) {
-				$.unblockUI();
-			}).fail(function(e) {
-				console.log(e);
-				if (e.responseText != '') {
-					Swal.fire({
-						icon: 'error',
-						title: 'Oops...',
-						html: e.responseText,
-					});
-				}
-			}).done(function(e) {
-				console.log(e);
-				if (e.code == 500 || e.code == 400) {
-					Swal.fire({
-						icon: 'error',
-						title: 'Oops...',
-						html: e.status_text,
-					}).then(() => {
-						window.location.reload();
-					});
-				} else if (e.code == 200) {
-					Swal.fire({
-						icon: 'success',
-						title: 'Success...',
-						html: e.status_text,
-					}).then(() => {
-						window.location.reload();
-					});
-				}
-			});
-		});
 	});
 
 	function showDetail(invoice) {
 		$.ajax({
-			url: '<?= site_url('trade_manager/detail'); ?>',
+			url: '<?= site_url('crypto_asset/detail'); ?>',
 			method: 'get',
 			dataType: 'json',
 			data: {
@@ -97,11 +53,10 @@
 				});
 			} else if (e.code == 200) {
 				$('#package').html(e.result.package);
-				$('#amount').html(e.result.amount);
+				$('#amount').html(e.result.amount + " <small>USDT</small>");
 				$('#created_at').html(e.result.created_at);
 				$('#expired_at').html(`${e.result.expired_at} 00:00:00`);
 				$('#state').html(e.result.state.toUpperCase());
-				$('#is_extend').html(e.result.is_extend.toUpperCase());
 
 				let profit_montly_text = `${e.result.profit_montly_value} <small>USDT</small> (15 %)`;
 				let profit_daily_text = `${e.result.profit_per_day} <small>USDT</small> (0.5 %)`;

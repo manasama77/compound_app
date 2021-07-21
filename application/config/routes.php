@@ -45,7 +45,6 @@ $route['crypto_asset/pick/(:any)']             	= 'CryptoAssetController/pick/$1
 $route['crypto_asset/checkout/coinpayment'] 	= 'CryptoAssetController/checkout_coinpayment';
 $route['crypto_asset/checkout/(:any)']   		= 'CryptoAssetController/checkout/$1';
 $route['crypto_asset/detail']   				= 'CryptoAssetController/detail';
-$route['crypto_asset/update_extend']   			= 'CryptoAssetController/update_extend';
 
 $route['downline']      = 'DownlineController/index';
 $route['downline/show'] = 'DownlineController/show';
