@@ -96,9 +96,11 @@ $route['coinpayment/success/(:any)']  = 'CoinPayment/success/$1';
 $route['coinpayment/cancel/(:any)']   = 'CoinPayment/cancel/$1';
 
 $route['scheduler/profit_daily_trade_manager']  = 'TaskSchedulerController/profit_daily_trade_manager';
+$route['scheduler/profit_daily_crypto_asset']   = 'TaskSchedulerController/profit_daily_crypto_asset';
 $route['scheduler/withdraw']                    = 'TaskSchedulerController/withdraw';
 $route['scheduler/reward']                      = 'TaskSchedulerController/reward';
 $route['scheduler/check_trade_manager_expired'] = 'TaskSchedulerController/check_trade_manager_expired';
+$route['scheduler/check_crypto_asset_expired'] = 'TaskSchedulerController/check_crypto_asset_expired';
 $route['scheduler/coinpayment_tx_info_tm'] 	    = 'TaskSchedulerController/coinpayment_tx_info_tm';
 
 $route['test'] = 'TestController/index';

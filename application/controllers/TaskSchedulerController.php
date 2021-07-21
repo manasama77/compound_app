@@ -209,7 +209,171 @@ class TaskSchedulerController extends CI_Controller
 
 	/*
 	==============================
-	Execute Every Day at 00:00 AM
+	Execute Every Day at 01:10 AM
+	==============================
+	*/
+	public function profit_daily_crypto_asset()
+	{
+		if (!$this->input->is_cli_request()) {
+			echo "profit_daily_crypto_asset can only be accessed from the command line";
+			exit;
+		}
+
+		$where_arr = [
+			'state'      => 'active',
+			'deleted_at' => null,
+		];
+		$arr = $this->M_core->get('member_crypto_asset', '*', $where_arr);
+
+		if ($arr->num_rows() > 0) {
+			$this->_distribusi_daily_crypto_asset($arr->result());
+		}
+	}
+
+	protected function _distribusi_daily_crypto_asset($arr)
+	{
+		$this->db->trans_begin();
+
+		foreach ($arr as $key) {
+			$invoice                = $key->invoice;
+			$id_member              = $key->id_member;
+			$id_package             = $key->id_package;
+			$amount_usd             = $key->amount_usd;
+			$profit_self_per_day    = $key->profit_self_per_day;
+			$profit_upline_per_day  = $key->profit_upline_per_day;
+			$profit_company_per_day = $key->profit_company_per_day;
+			$currency1              = $key->currency1;
+			$buyer_email            = $key->buyer_email;
+			$buyer_name             = $key->buyer_name;
+			$item_name              = $key->item_name;
+			$expired_at             = $key->expired_at;
+
+			$current_datetime_obj = new DateTime($this->datetime);
+			$expired_datetime_obj = new DateTime($expired_at);
+			$diff                 = $current_datetime_obj->diff($expired_datetime_obj);
+
+			$id_upline = $this->M_core->get('member', 'id_upline', ['id' => $id_member])->row()->id_upline;
+
+			$email_upline    = null;
+			$fullname_upline = null;
+			if ($id_upline != null) {
+				$where_upline = [
+					'id'         => $id_upline,
+					'is_active'  => 'yes',
+					'deleted_at' => null,
+				];
+				$arr_upline = $this->M_core->get('member', 'email, fullname', $where_upline);
+
+				if ($arr_upline->num_rows() == 1) {
+					$email_upline    = $arr_upline->row()->email;
+					$fullname_upline = $arr_upline->row()->fullname;
+				}
+			}
+
+			$profit_self_per_day_formated = number_format($profit_self_per_day, 8);
+			$share_upline_value_formated  = number_format($profit_upline_per_day, 8);
+			$share_company_value_formated = number_format($profit_company_per_day, 8);
+
+			$description1  = "$buyer_name ($buyer_email) get daily profit from crypto asset package $item_name for $profit_self_per_day_formated $currency1";
+			$description2a = "$fullname_upline ($email_upline) get daily profit from downline $buyer_name ($buyer_email) crypto asset package $item_name for $share_upline_value_formated $currency1";
+			$description2b = "Unknown Balance get daily profit from downline $buyer_name ($buyer_email) crypto asset package $item_name for $share_upline_value_formated $currency1";
+			$description3  = "Unknown Balance get daily profit from downline $buyer_name ($buyer_email) crypto asset package $item_name for $share_company_value_formated $currency1";
+
+			if ($diff->format('%R') == "+") {
+				// MEMBER GET PROFIT START
+				/* UPDATE MEMBER BALANCE START */
+				$exec1 = $this->M_crypto_asset->update_member_profit($id_member, $profit_self_per_day);
+				/* UPDATE MEMBER BALANCE END */
+
+				/* LOG START */
+				$data1 = [
+					'id_member'    => $id_member,
+					'invoice'      => $invoice,
+					'id_package'   => $id_package,
+					'package_name' => $item_name,
+					'profit'       => $profit_self_per_day,
+					'state'        => 'get',
+					'description'  => $description1,
+					'created_at'   => $this->datetime,
+				];
+				$this->M_core->store_uuid('log_profit_crypto_asset', $data1);
+				/* LOG END */
+
+				/* EMAIL SEND START */
+				$this->_send_daily_profit($buyer_email, $item_name, $profit_self_per_day);
+				/* EMAIL SEND END */
+				// MEMBER GET PROFIT END
+
+				// UPLINE GET PROFIT START
+				if ($id_upline != null) {
+					$exec2 = $this->M_crypto_asset->update_member_profit($id_upline, $profit_upline_per_day);
+
+					/* LOG START */
+					$data1 = [
+						'id_member'    => $id_upline,
+						'invoice'      => $invoice,
+						'id_package'   => $id_package,
+						'package_name' => $item_name,
+						'profit'       => $profit_upline_per_day,
+						'state'        => 'get',
+						'description'  => $description2a,
+						'created_at'   => $this->datetime,
+					];
+					$this->M_core->store_uuid('log_profit_crypto_asset', $data1);
+					/* LOG END */
+
+					/* EMAIL SEND START */
+					$this->_send_daily_profit($email_upline, $item_name, $profit_upline_per_day);
+					/* EMAIL SEND END */
+				} else {
+					$exec2 = $this->M_crypto_asset->update_unknown_profit($profit_upline_per_day);
+
+					/* LOG start */
+					$data1 = [
+						'id_member'    => null,
+						'invoice'      => $invoice,
+						'id_package'   => $id_package,
+						'package_name' => $item_name,
+						'profit'       => $profit_upline_per_day,
+						'state'        => 'get bonus',
+						'description'  => $description2b,
+						'created_at'   => $this->datetime,
+					];
+					$this->M_core->store_uuid('log_profit_crypto_asset', $data1);
+					/* LOG end */
+				}
+				// UPLINE GET PROFIT END
+
+				// COMPANY GET PROFIT START
+				$exec3 = $this->M_crypto_asset->update_unknown_profit($profit_company_per_day);
+
+				/* LOG start */
+				$data1 = [
+					'id_member'    => null,
+					'invoice'      => $invoice,
+					'id_package'   => $id_package,
+					'package_name' => $item_name,
+					'profit'       => $profit_company_per_day,
+					'state'        => 'get',
+					'description'  => $description3,
+					'created_at'   => $this->datetime,
+				];
+				$this->M_core->store_uuid('log_profit_crypto_asset', $data1);
+				/* LOG end */
+				// COMPANY GET PROFIT END
+
+				if (!$exec1 && !$exec2 && !$exec3) {
+					$this->db->trans_rollback();
+				} else {
+					$this->db->trans_commit();
+				}
+			}
+		}
+	}
+
+	/*
+	==============================
+	Execute Every Day at 05:00 AM
 	==============================
 	*/
 	public function reward()
@@ -434,6 +598,81 @@ class TaskSchedulerController extends CI_Controller
 					$this->_send_package_extend($buyer_email, $invoice, $item_name, $new_expired);
 					// EMAIL PERPANJANGAN END
 				}
+			}
+
+			$exec = $this->M_trade_manager->update_state($data);
+
+			if (!$exec) {
+				$this->db->trans_rollback();
+				exit;
+			}
+
+			$this->db->trans_commit();
+		} else {
+			echo "Tidak ada yang Expired Hari Ini";
+		}
+	}
+
+	/*
+	====================================
+	Execute Every Day at Every 00:10 AM
+	====================================
+	*/
+	public function check_crypto_asset_expired()
+	{
+		if (!$this->input->is_cli_request()) {
+			echo "greet my only be accessed from the command line";
+			exit;
+		}
+		$this->db->trans_begin();
+		$arr = $this->M_crypto_asset->get_expired_crypto_asset();
+
+		if ($arr->num_rows() > 0) {
+			$data = [];
+			foreach ($arr->result() as $key) {
+				$invoice     = $key->invoice;
+				$id_member   = $key->id_member;
+				$id_package  = $key->id_package;
+				$buyer_email = $key->buyer_email;
+				$buyer_name  = $key->buyer_name;
+				$item_name   = $key->item_name;
+				$amount_usd  = $key->amount_usd;
+				$expired_at  = $key->expired_at;
+				$state       = 'expired';
+
+				// perbaikan pindah saldo jadi reward untuk crypto asset
+				exit;
+
+				// REDUCE MEMBER TRADE MANAGER BALANCE START
+				$this->M_crypto_asset->balance_expired($id_member, $amount_usd);
+				// REDUCE MEMBER TRADE MANAGER BALANCE END
+
+				// LOG START
+				$description = "[$this->datetime] Member $buyer_email ($buyer_name) Package $item_name has been Expired at $expired_at. Investment $amount_usd USDT already move to profit";
+				$data_log = [
+					'id_member'         => $id_member,
+					'invoice'           => $invoice,
+					'amount_invest'     => 0,
+					'amount_transfer'   => $amount_usd,
+					'currency_transfer' => 'USDT',
+					'txn_id'            => null,
+					'state'             => $state,
+					'description'       => $description,
+					'created_at'        => $this->datetime,
+					'updated_at'        => $this->datetime,
+				];
+				$this->M_core->store_uuid('log_member_trade_manager', $data_log);
+				// LOG END
+
+				// EMAIL EXPIRED START
+				$this->_send_package_expired($buyer_email, $invoice, $item_name, $expired_at);
+				// EMAIL EXPIRED END
+
+				$nested = compact([
+					'invoice',
+					'state',
+				]);
+				array_push($data, $nested);
 			}
 
 			$exec = $this->M_trade_manager->update_state($data);
