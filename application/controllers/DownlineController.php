@@ -16,6 +16,7 @@ class DownlineController extends CI_Controller
 		$this->id_member = $this->session->userdata(SESI . 'id');
 
 		$this->load->library('L_member', null, 'template');
+		$this->load->helper('Floating_helper');
 		$this->load->model('M_dashboard');
 		$this->load->model('M_downline');
 	}

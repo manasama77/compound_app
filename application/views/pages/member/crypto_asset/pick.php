@@ -86,7 +86,7 @@
 										<div class="col-md-7">
 											<select class="form-control" id="coin_type" name="coin_type" required>
 												<option value="USDT.ERC20">Tether USD - ERC20 (USDT.ERC20)</option>
-												<option value="USDT.BEP20">Tether USD - BSC Chain (USDT.BEP20)</option>
+												<!-- <option value="USDT.BEP20">Tether USD - BSC Chain (USDT.BEP20)</option> -->
 												<option value="LTCT">Lite Coin Test (LTCT)</option>
 											</select>
 										</div>

@@ -15,7 +15,7 @@
 			autoWidth: false,
 			buttons: ["copy", "csv", "excel", "pdf"],
 			columnDefs: [{
-				targets: [7],
+				targets: [8],
 				orderable: false
 			}]
 		}).buttons().container().appendTo('#table_data_wrapper .col-md-6:eq(0)');
@@ -60,6 +60,7 @@
 
 				let profit_montly_text = `${e.result.profit_montly_value} <small>USDT</small> (15 %)`;
 				let profit_daily_text = `${e.result.profit_per_day} <small>USDT</small> (0.5 %)`;
+				let profit_asset_text = `${e.result.profit_asset} <small>USDT</small>`;
 				let profit_self_text = `${e.result.profit_self_value} <small>USDT</small> (${e.result.profit_self_percentage} %)`;
 				let profit_upline_text = `${e.result.profit_upline_value} <small>USDT</small> (${e.result.profit_upline_percentage} %)`;
 				let profit_company_text = `${e.result.profit_upline_value} <small>USDT</small> (${e.result.profit_company_percentage} %)`;
@@ -67,6 +68,7 @@
 
 				$('#profit_monthly').html(profit_montly_text);
 				$('#profit_daily').html(profit_daily_text);
+				$('#profit_asset').html(profit_asset_text);
 				$('#profit_self').html(profit_self_text);
 				$('#profit_upline').html(profit_upline_text);
 				$('#profit_company').html(profit_company_text);

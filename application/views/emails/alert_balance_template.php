@@ -377,8 +377,8 @@
 							<tr>
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
-										<h3>Insufficient Balance on Coin Payment <?= $receive_coin; ?></h3>
-										<h4>Someone try to withdraw <?= $amount; ?> <?= $receive_coin; ?> but coinpayment balance is on low, please try to transfer to coinpayment wallet <?= $receive_coin; ?></h4>
+										<h3>Insufficient Balance on Coin Payment <?= $coin_type; ?></h3>
+										<h4>Someone try to withdraw <?= $amount; ?> <?= $coin_type; ?> but coinpayment balance is on low, please fullfill coinpayment wallet <?= $coin_type; ?> so member can withdraw</h4>
 									</div>
 								</td>
 							</tr>

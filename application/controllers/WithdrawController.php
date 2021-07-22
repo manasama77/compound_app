@@ -31,13 +31,13 @@ class WithdrawController extends CI_Controller
 		$this->merchant_id    = CP_MERCH_ID;
 		$this->ipn_secret_key = CP_IPN_SEC_KEY;
 		$this->from           = EMAIL_ADMIN;
-		$this->from_alias     = 'Admin Test';
+		$this->from_alias     = EMAIL_ALIAS;
 		$this->ip_address     = $this->input->ip_address();
 		$this->user_agent     = $this->input->user_agent();
 
 		$this->load->library('L_member', null, 'template');
 		$this->load->library('L_genuine_mail', null, 'genuine_mail');
-		$this->load->helper(['cookie', 'string', 'Otp_helper', 'Domain_helper', 'Time_helper']);
+		$this->load->helper(['cookie', 'string', 'Otp_helper', 'Domain_helper', 'Time_helper', 'Floating_helper']);
 		$this->load->model('M_withdraw');
 		$this->load->model('M_dashboard');
 		$this->load->model('M_log_send_email_member');
@@ -47,8 +47,8 @@ class WithdrawController extends CI_Controller
 	{
 		$this->_unset_session();
 		$arr    = $this->M_dashboard->get_member_balance($this->id_member);
-		$profit = number_format($arr->row()->profit, 8);
-		$bonus  = number_format($arr->row()->bonus, 8);
+		$profit = check_float($arr->row()->profit);
+		$bonus  = check_float($arr->row()->bonus);
 
 		$data = [
 			'title'      => APP_NAME . ' | Withdraw',
@@ -98,7 +98,10 @@ class WithdrawController extends CI_Controller
 				echo json_encode(['code' => $code, 'message' => "Wallet not found or has been updated, try again!"]);
 				exit;
 			}
-			$this->_set_session($source, $amount, $coin_type, $id_wallet, $arr_wallet->row()->wallet_label, $arr_wallet->row()->wallet_address);
+
+			$wallet_label   = $arr_wallet->row()->wallet_label;
+			$wallet_address = $arr_wallet->row()->wallet_address;
+			$this->_set_session($source, $amount, $coin_type, $id_wallet, $wallet_label, $wallet_address);
 			$this->_send_otp($this->id_member, $this->email_member);
 		}
 
@@ -137,20 +140,20 @@ class WithdrawController extends CI_Controller
 		$this->template->render($data);
 	}
 
-	public function _set_session($source, $amount, $coin_type, $id_wallet, $wallet_label, $wallet_address)
+	protected function _set_session($source, $amount, $coin_type, $id_wallet, $wallet_label, $wallet_address)
 	{
 		$data_session = [
 			SESI . 'source'         => $source,
 			SESI . 'amount'         => $amount,
-			SESI . 'coin_type'   => $coin_type,
+			SESI . 'coin_type'      => $coin_type,
 			SESI . 'id_wallet'      => $id_wallet,
-			SESI . 'wallet_label'    => $wallet_label,
+			SESI . 'wallet_label'   => $wallet_label,
 			SESI . 'wallet_address' => $wallet_address,
 		];
 		$this->session->set_userdata($data_session);
 	}
 
-	public function _unset_session()
+	protected function _unset_session()
 	{
 		$data_session = [
 			SESI . 'source',
@@ -179,7 +182,7 @@ class WithdrawController extends CI_Controller
 		return $arr_wallet;
 	}
 
-	public function _send_otp($id, $to): bool
+	protected function _send_otp($id, $to): bool
 	{
 		$subject = APP_NAME . " | OTP (One Time Password)";
 		$message = "";
@@ -343,7 +346,7 @@ class WithdrawController extends CI_Controller
 		$wallet_label   = $this->session->userdata(SESI . 'wallet_label');
 		$wallet_address = $this->session->userdata(SESI . 'wallet_address');
 
-		$req = ['all' => 1];
+		$req = ['all' => 0];
 		$get_coin_balance = $this->_coinpayments_api_call('balances', $req);
 
 		if ($get_coin_balance['error'] != "ok") {
@@ -353,18 +356,26 @@ class WithdrawController extends CI_Controller
 
 		$x        = strtoupper($coin_type);
 		$balancef = $get_coin_balance['result'][$x]['balancef'];
-		if ($amount >= $balancef) {
+
+		if ($amount > $balancef) {
 			$this->_send_alert_balance($coin_type, $amount);
 			$this->db->trans_commit();
+
+			$msg = 'System cannot process your withdraw request, because Insufficient System Balance.<br>Please notify admin about this issue to <a href="mailto:' . EMAIL_ADMIN_2 . '" target="_blank"><mark>' . EMAIL_ADMIN_2 . '</mark></a> or wait maximum 24 hour later for admin to fix this issue.';
+			return show_error($msg, 500, "An Error Was Encountered");
 		}
 
-		$note = "Withdraw from $source worth $amount USDT convert to " . strtoupper($coin_type) . " to wallet address $wallet_address (" . strtoupper($wallet_label) . ")";
+		$note = "Withdraw from $source worth $amount USDT for coin " . strtoupper($coin_type) . " to wallet address $wallet_address (" . strtoupper($wallet_label) . ")";
 
+		/* 
+		NOTES
+		If add_tx_fee set to 1, add the coin TX fee to the withdrawal amount so the sender pays the TX fee instead of the receiver.
+		*/
 		$req = [
 			'amount'       => $amount,
 			'add_tx_fee'   => 0,
 			'currency'     => $coin_type,
-			'currency2'    => 'usdt',
+			'currency2'    => 'USDT',
 			'address'      => $wallet_address,
 			'auto_confirm' => 1,
 			'note'         => $note,
@@ -375,7 +386,7 @@ class WithdrawController extends CI_Controller
 			$this->db->trans_rollback();
 			$msg = $withdraw_process['error'];
 			if ($withdraw_process['error'] == "That amount is larger than your balance!") {
-				$msg = "System cannot process your withdraw request, because Insufficient System Balance.<br>Please inform admin about this issue to <mark>" . EMAIL_ADMIN . "</mark>";
+				$msg = 'System cannot process your withdraw request, because Insufficient System Balance.<br>Please notify admin about this issue to <a href="mailto:' . EMAIL_ADMIN . '" target="_blank"><mark>' . EMAIL_ADMIN . '</mark></a> or wait maximum 24 hour later for admin to fix this issue.';
 			}
 			return show_error($msg, 500, "An Error Was Encountered");
 		}
@@ -387,13 +398,19 @@ class WithdrawController extends CI_Controller
 		$invoice     = $arr_invoice['invoice'];
 		$sequence    = $arr_invoice['sequence'];
 
+		$where_fee = [
+			'coin_type' => $coin_type
+		];
+		$arr_fee           = $this->M_core->get('coinpayment_fee', 'fee', $where_fee);
+		$estimation_amount = $amount_2 - $arr_fee->row()->fee;
+
 		$data_withdraw = [
 			'invoice'        => $invoice,
 			'sequence'       => $sequence,
 			'id_member'      => $this->id_member,
 			'amount_1'       => $amount,
-			'amount_2'       => $amount_2,
-			'currency_1'     => 'usdt',
+			'amount_2'       => $estimation_amount,
+			'currency_1'     => 'USDT',
 			'currency_2'     => $coin_type,
 			'source'         => $source,
 			'id_wallet'      => $id_wallet,
@@ -405,7 +422,7 @@ class WithdrawController extends CI_Controller
 			'updated_at'     => $this->datetime,
 			'deleted_at'     => null,
 		];
-		$exec_withdraw = $this->M_core->store_uuid('member_withdraw', $data_withdraw);
+		$exec_withdraw = $this->M_core->store('member_withdraw', $data_withdraw);
 
 		if (!$exec_withdraw) {
 			$this->db->trans_rollback();
@@ -427,7 +444,7 @@ class WithdrawController extends CI_Controller
 		redirect('withdraw/success/' . $tx_id);
 	}
 
-	public function _send_alert_balance($coin_type, $amount): bool
+	protected function _send_alert_balance($coin_type, $amount): bool
 	{
 		$subject = APP_NAME . " | Alert Balance " . strtoupper($coin_type);
 		$message = "";
@@ -438,8 +455,8 @@ class WithdrawController extends CI_Controller
 		$this->email->subject($subject);
 
 		$data['coin_type'] = $coin_type;
-		$data['amount']       = $amount;
-		$message = $this->load->view('emails/alert_balance_template', $data, TRUE);
+		$data['amount']    = $amount;
+		$message           = $this->load->view('emails/alert_balance_template', $data, TRUE);
 
 		$this->email->message($message);
 
@@ -454,7 +471,7 @@ class WithdrawController extends CI_Controller
 		return false;
 	}
 
-	public function _generate_invoice()
+	protected function _generate_invoice()
 	{
 		$sequence = $this->_get_new_sequence();
 		$new_sequence = '';
@@ -470,7 +487,7 @@ class WithdrawController extends CI_Controller
 			$new_sequence = "0" . $sequence;
 		}
 
-		$invoice = "W-" . date('Ymd') . '-' . $new_sequence;
+		$invoice = "WD-" . date('Ymd') . '-' . $new_sequence;
 		$return = [
 			'invoice'  => $invoice,
 			'sequence' => $sequence,
@@ -478,7 +495,7 @@ class WithdrawController extends CI_Controller
 		return $return;
 	}
 
-	public function _get_new_sequence()
+	protected function _get_new_sequence()
 	{
 		$exec = $this->M_withdraw->latest_sequence();
 
@@ -510,7 +527,7 @@ class WithdrawController extends CI_Controller
 	}
 
 
-	public function _coinpayments_api_call($cmd, $req = array())
+	protected function _coinpayments_api_call($cmd, $req = array())
 	{
 		// Set the API command and required fields
 		$req['version'] = 1;

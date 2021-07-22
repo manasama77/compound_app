@@ -95,7 +95,8 @@ class M_crypto_asset extends CI_Model
 			ptm.share_upline_percentage AS profit_upline_percentage,
 			mtm.profit_upline_per_day AS profit_upline_value,
 			ptm.share_company_percentage AS profit_company_percentage,
-			mtm.profit_company_per_day AS profit_company_value 
+			mtm.profit_company_per_day AS profit_company_value,
+			mtm.profit_asset
 		', false);
 		$this->db->from('et_member_crypto_asset AS mtm');
 		$this->db->join('et_package_crypto_asset AS ptm', 'ptm.id = mtm.id_package', 'left');
@@ -116,22 +117,23 @@ class M_crypto_asset extends CI_Model
 			foreach ($query->result() as $key) {
 				$invoice                   = $key->invoice;
 				$package                   = $key->package;
-				$amount                    = number_format($key->amount, 0);
-				$profit_per_day            = number_format($key->profit_per_day, 8);
+				$amount                    = check_float($key->amount);
+				$profit_per_day            = check_float($key->profit_per_day);
 				$state                     = $key->state;
 				$created_at                = $key->created_at;
 				$expired_at                = $key->expired_at;
 				$payment_method            = $key->payment_method;
 				$txn_id                    = $key->txn_id;
-				$amount_transfer           = number_format($key->amount_transfer, 8);
-				$profit_montly_percentage  = number_format($key->profit_montly_percentage, 2);
-				$profit_montly_value       = number_format($key->profit_montly_value, 8);
-				$profit_self_percentage    = number_format($key->profit_self_percentage, 2);
-				$profit_self_value         = number_format($key->profit_self_value, 8);
-				$profit_upline_percentage  = number_format($key->profit_upline_percentage, 2);
-				$profit_upline_value       = number_format($key->profit_upline_value, 8);
-				$profit_company_percentage = number_format($key->profit_company_percentage, 2);
-				$profit_company_value      = number_format($key->profit_company_value, 8);
+				$amount_transfer           = check_float($key->amount_transfer);
+				$profit_montly_percentage  = check_float($key->profit_montly_percentage);
+				$profit_montly_value       = check_float($key->profit_montly_value);
+				$profit_self_percentage    = check_float($key->profit_self_percentage);
+				$profit_self_value         = check_float($key->profit_self_value);
+				$profit_upline_percentage  = check_float($key->profit_upline_percentage);
+				$profit_upline_value       = check_float($key->profit_upline_value);
+				$profit_company_percentage = check_float($key->profit_company_percentage);
+				$profit_company_value      = check_float($key->profit_company_value);
+				$profit_asset              = check_float($key->profit_asset);
 
 				$nested = [
 					'invoice'                   => $invoice,
@@ -152,6 +154,7 @@ class M_crypto_asset extends CI_Model
 					'profit_upline_value'       => $profit_upline_value,
 					'profit_company_percentage' => $profit_company_percentage,
 					'profit_company_value'      => $profit_company_value,
+					'profit_asset'              => $profit_asset,
 				];
 
 				array_push($result, $nested);

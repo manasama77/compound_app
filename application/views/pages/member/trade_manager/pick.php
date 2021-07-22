@@ -30,7 +30,7 @@
 							<h3 class="card-title">Package Detail</h3>
 
 							<div class="card-tools">
-								<a href="<?= site_url('trade_manager/add'); ?>" class="btn btn-dark btn-sm">
+								<a href="<?= site_url('trade_manager/add'); ?>" class="btn btn-dark btn-sm elevation-2">
 									<i class="fas fa-chevron-left fa-fw"></i> Back to Package
 								</a>
 							</div>
@@ -87,7 +87,7 @@
 												?>
 												<input type="<?= $type; ?>" class="form-control" id="total_transfer" name="total_transfer" value="<?= $arr->row()->amount; ?>" required <?= $readonly; ?> min="<?= $min; ?>">
 												<div class="input-group-append">
-													<span class="input-group-text">USDT</span>
+													<span class="input-group-text bg-primary">USDT</span>
 												</div>
 											</div>
 											<?php if (str_replace(UYAH, "", base64_decode($id_package)) == "6") { ?>
@@ -100,7 +100,7 @@
 										<div class="col-md-7">
 											<select class="form-control" id="coin_type" name="coin_type" required>
 												<option value="USDT.ERC20">Tether USD - ERC20 (USDT.ERC20)</option>
-												<option value="USDT.BEP20">Tether USD - BSC Chain (USDT.BEP20)</option>
+												<!-- <option value="USDT.BEP20">Tether USD - BSC Chain (USDT.BEP20)</option> -->
 												<option value="LTCT">Lite Coin Test (LTCT)</option>
 											</select>
 										</div>
@@ -111,7 +111,7 @@
 						<!-- /.card-body -->
 						<div class="card-footer text-center">
 							<input type="hidden" class="form-control" id="id_package" name="id_package" value="<?= $id_package; ?>">
-							<button type="submit" class="btn btn-primary btn-block btn-flat">Checkout</button>
+							<button type="submit" class="btn btn-primary btn-block btn-flat elevation-2">Checkout</button>
 						</div>
 						<!-- /.card-footer -->
 					</div>

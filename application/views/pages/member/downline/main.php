@@ -35,9 +35,16 @@
 							<div class="form-group">
 								<label for="depth">Depth</label>
 								<select class="form-control" id="depth" name="depth" required>
-									<?php for ($x = 1; $x < $max_depth; $x++) { ?>
-										<option value="<?= $x; ?>">Generation <?= $x; ?></option>
-									<?php } ?>
+									<?php if ($max_depth == 0) {
+										echo '<option value="" selected disabled>You don\'t have downline</option>';
+									} else {
+										for ($x = 1; $x <= $max_depth; $x++) {
+									?>
+											<option value="<?= $x; ?>">Generation <?= $x; ?></option>
+									<?php
+										}
+									}
+									?>
 								</select>
 							</div>
 							<button type="submit" class="btn btn-primary btn-block">Show</button>

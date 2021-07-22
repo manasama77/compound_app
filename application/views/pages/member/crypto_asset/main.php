@@ -42,6 +42,7 @@
 										<th class="align-middle">Profit/Day</th>
 										<th class="text-center align-middle">Register Date</th>
 										<th class="text-center align-middle">Expired Date</th>
+										<th class="text-center align-middle">Total Profit Asset</th>
 										<th class="text-center align-middle">Status</th>
 										<th class="align-middle text-center"><i class="fas fa-cogs"></i></th>
 									</tr>
@@ -77,6 +78,9 @@
 														echo "-";
 													}
 													?>
+												</td>
+												<td class="align-middle">
+													<?= $key['profit_asset']; ?> <small>USDT</small>
 												</td>
 												<td class="text-center align-middle">
 													<?php
@@ -126,7 +130,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- You Don't Have Any Package, why not try to add new one? -</td>
+											<td colspan="9" class="text-center text-danger">- You Don't Have Any Package, why not try to add new one? -</td>
 										</tr>
 
 									<?php endif; ?>
@@ -189,6 +193,11 @@
 								<th>Profit Daily</th>
 								<th>:</th>
 								<th id="profit_daily"></th>
+							</tr>
+							<tr>
+								<th>Total Profit Asset</th>
+								<th>:</th>
+								<th id="profit_asset"></th>
 							</tr>
 							<tr>
 								<th class="align-top">Profit Sharing Rules</th>

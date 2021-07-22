@@ -29,8 +29,14 @@
 					<div class="card bg-<?= $arr_bg_color[$x]; ?> text-white mb-4">
 						<div class="card-body">
 							<div class="row">
-								<div class="col-md-5">
-									<img src="<?= base_url(); ?>public/img/package_logo/<?= $key->logo; ?>" class="img-fluid" alt="starter">
+								<div class="col-md-5 text-center">
+									<?php if ($arr_state[$x] == 0) { ?>
+										<a href="<?= site_url('trade_manager/pick/' . base64_encode(UYAH . $key->id)); ?>">
+										<?php } ?>
+										<img src="<?= base_url(); ?>public/img/package_logo/<?= $key->logo; ?>" class="img-fluid" alt="<?= $key->name; ?>">
+										<?php if ($arr_state[$x] == 0) { ?>
+										</a>
+									<?php } ?>
 									<?php if ($arr_state[$x] == 0) { ?>
 										<a href="<?= site_url('trade_manager/pick/' . base64_encode(UYAH . $key->id)); ?>" class="btn btn-dark btn-flat btn-block font-weight-bold">
 											<i class="fas fa-toggle-off fa-fw"></i> Pick Package

@@ -139,7 +139,7 @@ class TaskSchedulerController extends CI_Controller
 				/* LOG END */
 
 				/* EMAIL SEND START */
-				$this->_send_daily_profit($buyer_email, $item_name, $profit_self_per_day);
+				$this->_send_daily_profit($buyer_email, $item_name, $profit_self_per_day, $id_member);
 				/* EMAIL SEND END */
 				// MEMBER GET PROFIT END
 
@@ -162,7 +162,7 @@ class TaskSchedulerController extends CI_Controller
 					/* LOG END */
 
 					/* EMAIL SEND START */
-					$this->_send_daily_profit($email_upline, $item_name, $profit_upline_per_day);
+					$this->_send_daily_profit($email_upline, $item_name, $profit_upline_per_day, $id_upline);
 					/* EMAIL SEND END */
 				} else {
 					$exec2 = $this->M_trade_manager->update_unknown_profit($profit_upline_per_day);
@@ -174,7 +174,7 @@ class TaskSchedulerController extends CI_Controller
 						'id_package'   => $id_package,
 						'package_name' => $item_name,
 						'profit'       => $profit_upline_per_day,
-						'state'        => 'get bonus',
+						'state'        => 'get',
 						'description'  => $description2b,
 						'created_at'   => $this->datetime,
 					];
@@ -305,7 +305,7 @@ class TaskSchedulerController extends CI_Controller
 				/* LOG END */
 
 				/* EMAIL SEND START */
-				$this->_send_daily_profit($buyer_email, $item_name, $profit_self_per_day);
+				$this->_send_daily_profit($buyer_email, $item_name, $profit_self_per_day, $id_member);
 				/* EMAIL SEND END */
 				// MEMBER GET PROFIT END
 
@@ -328,7 +328,7 @@ class TaskSchedulerController extends CI_Controller
 					/* LOG END */
 
 					/* EMAIL SEND START */
-					$this->_send_daily_profit($email_upline, $item_name, $profit_upline_per_day);
+					$this->_send_daily_profit($email_upline, $item_name, $profit_upline_per_day, $id_upline);
 					/* EMAIL SEND END */
 				} else {
 					$exec2 = $this->M_crypto_asset->update_unknown_profit($profit_upline_per_day);
@@ -1963,10 +1963,10 @@ class TaskSchedulerController extends CI_Controller
 		$rgt          = $arr_member->row()->rgt;
 
 		// update omset self start
-		$exec = $this->M_trade_manager->update_total_omset($id_member, $amount_usd);
-		if (!$exec) {
-			return false;
-		}
+		// $exec = $this->M_trade_manager->update_total_omset($id_member, $amount_usd);
+		// if (!$exec) {
+		// 	return false;
+		// }
 		// update omset self end
 
 		$where_upline = [
@@ -2089,7 +2089,7 @@ class TaskSchedulerController extends CI_Controller
 		return false;
 	}
 
-	protected function _send_daily_profit($to, $item_name, $amount): bool
+	protected function _send_daily_profit($to, $item_name, $amount, $id_member): bool
 	{
 		$subject = APP_NAME . " | Package $item_name Distribution Daily Profit Success";
 		$message = "";

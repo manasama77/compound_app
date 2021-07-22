@@ -57,7 +57,8 @@
 						<span class="info-box-text">Trade Managers</span>
 						<span class="info-box-number">
 							<?= $data_card['data_balance']['total_invest_trade_manager']; ?>
-							<small>USDT</small></span>
+							<small>USDT</small>
+						</span>
 					</div>
 				</div>
 			</div>
@@ -71,7 +72,8 @@
 						<span class="info-box-text">Crypto Assets</span>
 						<span class="info-box-number">
 							<?= $data_card['data_balance']['total_invest_crypto_asset']; ?>
-							<small>USDT</small></span>
+							<small>USDT</small>
+						</span>
 					</div>
 				</div>
 			</div>
@@ -88,7 +90,8 @@
 						<span class="info-box-text">Profit</span>
 						<span class="info-box-number">
 							<?= $data_card['data_balance']['profit']; ?>
-							<small>USDT</small></span>
+							<small>USDT</small>
+						</span>
 					</div>
 				</div>
 			</div>
@@ -102,38 +105,40 @@
 						<span class="info-box-text">Bonus</span>
 						<span class="info-box-number">
 							<?= $data_card['data_balance']['bonus']; ?>
-							<small>USDT</small></span>
+							<small>USDT</small>
+						</span>
 					</div>
 				</div>
 			</div>
-
 		</div>
 
-		<div class="row">
-			<div class="col-12">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">Recruitment Link</h3>
+		<?php if ($data_card['data_balance']['total_invest_trade_manager'] > 0 || $data_card['data_balance']['total_invest_crypto_asset'] > 0) { ?>
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Recruitment Link</h3>
 
-						<div class="card-tools">
-							<button type="button" class="btn btn-tool" data-card-widget="collapse">
-								<i class="fas fa-minus"></i>
-							</button>
-						</div>
-					</div>
-					<div class="card-body">
-						<div class="input-group">
-							<input type="text" class="form-control" id="recruitment_link" value="<?= $recruitment_link; ?>" readonly />
-							<div class="input-group-append">
-								<button type="button" class="btn btn-dark" id="copy" onclick="CopyUrl();">
-									<i class="fas fa-clipboard fa-fw"></i> Copy
+							<div class="card-tools">
+								<button type="button" class="btn btn-tool" data-card-widget="collapse">
+									<i class="fas fa-minus"></i>
 								</button>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="input-group">
+								<input type="text" class="form-control" id="recruitment_link" value="<?= $recruitment_link; ?>" readonly />
+								<div class="input-group-append">
+									<button type="button" class="btn btn-dark" id="copy" onclick="CopyUrl();">
+										<i class="fas fa-clipboard fa-fw"></i> Copy
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		<?php } ?>
 
 		<div class="row">
 

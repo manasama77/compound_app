@@ -41,7 +41,7 @@
 									</tr>
 									<tr>
 										<th>Amount</th>
-										<th><?= number_format($amount, 8); ?> <small>USDT</small></th>
+										<th><?= check_float($amount); ?> <small>USDT</small></th>
 									</tr>
 									<tr>
 										<th>Target Address</th>

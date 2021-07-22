@@ -79,22 +79,23 @@ class CryptoAssetController extends CI_Controller
 		$return = [];
 		foreach ($data_crypto_asset as $key) {
 			$package                   = $key['package'];
-			$amount                    = $key['amount'];
-			$profit_per_day            = $key['profit_per_day'];
+			$amount                    = check_float($key['amount']);
+			$profit_per_day            = check_float($key['profit_per_day']);
 			$state                     = $key['state'];
 			$created_at                = $key['created_at'];
 			$expired_at                = $key['expired_at'];
 			$payment_method            = $key['payment_method'];
 			$txn_id                    = $key['txn_id'];
-			$amount_transfer           = $key['amount_transfer'];
+			$amount_transfer           = check_float($key['amount_transfer']);
 			$profit_montly_percentage  = $key['profit_montly_percentage'];
-			$profit_montly_value       = $key['profit_montly_value'];
+			$profit_montly_value       = check_float($key['profit_montly_value']);
 			$profit_self_percentage    = $key['profit_self_percentage'];
-			$profit_self_value         = $key['profit_self_value'];
+			$profit_self_value         = check_float($key['profit_self_value']);
 			$profit_upline_percentage  = $key['profit_upline_percentage'];
-			$profit_upline_value       = $key['profit_upline_value'];
+			$profit_upline_value       = check_float($key['profit_upline_value']);
 			$profit_company_percentage = $key['profit_company_percentage'];
-			$profit_company_value      = $key['profit_company_value'];
+			$profit_company_value      = check_float($key['profit_company_value']);
+			$profit_asset              = check_float($key['profit_asset']);
 
 			$return = [
 				'package'                   => $package,
@@ -114,6 +115,7 @@ class CryptoAssetController extends CI_Controller
 				'profit_upline_value'       => $profit_upline_value,
 				'profit_company_percentage' => $profit_company_percentage,
 				'profit_company_value'      => $profit_company_value,
+				'profit_asset'              => $profit_asset,
 			];
 		}
 
