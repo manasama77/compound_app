@@ -25,7 +25,7 @@ class LogTradeManagerController extends CI_Controller
 
 	public function index()
 	{
-		$arr  = $this->M_trade_manager->get_group_invoice();
+		$arr  = $this->M_trade_manager->get_group_invoice($this->id_member);
 		$data = [
 			'title'      => APP_NAME . ' | Log Trade Manager',
 			'content'    => 'log/trade_manager/main',
@@ -43,6 +43,7 @@ class LogTradeManagerController extends CI_Controller
 
 		$where = [
 			'invoice'    => $invoice,
+			'id_member'  => $this->id_member,
 			'deleted_at' => null,
 		];
 		$arr = $this->M_core->get('member_trade_manager', '*', $where);
