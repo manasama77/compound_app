@@ -25,7 +25,7 @@
 
 					<div class="info-box-content">
 						<span class="info-box-text font-weight-bold">
-							Main Line Total Turnover <small><?= $downline_main_line; ?></small>
+							Main Line Total Turnover<br /><small><?= $downline_main_line; ?></small>
 						</span>
 						<span class="info-box-number">
 							<?= $omset_main_line; ?>
