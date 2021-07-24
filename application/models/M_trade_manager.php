@@ -201,6 +201,20 @@ class M_trade_manager extends CI_Model
 			->where('id_member', $id_member)
 			->update('member_balance');
 	}
+
+	public function get_group_invoice()
+	{
+		return $this->db
+			->select([
+				'member_trade_manager.invoice',
+				'package_trade_manager.name',
+			])
+			->from('member_trade_manager')
+			->join('package_trade_manager', 'package_trade_manager.id = member_trade_manager.id_package', 'left')
+			->where('member_trade_manager.deleted_at', null)
+			->group_by('member_trade_manager.invoice')
+			->get();
+	}
 }
                         
 /* End of file M_trade_manager.php */
