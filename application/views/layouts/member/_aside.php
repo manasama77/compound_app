@@ -136,7 +136,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('login'); ?> log_crypto_asset.html" class="nav-link">
+							<a href="<?= site_url('log/crypto_asset'); ?>" class="nav-link">
 								<i class="fas fa-file nav-icon"></i>
 								<p>Crypto Asset</p>
 							</a>

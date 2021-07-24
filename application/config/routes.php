@@ -65,6 +65,9 @@ $route['rewards'] = 'RewardsController/index';
 $route['log/trade_manager'] 				= 'LogTradeManagerController/index';
 $route['log/trade_manager/detail/(:any)'] 	= 'LogTradeManagerController/detail/$1';
 
+$route['log/crypto_asset'] 				  	= 'LogCryptoAssetController/index';
+$route['log/crypto_asset/detail/(:any)'] 	= 'LogCryptoAssetController/detail/$1';
+
 $route['log/recruitment']   = 'LogRecruitmentController/index';
 
 $route['log/withdraw'] = 'LogWithdrawController/index';

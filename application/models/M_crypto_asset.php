@@ -197,6 +197,21 @@ class M_crypto_asset extends CI_Model
 			->where('state in', "('waiting payment', 'pending')", false)
 			->get();
 	}
+
+	public function get_group_invoice($id_member)
+	{
+		return $this->db
+			->select([
+				'member_crypto_asset.invoice',
+				'package_crypto_asset.name',
+			])
+			->from('member_crypto_asset')
+			->join('package_crypto_asset', 'package_crypto_asset.id = member_crypto_asset.id_package', 'left')
+			->where('member_crypto_asset.deleted_at', null)
+			->where('id_member', $id_member)
+			->group_by('member_crypto_asset.invoice')
+			->get();
+	}
 }
                         
 /* End of file M_crypto_asset.php */

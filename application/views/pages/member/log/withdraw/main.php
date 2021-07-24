@@ -16,9 +16,7 @@
 
 <section class="content">
 	<div class="container-fluid">
-
 		<div class="row">
-
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
@@ -58,10 +56,10 @@
 													<?= $key->invoice; ?>
 												</td>
 												<td class="text-right align-middle">
-													<?= number_format($key->amount_1, 8); ?> <small><?= $key->currency_1; ?></small>
+													<?= check_float($key->amount_1); ?> <small><?= $key->currency_1; ?></small>
 												</td>
 												<td class="text-right align-middle">
-													<?= number_format($key->amount_2, 8); ?> <small><?= $key->currency_2; ?></small>
+													<?= check_float($key->amount_2); ?> <small><?= $key->currency_2; ?></small>
 												</td>
 												<td class="text-center align-middle">
 													<?= strtoupper($key->source); ?>

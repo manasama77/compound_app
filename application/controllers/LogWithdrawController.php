@@ -19,6 +19,8 @@ class LogWithdrawController extends CI_Controller
 		$this->email_member   = $this->session->userdata(SESI . 'email');
 
 		$this->load->library('L_member', null, 'template');
+		$this->load->helper('floating_helper');
+
 		$this->load->model('M_withdraw');
 	}
 
