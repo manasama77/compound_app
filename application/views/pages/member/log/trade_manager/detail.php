@@ -49,6 +49,9 @@
 									$description = $key2['description'];
 									if ($state == "waiting payment") {
 										$color = "bg-warning";
+										$icon  = "fa-hourglass-start";
+									} elseif ($state == "pending") {
+										$color = "bg-info";
 										$icon  = "fa-hourglass-half";
 									} elseif ($state == "active") {
 										$color = "bg-success";
