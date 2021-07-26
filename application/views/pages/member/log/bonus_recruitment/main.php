@@ -60,7 +60,7 @@
 													<?= ucwords($key->type); ?></small>
 												</td>
 												<td class="text-right align-top">
-													<?= check_float(($key->package * 10) / 100); ?> <small>USDT</small>
+													<?= check_float(($key->package_amount * 10) / 100); ?> <small>USDT</small>
 												</td>
 												<td class="align-top">
 													<?= $key->description; ?>
