@@ -159,6 +159,12 @@
 								<p>Bonus Recruitment</p>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/bonus_ql'); ?>" class="nav-link">
+								<i class="fas fa-wallet nav-icon"></i>
+								<p>Bonus Qualification Leader</p>
+							</a>
+						</li>
 					</ul>
 				</li>
 			</ul>

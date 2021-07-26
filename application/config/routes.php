@@ -73,6 +73,7 @@ $route['log/recruitment']   = 'LogRecruitmentController/index';
 $route['log/withdraw'] = 'LogWithdrawController/index';
 
 $route['log/bonus_recruitment'] = 'LogBonusRecruitmentController/index';
+$route['log/bonus_ql']          = 'LogBonusQLController/index';
 
 $route['init']         = 'InitController/init';
 $route['init/country'] = 'InitController/country';
