@@ -109,7 +109,7 @@
 													</span>
 												</td>
 												<td class="text-center align-middle">
-													<?= $key['downline_omset']; ?> USDT
+													<?= $key['total_omset']; ?> USDT
 												</td>
 												<td class="text-center align-middle">
 													<?= $key['total_downline']; ?> Member
