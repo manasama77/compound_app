@@ -186,7 +186,9 @@ class M_member extends CI_Model
 			'tree.lft',
 			'tree.rgt',
 			'tree.depth',
-			'balance.total_omset'
+			'balance.self_omset',
+			'balance.downline_omset',
+			'balance.total_omset',
 		]);
 		$this->db->from('et_member AS member');
 		$this->db->join('et_member_reward AS reward', 'reward.id_member = member.id', 'left');

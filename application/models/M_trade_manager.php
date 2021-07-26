@@ -64,9 +64,28 @@ class M_trade_manager extends CI_Model
 			->get();
 	}
 
+	public function update_self_omset($id_member, $self_omset)
+	{
+		return $this->db
+			->set('self_omset', 'self_omset + ' . $self_omset, false)
+			->where('id_member', $id_member)
+			->update('member_balance');
+	}
+
+	public function update_downline_omset($id_member, $downline_omset)
+	{
+		return $this->db
+			->set('downline_omset', 'downline_omset + ' . $downline_omset, false)
+			->where('id_member', $id_member)
+			->update('member_balance');
+	}
+
 	public function update_total_omset($id_member, $total_omset)
 	{
-		return $this->db->set('total_omset', 'total_omset + ' . $total_omset, false)->where('id_member', $id_member)->update('member_balance');
+		return $this->db
+			->set('total_omset', 'total_omset + ' . $total_omset, false)
+			->where('id_member', $id_member)
+			->update('member_balance');
 	}
 
 	public function get_member_trade_manager($id_member = null, $invoice = null)

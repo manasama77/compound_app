@@ -437,7 +437,7 @@ class LoginController extends CI_Controller
 			$arr       = $this->M_core->get('member', 'id', $where);
 			$id_member = $arr->row()->id;
 
-			$data = [
+			$data                         =  [
 				'id_member'                  => $id_member,
 				'total_invest_trade_manager' => 0,
 				'count_trade_manager'        => 0,
@@ -445,6 +445,9 @@ class LoginController extends CI_Controller
 				'count_crypto_asset'         => 0,
 				'profit'                     => 0,
 				'bonus'                      => 0,
+				'self_omset'                 => 0,
+				'downline_omset'             => 0,
+				'total_omset'                => 0,
 				'created_at'                 => $this->datetime,
 				'updated_at'                 => $this->datetime,
 				'deleted_at'                 => null,

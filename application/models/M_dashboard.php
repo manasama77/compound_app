@@ -12,6 +12,8 @@ class M_dashboard extends CI_Model
 			'balance.total_invest_crypto_asset',
 			'balance.profit',
 			'balance.bonus',
+			'balance.self_omset',
+			'balance.downline_omset',
 			'balance.total_omset',
 		]);
 

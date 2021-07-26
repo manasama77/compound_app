@@ -1315,12 +1315,19 @@ class TaskSchedulerController extends CI_Controller
 		$lft          = $arr_member->row()->lft;
 		$rgt          = $arr_member->row()->rgt;
 
-		// update omset self start
-		// $exec = $this->M_trade_manager->update_total_omset($id_member, $amount_usd);
-		// if (!$exec) {
-		// 	return false;
-		// }
-		// update omset self end
+		// update self omset start
+		$exec = $this->M_trade_manager->update_self_omset($id_member, $amount_usd);
+		if (!$exec) {
+			return false;
+		}
+		// update self omset end
+
+		// update total omset start
+		$exec = $this->M_trade_manager->update_total_omset($id_member, $amount_usd);
+		if (!$exec) {
+			return false;
+		}
+		// update total omset end
 
 		$where_upline = [
 			'lft < ' => $lft,
@@ -1342,9 +1349,10 @@ class TaskSchedulerController extends CI_Controller
 				if ($arr_info->num_rows() > 0) {
 					foreach ($arr_info->result() as $key_info) {
 						$id_x = $key_info->id_x;
-						$exec2 = $this->M_trade_manager->update_total_omset($id_x, $amount_usd);
+						$exec2 = $this->M_trade_manager->update_downline_omset($id_x, $amount_usd);
+						$exec3 = $this->M_trade_manager->update_total_omset($id_x, $amount_usd);
 
-						if (!$exec2) {
+						if (!$exec2 && !$exec3) {
 							return false;
 						}
 					}
@@ -2155,6 +2163,8 @@ class TaskSchedulerController extends CI_Controller
 		}
 
 		$arr = $this->M_member->get_data_member_reward();
+		echo '<pre>' . print_r($arr->result(), 1) . '</pre>';
+		exit;
 
 		if ($arr->num_rows() > 0) :
 

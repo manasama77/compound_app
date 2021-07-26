@@ -26,7 +26,7 @@
 					<div class="info-box-content">
 						<span class="info-box-text">Total Turnover</span>
 						<span class="info-box-number">
-							<?= $data_card['data_balance']['total_omset']; ?>
+							<?= $data_card['data_balance']['downline_omset']; ?>
 							<small>USDT</small>
 						</span>
 					</div>
