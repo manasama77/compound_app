@@ -11,7 +11,7 @@
  Target Server Version : 100419
  File Encoding         : 65001
 
- Date: 21/07/2021 02:42:01
+ Date: 26/07/2021 10:59:44
 */
 
 SET NAMES utf8mb4;
@@ -45,7 +45,26 @@ CREATE TABLE `et_admin`  (
 -- ----------------------------
 -- Records of et_admin
 -- ----------------------------
-INSERT INTO `et_admin` VALUES (1, 'adam.pm77@gmail.com', '$2y$10$YysMw8.jKVUn5.bSMioNNurFK/sFahRZ/EoE9l049VHWmEGA6r7h6', 'Adam PM', 'developer', 'yes', NULL, 'IfNG62YRH5NZXe1sCMBdU0mozjPW8gJ8juyiIE3YRfcHrCiQDBqoTm791M0nhDFL', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0', 407274, '2021-06-06 00:35:15', '2021-07-16 00:48:50', NULL, NULL, 1, NULL);
+INSERT INTO `et_admin` VALUES (1, 'adam.pm77@gmail.com', '$2y$10$YysMw8.jKVUn5.bSMioNNurFK/sFahRZ/EoE9l049VHWmEGA6r7h6', 'Adam PM', 'developer', 'yes', NULL, 'IfNG62YRH5NZXe1sCMBdU0mozjPW8gJ8juyiIE3YRfcHrCiQDBqoTm791M0nhDFL', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0', 313338, '2021-06-06 00:35:15', '2021-07-26 10:37:36', NULL, NULL, 1, NULL);
+
+-- ----------------------------
+-- Table structure for et_coinpayment_fee
+-- ----------------------------
+DROP TABLE IF EXISTS `et_coinpayment_fee`;
+CREATE TABLE `et_coinpayment_fee`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `coin_type` enum('BNB.BSC','TRX','LTCT') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'USDT.BSC | BNB.BEP20 | TRX | LTCT',
+  `fee` decimal(15, 8) NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of et_coinpayment_fee
+-- ----------------------------
+INSERT INTO `et_coinpayment_fee` VALUES (1, 'BNB.BSC', 0.00100000, '2021-07-23 05:24:26');
+INSERT INTO `et_coinpayment_fee` VALUES (2, 'TRX', 0.20000000, '2021-07-23 05:24:14');
+INSERT INTO `et_coinpayment_fee` VALUES (3, 'LTCT', 0.00100000, '2021-07-23 05:25:27');
 
 -- ----------------------------
 -- Table structure for et_coinpayment_ipn_trade_manager
@@ -432,6 +451,29 @@ CREATE TABLE `et_log_ipn_trade_manager`  (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for et_log_member_crypto_asset
+-- ----------------------------
+DROP TABLE IF EXISTS `et_log_member_crypto_asset`;
+CREATE TABLE `et_log_member_crypto_asset`  (
+  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'uuid',
+  `id_member` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'uuid',
+  `invoice` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'no invoice',
+  `amount_invest` int NULL DEFAULT NULL,
+  `amount_transfer` decimal(15, 8) NULL DEFAULT NULL,
+  `currency_transfer` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `txn_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `state` enum('waiting payment','pending','active','inactive','cancel','expired') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `created_at` datetime NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of et_log_member_crypto_asset
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for et_log_member_trade_manager
 -- ----------------------------
 DROP TABLE IF EXISTS `et_log_member_trade_manager`;
@@ -446,7 +488,7 @@ CREATE TABLE `et_log_member_trade_manager`  (
   `state` enum('waiting payment','pending','active','inactive','cancel','expired') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `created_at` datetime NULL DEFAULT NULL,
-  `updated_at` datetime NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -461,12 +503,10 @@ DROP TABLE IF EXISTS `et_log_profit_crypto_asset`;
 CREATE TABLE `et_log_profit_crypto_asset`  (
   `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'uuid',
   `id_member` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'uuid',
-  `id_downline` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'uuid',
-  `type_package` enum('trade manager','crypto asset') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'trade manager | crypto asset',
   `invoice` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'no invoice',
   `id_package` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'uuid',
   `package_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `package_amount` decimal(15, 8) NULL DEFAULT NULL COMMENT 'USDT',
+  `profit` decimal(15, 8) NULL DEFAULT NULL,
   `state` enum('get','correction') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'get | correction',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'X get bonus recruitment of member (x) 000 USDT',
   `created_at` datetime NULL DEFAULT NULL,
@@ -497,12 +537,6 @@ CREATE TABLE `et_log_profit_trade_manager`  (
 -- ----------------------------
 -- Records of et_log_profit_trade_manager
 -- ----------------------------
-INSERT INTO `et_log_profit_trade_manager` VALUES ('767f1a31-e751-11eb-9ae2-037645f91062', '1294a713-e596-11eb-abed-ea7075f67258', 'INV-20210718-000001', '1', 'Starter Pack', 0.00250000, '', 'Adam (adam.pm77@gmail.com) get daily profit from trade manager package Starter Pack for 0.00250000 USDT', '2021-07-18 05:51:03');
-INSERT INTO `et_log_profit_trade_manager` VALUES ('767f62b2-e751-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, '', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 05:51:03');
-INSERT INTO `et_log_profit_trade_manager` VALUES ('767f8752-e751-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, '', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 05:51:03');
-INSERT INTO `et_log_profit_trade_manager` VALUES ('88d0c636-e749-11eb-9ae2-037645f91062', '1294a713-e596-11eb-abed-ea7075f67258', 'INV-20210718-000001', '1', 'Starter Pack', 0.00250000, '', 'Adam (adam.pm77@gmail.com) get daily profit from trade manager package Starter Pack for 0.00250000 USDT', '2021-07-18 04:54:17');
-INSERT INTO `et_log_profit_trade_manager` VALUES ('88d17471-e749-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, '', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 04:54:17');
-INSERT INTO `et_log_profit_trade_manager` VALUES ('88d18b32-e749-11eb-9ae2-037645f91062', NULL, 'INV-20210718-000001', '1', 'Starter Pack', 0.00125000, '', 'Unknown Balance get daily profit from downline Adam (adam.pm77@gmail.com) trade manager package Starter Pack for 0.00125000 USDT', '2021-07-18 04:54:17');
 
 -- ----------------------------
 -- Table structure for et_log_send_email_admin
@@ -585,7 +619,6 @@ CREATE TABLE `et_member_balance`  (
   `count_trade_manager` smallint NULL DEFAULT 0,
   `total_invest_crypto_asset` decimal(15, 8) NULL DEFAULT 0.00000000,
   `count_crypto_asset` smallint NULL DEFAULT 0,
-  `profit_asset` decimal(15, 8) NULL DEFAULT 0.00000000,
   `profit` decimal(15, 8) NULL DEFAULT 0.00000000,
   `bonus` decimal(15, 8) NULL DEFAULT 0.00000000,
   `total_omset` decimal(15, 8) NULL DEFAULT 0.00000000,
@@ -629,6 +662,9 @@ CREATE TABLE `et_member_crypto_asset`  (
   `expired_at` date NULL DEFAULT NULL,
   `is_qualified` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no',
   `is_royalty` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no',
+  `profit_asset` decimal(15, 8) NULL DEFAULT 0.00000000,
+  `can_claim` enum('no','yes') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'no | yes',
+  `claim_at` datetime NULL DEFAULT NULL,
   `created_at` datetime NULL DEFAULT NULL,
   `updated_at` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` datetime NULL DEFAULT NULL,
@@ -733,12 +769,11 @@ CREATE TABLE `et_member_wallet`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `et_member_withdraw`;
 CREATE TABLE `et_member_withdraw`  (
-  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT ' uuid',
-  `invoice` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `invoice` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'WD-XXXXXXXX',
   `sequence` bigint UNSIGNED NULL DEFAULT NULL,
   `id_member` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'uuid',
-  `amount_1` decimal(15, 8) UNSIGNED ZEROFILL NULL DEFAULT NULL,
-  `amount_2` decimal(15, 8) UNSIGNED ZEROFILL NULL DEFAULT NULL,
+  `amount_1` decimal(15, 8) NULL DEFAULT NULL,
+  `amount_2` decimal(15, 8) NULL DEFAULT NULL,
   `currency_1` enum('USDT') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'USDT' COMMENT 'USDT',
   `currency_2` enum('BNB.BSC','TRX','LTCT') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'BNB.BSC | TRX | LTCT',
   `source` enum('profit','bonus') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'profit | bonus',
@@ -750,7 +785,7 @@ CREATE TABLE `et_member_withdraw`  (
   `created_at` datetime NULL DEFAULT NULL,
   `updated_at` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` datetime NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`invoice`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -789,17 +824,17 @@ CREATE TABLE `et_package_crypto_asset`  (
 -- ----------------------------
 -- Records of et_package_crypto_asset
 -- ----------------------------
-INSERT INTO `et_package_crypto_asset` VALUES (1, 'ET-CA-ASH', 'Ashoca Pack', 10000, 15.00000000, 1500.00000000, 0.50000000, 50.00000000, 365, 60.00000000, 30.00000000, 20.00000000, 10.00000000, 20.00000000, 10.00000000, NULL, 1, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
-INSERT INTO `et_package_crypto_asset` VALUES (2, 'ET-CA-BOU', 'Bougainvillea Pack', 20000, 15.00000000, 3000.00000000, 0.50000000, 100.00000000, 365, 65.00000000, 65.00000000, 17.50000000, 17.50000000, 17.50000000, 17.50000000, NULL, 2, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
-INSERT INTO `et_package_crypto_asset` VALUES (3, 'ET-CA-CLO', 'Clover Pack', 30000, 15.00000000, 4500.00000000, 0.50000000, 150.00000000, 365, 70.00000000, 105.00000000, 15.00000000, 22.50000000, 15.00000000, 22.50000000, NULL, 3, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
-INSERT INTO `et_package_crypto_asset` VALUES (4, 'ET-CA-DAH', 'Dahlia Pack', 50000, 15.00000000, 7500.00000000, 0.50000000, 250.00000000, 365, 75.00000000, 187.50000000, 12.50000000, 31.25000000, 12.50000000, 31.25000000, NULL, 4, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
-INSERT INTO `et_package_crypto_asset` VALUES (5, 'ET-CA-EDE', 'Edelweiss Pack', 75000, 15.00000000, 11250.00000000, 0.50000000, 375.00000000, 365, 80.00000000, 300.00000000, 10.00000000, 37.50000000, 10.00000000, 37.50000000, NULL, 5, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
+INSERT INTO `et_package_crypto_asset` VALUES (1, 'ET-CA-ASH', 'Ashoca Pack', 10000, 15.00000000, 1500.00000000, 0.50000000, 50.00000000, 365, 60.00000000, 30.00000000, 20.00000000, 10.00000000, 20.00000000, 10.00000000, 'ashoca_logo.png', 1, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
+INSERT INTO `et_package_crypto_asset` VALUES (2, 'ET-CA-BOU', 'Bougainvillea Pack', 20000, 15.00000000, 3000.00000000, 0.50000000, 100.00000000, 365, 65.00000000, 65.00000000, 17.50000000, 17.50000000, 17.50000000, 17.50000000, 'bougainvillea_logo.png', 2, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
+INSERT INTO `et_package_crypto_asset` VALUES (3, 'ET-CA-CLO', 'Clover Pack', 30000, 15.00000000, 4500.00000000, 0.50000000, 150.00000000, 365, 70.00000000, 105.00000000, 15.00000000, 22.50000000, 15.00000000, 22.50000000, 'clover_logo.png', 3, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
+INSERT INTO `et_package_crypto_asset` VALUES (4, 'ET-CA-DAH', 'Dahlia Pack', 50000, 15.00000000, 7500.00000000, 0.50000000, 250.00000000, 365, 75.00000000, 187.50000000, 12.50000000, 31.25000000, 12.50000000, 31.25000000, 'dahlia_logo.png', 4, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
+INSERT INTO `et_package_crypto_asset` VALUES (5, 'ET-CA-EDE', 'Edelweiss Pack', 75000, 15.00000000, 11250.00000000, 0.50000000, 375.00000000, 365, 80.00000000, 300.00000000, 10.00000000, 37.50000000, 10.00000000, 37.50000000, 'edelweiss_logo.png', 5, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
 
 -- ----------------------------
--- Table structure for et_package_trade_manager
+-- Table structure for et_package_crypto_asset_test
 -- ----------------------------
-DROP TABLE IF EXISTS `et_package_trade_manager`;
-CREATE TABLE `et_package_trade_manager`  (
+DROP TABLE IF EXISTS `et_package_crypto_asset_test`;
+CREATE TABLE `et_package_crypto_asset_test`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'ET-ABBR',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
@@ -807,38 +842,37 @@ CREATE TABLE `et_package_trade_manager`  (
   `profit_per_month_percent` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
   `profit_per_month_value` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
   `profit_per_day_percentage` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
-  `profit_per_day_value` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `profit_per_day_value` decimal(15, 8) NULL DEFAULT NULL,
   `contract_duration` int NULL DEFAULT NULL COMMENT 'day',
-  `share_self_percentage` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
-  `share_self_value` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
-  `share_upline_percentage` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
-  `share_upline_value` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
-  `share_company_percentage` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
-  `share_company_value` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `share_self_percentage` decimal(15, 8) NULL DEFAULT NULL,
+  `share_self_value` decimal(15, 8) NULL DEFAULT NULL,
+  `share_upline_percentage` decimal(15, 8) NULL DEFAULT NULL,
+  `share_upline_value` decimal(15, 8) NULL DEFAULT NULL,
+  `share_company_percentage` decimal(15, 8) NULL DEFAULT NULL,
+  `share_company_value` decimal(15, 8) NULL DEFAULT NULL,
   `logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `sequence` int NULL DEFAULT NULL,
-  `is_active` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no',
+  `is_active` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `created_at` datetime NULL DEFAULT NULL,
   `updated_at` datetime NULL DEFAULT NULL,
   `deleted_at` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of et_package_trade_manager
+-- Records of et_package_crypto_asset_test
 -- ----------------------------
-INSERT INTO `et_package_trade_manager` VALUES (1, 'ET-TM-STA', 'Starter Pack', 1, 15.00000000, 0.15000000, 0.50000000, 0.00500000, 365, 50.00000000, 0.00250000, 25.00000000, 0.00125000, 25.00000000, 0.00125000, 'starter_logo.png', 1, 'yes', '2021-06-12 03:06:36', '2021-06-12 03:06:40', NULL);
-INSERT INTO `et_package_trade_manager` VALUES (2, 'ET-TM-SAP', 'Sapphire Pack', 2, 15.00000000, 0.30000000, 0.50000000, 0.01000000, 365, 60.00000000, 0.00600000, 20.00000000, 0.00200000, 20.00000000, 0.00200000, 'sapphire_logo.png', 2, 'yes', '2021-06-12 03:09:28', '2021-06-12 03:09:31', NULL);
-INSERT INTO `et_package_trade_manager` VALUES (3, 'ET-TM-RUB', 'Ruby Pack', 3, 15.00000000, 0.45000000, 0.50000000, 0.01500000, 365, 70.00000000, 0.01050000, 15.00000000, 0.00225000, 15.00000000, 0.00225000, 'ruby_logo.png', 3, 'yes', '2021-06-12 03:10:27', '2021-06-12 03:10:29', NULL);
-INSERT INTO `et_package_trade_manager` VALUES (4, 'ET-TM-EME', 'Emerald Pack', 4, 15.00000000, 0.60000000, 0.50000000, 0.02000000, 365, 80.00000000, 0.01600000, 10.00000000, 0.00200000, 10.00000000, 0.00200000, 'emerald_logo.png', 4, 'yes', '2021-06-12 03:11:23', '2021-06-12 03:11:34', NULL);
-INSERT INTO `et_package_trade_manager` VALUES (5, 'ET-TM-DIA', 'Diamond Pack', 5, 15.00000000, 0.75000000, 0.50000000, 0.02500000, 365, 90.00000000, 0.02250000, 5.00000000, 0.00125000, 5.00000000, 0.00125000, 'diamond_logo.png', 5, 'yes', '2021-06-12 03:12:35', '2021-06-12 03:12:37', NULL);
-INSERT INTO `et_package_trade_manager` VALUES (6, 'ET-TM-CRO', 'Crown Pack', 0, 15.00000000, 0.00000000, 0.50000000, 0.00000000, 365, 90.00000000, 0.00000000, 5.00000000, 0.00000000, 5.00000000, 0.00000000, 'crown_logo.png', 6, 'yes', '2021-06-12 03:16:46', '2021-06-12 03:16:49', NULL);
+INSERT INTO `et_package_crypto_asset_test` VALUES (1, 'ET-CA-ASH', 'Ashoca Pack', 1, 15.00000000, 0.15000000, 0.50000000, 0.00500000, 365, 60.00000000, 0.00300000, 20.00000000, 0.00100000, 20.00000000, 0.00100000, 'ashoca_logo.png', 1, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
+INSERT INTO `et_package_crypto_asset_test` VALUES (2, 'ET-CA-BOU', 'Bougainvillea Pack', 2, 15.00000000, 0.30000000, 0.50000000, 0.01000000, 365, 65.00000000, 0.00650000, 17.50000000, 0.00175000, 17.50000000, 0.00175000, 'bougainvillea_logo.png', 2, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
+INSERT INTO `et_package_crypto_asset_test` VALUES (3, 'ET-CA-CLO', 'Clover Pack', 3, 15.00000000, 0.45000000, 0.50000000, 0.01500000, 365, 70.00000000, 0.01050000, 15.00000000, 0.00225000, 15.00000000, 0.00225000, 'clover_logo.png', 3, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
+INSERT INTO `et_package_crypto_asset_test` VALUES (4, 'ET-CA-DAH', 'Dahlia Pack', 5, 15.00000000, 0.75000000, 0.50000000, 0.02500000, 365, 75.00000000, 0.01875000, 12.50000000, 0.00312500, 12.50000000, 0.00312500, 'dahlia_logo.png', 4, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
+INSERT INTO `et_package_crypto_asset_test` VALUES (5, 'ET-CA-EDE', 'Edelweiss Pack', 8, 15.00000000, 1.20000000, 0.50000000, 0.04000000, 365, 80.00000000, 0.03200000, 10.00000000, 0.00400000, 10.00000000, 0.00400000, 'edelweiss_logo.png', 5, 'yes', '2021-06-12 03:33:40', '2021-06-12 03:33:40', NULL);
 
 -- ----------------------------
--- Table structure for et_package_trade_manager_copy1
+-- Table structure for et_package_trade_manager
 -- ----------------------------
-DROP TABLE IF EXISTS `et_package_trade_manager_copy1`;
-CREATE TABLE `et_package_trade_manager_copy1`  (
+DROP TABLE IF EXISTS `et_package_trade_manager`;
+CREATE TABLE `et_package_trade_manager`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'ET-ABBR',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
@@ -864,14 +898,53 @@ CREATE TABLE `et_package_trade_manager_copy1`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of et_package_trade_manager_copy1
+-- Records of et_package_trade_manager
 -- ----------------------------
-INSERT INTO `et_package_trade_manager_copy1` VALUES (1, 'ET-TM-STA', 'Starter Pack', 100, 15.00000000, 15.00000000, 0.50000000, 0.50000000, 365, 50.00000000, 0.25000000, 25.00000000, 0.12500000, 25.00000000, 0.12500000, 'starter_logo.png', 1, 'yes', '2021-06-12 03:06:36', '2021-06-12 03:06:40', NULL);
-INSERT INTO `et_package_trade_manager_copy1` VALUES (2, 'ET-TM-SAP', 'Sapphire Pack', 500, 15.00000000, 75.00000000, 0.50000000, 2.50000000, 365, 60.00000000, 1.50000000, 20.00000000, 0.50000000, 20.00000000, 0.50000000, 'sapphire_logo.png', 2, 'yes', '2021-06-12 03:09:28', '2021-06-12 03:09:31', NULL);
-INSERT INTO `et_package_trade_manager_copy1` VALUES (3, 'ET-TM-RUB', 'Ruby Pack', 1000, 15.00000000, 150.00000000, 0.50000000, 5.00000000, 365, 70.00000000, 3.50000000, 15.00000000, 0.75000000, 15.00000000, 0.75000000, 'ruby_logo.png', 3, 'yes', '2021-06-12 03:10:27', '2021-06-12 03:10:29', NULL);
-INSERT INTO `et_package_trade_manager_copy1` VALUES (4, 'ET-TM-EME', 'Emerald Pack', 5000, 15.00000000, 750.00000000, 0.50000000, 25.00000000, 365, 80.00000000, 20.00000000, 10.00000000, 2.50000000, 10.00000000, 2.50000000, 'emerald_logo.png', 4, 'yes', '2021-06-12 03:11:23', '2021-06-12 03:11:34', NULL);
-INSERT INTO `et_package_trade_manager_copy1` VALUES (5, 'ET-TM-DIA', 'Diamond Pack', 10000, 15.00000000, 1500.00000000, 0.50000000, 50.00000000, 365, 90.00000000, 45.00000000, 5.00000000, 2.50000000, 5.00000000, 2.50000000, 'diamond_logo.png', 5, 'yes', '2021-06-12 03:12:35', '2021-06-12 03:12:37', NULL);
-INSERT INTO `et_package_trade_manager_copy1` VALUES (6, 'ET-TM-CRO', 'Crown Pack', 0, 15.00000000, 0.00000000, 0.50000000, 0.00000000, 365, 90.00000000, 0.00000000, 5.00000000, 0.00000000, 5.00000000, 0.00000000, 'crown_logo.png', 6, 'yes', '2021-06-12 03:16:46', '2021-06-12 03:16:49', NULL);
+INSERT INTO `et_package_trade_manager` VALUES (1, 'ET-TM-STA', 'Starter Pack', 100, 15.00000000, 15.00000000, 0.50000000, 0.50000000, 365, 50.00000000, 0.25000000, 25.00000000, 0.12500000, 25.00000000, 0.12500000, 'starter_logo.png', 1, 'yes', '2021-06-12 03:06:36', '2021-06-12 03:06:40', NULL);
+INSERT INTO `et_package_trade_manager` VALUES (2, 'ET-TM-SAP', 'Sapphire Pack', 500, 15.00000000, 75.00000000, 0.50000000, 2.50000000, 365, 60.00000000, 1.50000000, 20.00000000, 0.50000000, 20.00000000, 0.50000000, 'sapphire_logo.png', 2, 'yes', '2021-06-12 03:09:28', '2021-06-12 03:09:31', NULL);
+INSERT INTO `et_package_trade_manager` VALUES (3, 'ET-TM-RUB', 'Ruby Pack', 1000, 15.00000000, 150.00000000, 0.50000000, 5.00000000, 365, 70.00000000, 3.50000000, 15.00000000, 0.75000000, 15.00000000, 0.75000000, 'ruby_logo.png', 3, 'yes', '2021-06-12 03:10:27', '2021-06-12 03:10:29', NULL);
+INSERT INTO `et_package_trade_manager` VALUES (4, 'ET-TM-EME', 'Emerald Pack', 5000, 15.00000000, 750.00000000, 0.50000000, 25.00000000, 365, 80.00000000, 20.00000000, 10.00000000, 2.50000000, 10.00000000, 2.50000000, 'emerald_logo.png', 4, 'yes', '2021-06-12 03:11:23', '2021-06-12 03:11:34', NULL);
+INSERT INTO `et_package_trade_manager` VALUES (5, 'ET-TM-DIA', 'Diamond Pack', 10000, 15.00000000, 1500.00000000, 0.50000000, 50.00000000, 365, 85.00000000, 42.50000000, 7.50000000, 3.75000000, 7.50000000, 3.75000000, 'diamond_logo.png', 5, 'yes', '2021-06-12 03:12:35', '2021-06-12 03:12:37', NULL);
+INSERT INTO `et_package_trade_manager` VALUES (6, 'ET-TM-CRO', 'Crown Pack', 0, 15.00000000, 0.00000000, 0.50000000, 0.00000000, 365, 90.00000000, 0.00000000, 5.00000000, 0.00000000, 5.00000000, 0.00000000, 'crown_logo.png', 6, 'yes', '2021-06-12 03:16:46', '2021-06-12 03:16:49', NULL);
+
+-- ----------------------------
+-- Table structure for et_package_trade_manager_test
+-- ----------------------------
+DROP TABLE IF EXISTS `et_package_trade_manager_test`;
+CREATE TABLE `et_package_trade_manager_test`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'ET-ABBR',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `amount` int NULL DEFAULT NULL COMMENT 'usd',
+  `profit_per_month_percent` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `profit_per_month_value` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `profit_per_day_percentage` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `profit_per_day_value` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `contract_duration` int NULL DEFAULT NULL COMMENT 'day',
+  `share_self_percentage` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `share_self_value` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `share_upline_percentage` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `share_upline_value` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `share_company_percentage` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `share_company_value` decimal(15, 8) NULL DEFAULT NULL COMMENT 'decimal 8',
+  `logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `sequence` int NULL DEFAULT NULL,
+  `is_active` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no',
+  `created_at` datetime NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL,
+  `deleted_at` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of et_package_trade_manager_test
+-- ----------------------------
+INSERT INTO `et_package_trade_manager_test` VALUES (1, 'ET-TM-STA', 'Starter Pack', 1, 15.00000000, 0.15000000, 0.50000000, 0.00500000, 365, 50.00000000, 0.00250000, 25.00000000, 0.00125000, 25.00000000, 0.00125000, 'starter_logo.png', 1, 'yes', '2021-06-12 03:06:36', '2021-06-12 03:06:40', NULL);
+INSERT INTO `et_package_trade_manager_test` VALUES (2, 'ET-TM-SAP', 'Sapphire Pack', 2, 15.00000000, 0.30000000, 0.50000000, 0.01000000, 365, 60.00000000, 0.00600000, 20.00000000, 0.00200000, 20.00000000, 0.00200000, 'sapphire_logo.png', 2, 'yes', '2021-06-12 03:09:28', '2021-06-12 03:09:31', NULL);
+INSERT INTO `et_package_trade_manager_test` VALUES (3, 'ET-TM-RUB', 'Ruby Pack', 3, 15.00000000, 0.45000000, 0.50000000, 0.01500000, 365, 70.00000000, 0.01050000, 15.00000000, 0.00225000, 15.00000000, 0.00225000, 'ruby_logo.png', 3, 'yes', '2021-06-12 03:10:27', '2021-06-12 03:10:29', NULL);
+INSERT INTO `et_package_trade_manager_test` VALUES (4, 'ET-TM-EME', 'Emerald Pack', 4, 15.00000000, 0.60000000, 0.50000000, 0.02000000, 365, 80.00000000, 0.01600000, 10.00000000, 0.00200000, 10.00000000, 0.00200000, 'emerald_logo.png', 4, 'yes', '2021-06-12 03:11:23', '2021-06-12 03:11:34', NULL);
+INSERT INTO `et_package_trade_manager_test` VALUES (5, 'ET-TM-DIA', 'Diamond Pack', 5, 15.00000000, 0.75000000, 0.50000000, 0.02500000, 365, 85.00000000, 0.02125000, 7.50000000, 0.00187500, 7.50000000, 0.00187500, 'diamond_logo.png', 5, 'yes', '2021-06-12 03:12:35', '2021-06-12 03:12:37', NULL);
+INSERT INTO `et_package_trade_manager_test` VALUES (6, 'ET-TM-CRO', 'Crown Pack', 0, 15.00000000, 0.00000000, 0.50000000, 0.00000000, 365, 90.00000000, 0.00000000, 5.00000000, 0.00000000, 5.00000000, 0.00000000, 'crown_logo.png', 6, 'yes', '2021-06-12 03:16:46', '2021-06-12 03:16:49', NULL);
 
 -- ----------------------------
 -- Table structure for et_tree
@@ -906,6 +979,6 @@ CREATE TABLE `et_unknown_balance`  (
 -- ----------------------------
 -- Records of et_unknown_balance
 -- ----------------------------
-INSERT INTO `et_unknown_balance` VALUES (1, 0.00000000, 0.00000000, '2021-07-20 00:51:19');
+INSERT INTO `et_unknown_balance` VALUES (1, 0.00000000, 0.00000000, '2021-07-26 10:47:26');
 
 SET FOREIGN_KEY_CHECKS = 1;
