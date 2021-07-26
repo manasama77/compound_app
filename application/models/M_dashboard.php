@@ -59,6 +59,8 @@ class M_dashboard extends CI_Model
 			( SELECT upline.fullname FROM et_member AS upline WHERE upline.id = member.id_upline ) AS fullname_upline,
 			( SELECT upline.email FROM et_member AS upline WHERE upline.id = member.id_upline ) AS email_upline,
 			( tree.depth - ( SELECT self_tree.depth FROM et_tree AS self_tree WHERE self_tree.id_member = '$id_member' ) ) AS generation,
+			balance.self_omset,
+			balance.downline_omset,
 			balance.total_omset,
 			(
 			SELECT
@@ -112,6 +114,8 @@ class M_dashboard extends CI_Model
 				$fullname_upline = $key->fullname_upline;
 				$email_upline    = $key->email_upline;
 				$generation      = $key->generation;
+				$self_omset      = check_float($key->self_omset);
+				$downline_omset  = check_float($key->downline_omset);
 				$total_omset     = check_float($key->total_omset);
 				$total_downline  = check_float($key->total_downline);
 
@@ -124,6 +128,8 @@ class M_dashboard extends CI_Model
 					'fullname_upline' => $fullname_upline,
 					'email_upline'    => $email_upline,
 					'generation'      => $generation,
+					'self_omset'      => $self_omset,
+					'downline_omset'  => $downline_omset,
 					'total_omset'     => $total_omset,
 					'total_downline'  => $total_downline,
 				];
