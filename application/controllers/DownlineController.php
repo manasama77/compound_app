@@ -35,7 +35,7 @@ class DownlineController extends CI_Controller
 
 	public function show()
 	{
-		$id_member_depth = $this->M_core->get('tree', 'depth', ['id_member' => $this->id_member]);
+		$id_member_depth = $this->M_core->get('tree', 'depth', ['id_member' => $this->id_member])->row()->depth;
 		$depth           = $this->input->get('depth') + $id_member_depth;
 		$arr             = $this->M_dashboard->get_latest_downline($this->id_member, $depth, null);
 
