@@ -110,7 +110,7 @@ class TaskSchedulerController extends CI_Controller
 			$status_text = $exec['result']['status_text'];
 
 			//adam debug only
-			// $status = 100;
+			$status = 100;
 
 			if ($status == -1) {
 				// Cancelled / Timed Out
@@ -510,7 +510,7 @@ class TaskSchedulerController extends CI_Controller
 			$status_text = $exec['result']['status_text'];
 
 			//adam debug only
-			// $status = 100;
+			$status = 100;
 
 			if ($status == -1) {
 				// Cancelled / Timed Out
