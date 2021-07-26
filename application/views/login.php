@@ -44,11 +44,16 @@
 						<input type="password" class="form-control <?= $this->session->flashdata('password_state'); ?>" id="password" name="password" placeholder="Password" minlength="4" autocomplete="current-password" required>
 						<div class="input-group-append">
 							<div class="input-group-text">
-								<span class="fas fa-lock"></span>
+								<span id="eye" class="fas fa-eye"></span>
 							</div>
 						</div>
 						<div class="invalid-feedback">
 							<?= $this->session->flashdata('password_state_message'); ?>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12">
+							<div class="h-captcha" data-sitekey="3ee57b90-ce1a-422c-ab84-84fab9c5e97f"></div>
 						</div>
 					</div>
 					<div class="row">
@@ -84,6 +89,19 @@
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="<?= base_url(); ?>public/plugin/adminlte/dist/js/adminlte.min.js"></script>
+
+	<script src='https://www.hCaptcha.com/1/api.js' async defer></script>
+
+	<script>
+		$("form").submit(function(event) {
+
+			var hcaptchaVal = $('[name=h-captcha-response]').value;
+			if (hcaptchaVal === "") {
+				event.preventDefault();
+				alert("Please complete the hCaptcha");
+			}
+		});
+	</script>
 </body>
 
 </html>

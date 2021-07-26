@@ -51,6 +51,10 @@ class LoginController extends CI_Controller
 
 	public function auth()
 	{
+		$check_hcaptcha = $this->_hcaptcha();
+		if ($check_hcaptcha === false) {
+			return show_error("Robot verification failed, please try again", 404, "An Error Was Encountered");
+		}
 		$email    = $this->input->post('email');
 		$password = $this->input->post('password');
 		$remember = $this->input->post('remember');
@@ -106,6 +110,22 @@ class LoginController extends CI_Controller
 			}
 
 			return show_error('Failed to send Email, please try again', 500, 'An Error Was Encountered');
+		}
+	}
+
+	protected function _hcaptcha()
+	{
+		if ($this->input->post('h-captcha-response') && !empty($this->input->post('h-captcha-response'))) {
+			$secret = H_SITE_KEY;
+			$verifyResponse = file_get_contents('https://hcaptcha.com/siteverify?secret=' . $secret . '&response=' . $this->input->post('h-captcha-response') . '&remoteip=' . $_SERVER['REMOTE_ADDR']);
+			$responseData = json_decode($verifyResponse);
+			if ($responseData->success) {
+				return true;
+				// $succMsg = 'Your request have submitted successfully.';
+			} else {
+				return false;
+				// $errMsg = 'Robot verification failed, please try again.';
+			}
 		}
 	}
 
