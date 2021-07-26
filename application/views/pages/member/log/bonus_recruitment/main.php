@@ -59,6 +59,9 @@
 													<?= ucwords($key->type); ?></small>
 												</td>
 												<td class="align-top">
+													<?= check_float(($key->package * 10) / 100); ?>
+												</td>
+												<td class="align-top">
 													<?= $key->description; ?>
 												</td>
 											</tr>
