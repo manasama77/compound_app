@@ -42,11 +42,12 @@ class DownlineController extends CI_Controller
 		$max_depth = $this->M_downline->get_max_depth($this->id_member);
 
 		$data = [
-			'title'      => APP_NAME . ' Downline Management',
-			'content'    => 'downline/show',
-			'vitamin_js' => 'downline/show_js',
-			'arr'        => $arr,
-			'max_depth'  => $max_depth,
+			'title'           => APP_NAME . ' Downline Management',
+			'content'         => 'downline/show',
+			'vitamin_js'      => 'downline/show_js',
+			'arr'             => $arr,
+			'id_member_depth' => $id_member_depth,
+			'max_depth'       => $max_depth,
 		];
 		$this->template->render($data);
 	}
