@@ -93,13 +93,14 @@
 	<script src='https://www.hCaptcha.com/1/api.js' async defer></script>
 
 	<script>
-		$("form").submit(function(event) {
-
-			var hcaptchaVal = $('[name=h-captcha-response]').value;
-			if (hcaptchaVal === "") {
-				event.preventDefault();
-				alert("Please complete the hCaptcha");
-			}
+		$(document).ready(function() {
+			$('form').on('submit', function(e) {
+				let hcaptchaVal = $('[name=h-captcha-response]').val();
+				if (hcaptchaVal === "") {
+					event.preventDefault();
+					alert("Please complete the hCaptcha");
+				}
+			});
 		});
 	</script>
 </body>
