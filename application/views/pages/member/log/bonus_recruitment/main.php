@@ -33,10 +33,10 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
-										<th class="text-center align-middle" style="min-width: 120px;">Member</th>
-										<th class="align-middle">Package</th>
-										<th class="text-right align-middle" style="min-width: 120px;">Type</th>
-										<th class="text-right align-middle" style="min-width: 120px;">Description</th>
+										<th class="text-center align-top" style="min-width: 120px;">Member</th>
+										<th class="align-top">Package</th>
+										<th class="align-top" style="min-width: 120px;">Type</th>
+										<th class="align-top" style="min-width: 120px;">Description</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -45,16 +45,16 @@
 										<?php foreach ($arr->result() as $key) : ?>
 
 											<tr>
-												<td class="text-center align-middle">
+												<td class="text-center align-top">
 													<?= $key->fullname; ?>
 												</td>
-												<td class="align-middle">
+												<td class="align-top">
 													<?= $key->package; ?>
 												</td>
-												<td class="text-right align-middle">
-													<?= $key->type; ?></small>
+												<td class="align-top">
+													<?= ucwords($key->type); ?></small>
 												</td>
-												<td class="text-center align-middle">
+												<td class="text-center align-top">
 													<?= $key->description; ?>
 												</td>
 											</tr>
