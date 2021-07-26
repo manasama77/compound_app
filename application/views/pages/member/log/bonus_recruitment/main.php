@@ -37,7 +37,8 @@
 										<th class="text-center align-top" style="min-width: 120px;">Member</th>
 										<th class="align-top">Package</th>
 										<th class="align-top" style="min-width: 120px;">Type</th>
-										<th class="align-top" style="min-width: 120px;">Description</th>
+										<th class="text-right align-top">Amount</th>
+										<th class="align-top" style="min-width: 200px;">Description</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -58,8 +59,8 @@
 												<td class="align-top">
 													<?= ucwords($key->type); ?></small>
 												</td>
-												<td class="align-top">
-													<?= check_float(($key->package * 10) / 100); ?>
+												<td class="text-right align-top">
+													<?= check_float(($key->package * 10) / 100); ?> <small>USDT</small>
 												</td>
 												<td class="align-top">
 													<?= $key->description; ?>
