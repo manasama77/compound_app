@@ -46,7 +46,7 @@
 
 											<tr>
 												<td class="text-center align-middle">
-													<?= $key->name; ?>
+													<?= $key->fullname; ?>
 												</td>
 												<td class="align-middle">
 													<?= $key->package; ?>
