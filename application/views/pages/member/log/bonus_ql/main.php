@@ -33,6 +33,7 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
+										<th class="align-top" style="min-width: 120px;">Date Time</th>
 										<th class="text-center align-top" style="min-width: 120px;">Member</th>
 										<th class="align-top">Package</th>
 										<th class="align-top" style="min-width: 120px;">Type</th>
@@ -45,6 +46,9 @@
 										<?php foreach ($arr->result() as $key) : ?>
 
 											<tr>
+												<td class="align-top">
+													<?= $key->created_at; ?>
+												</td>
 												<td class="text-center align-top">
 													<?= $key->fullname; ?>
 												</td>

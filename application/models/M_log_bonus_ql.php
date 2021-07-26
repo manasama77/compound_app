@@ -13,6 +13,7 @@ class M_log_bonus_ql extends CI_Model
 				'log_bonus_qualification_level.type_package as type',
 				'log_bonus_qualification_level.package_name as package',
 				'log_bonus_qualification_level.description',
+				'log_bonus_qualification_level.created_at',
 			])
 			->from('log_bonus_qualification_level')
 			->join('member', 'member.id = log_bonus_qualification_level.id_downline', 'left')

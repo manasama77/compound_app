@@ -13,6 +13,7 @@ class M_log_bonus_recruitment extends CI_Model
 				'log_bonus_recruitment.type_package as type',
 				'log_bonus_recruitment.package_name as package',
 				'log_bonus_recruitment.description',
+				'log_bonus_recruitment.created_at',
 			])
 			->from('log_bonus_recruitment')
 			->join('member', 'member.id = log_bonus_recruitment.id_downline', 'left')

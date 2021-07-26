@@ -165,6 +165,12 @@
 								<p>Bonus Qualification Leader</p>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/bonus_royalty'); ?>" class="nav-link">
+								<i class="fas fa-wallet nav-icon"></i>
+								<p>Bonus Royalty</p>
+							</a>
+						</li>
 					</ul>
 				</li>
 			</ul>
