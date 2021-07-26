@@ -153,6 +153,12 @@
 								<p>Withdraw</p>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/bonus_recruitment'); ?>" class="nav-link">
+								<i class="fas fa-wallet nav-icon"></i>
+								<p>Bonus Recruitment</p>
+							</a>
+						</li>
 					</ul>
 				</li>
 			</ul>
