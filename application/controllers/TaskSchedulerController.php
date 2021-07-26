@@ -2163,8 +2163,6 @@ class TaskSchedulerController extends CI_Controller
 		}
 
 		$arr = $this->M_member->get_data_member_reward();
-		echo '<pre>' . print_r($arr->result(), 1) . '</pre>';
-		exit;
 
 		if ($arr->num_rows() > 0) :
 
