@@ -193,14 +193,14 @@ class LoginController extends CI_Controller
 		redirect('login');
 	}
 
-	public function _set_cookie(): string
+	protected function _set_cookie(): string
 	{
 		$key_cookies = random_string('alnum', 64);
 		set_cookie(KUE, $key_cookies, 86400);
 		return $key_cookies;
 	}
 
-	public function _set_session($id, $fullname, $email, $phone_number, $cookies, $is_active, $profile_picture): void
+	protected function _set_session($id, $fullname, $email, $phone_number, $cookies, $is_active, $profile_picture): void
 	{
 		$data = [
 			SESI . 'id'              => $id,
@@ -222,7 +222,7 @@ class LoginController extends CI_Controller
 		$this->M_core->update('member', $data, $where);
 	}
 
-	public function _check_cookies($cookies): void
+	protected function _check_cookies($cookies): void
 	{
 		$where_cookies = [
 			'cookies'    => $cookies,
@@ -256,7 +256,7 @@ class LoginController extends CI_Controller
 		}
 	}
 
-	public function _check_session()
+	protected function _check_session()
 	{
 		$id    = $this->session->userdata(SESI . 'id');
 		$email = $this->session->userdata(SESI . 'email');
@@ -266,9 +266,9 @@ class LoginController extends CI_Controller
 		}
 
 		$where = [
-			'id'        => $id,
-			'email'     => $email,
-			'is_active' => 'yes',
+			'id'         => $id,
+			'email'      => $email,
+			'is_active'  => 'yes',
 			'deleted_at' => null,
 		];
 
@@ -281,7 +281,7 @@ class LoginController extends CI_Controller
 		return true;
 	}
 
-	public function _send_otp($id, $to): bool
+	protected function _send_otp($id, $to): bool
 	{
 		$subject = APP_NAME . " | OTP (One Time Password)";
 		$message = "";
@@ -502,7 +502,7 @@ class LoginController extends CI_Controller
 		}
 	}
 
-	public function _add_tree_downline($id_member, $email, $id_upline)
+	protected function _add_tree_downline($id_member, $email, $id_upline)
 	{
 		$where_upline = ['id_member' => $id_upline];
 		$data_upline  = $this->Nested_set->getNodeWhere($where_upline);
@@ -524,7 +524,7 @@ class LoginController extends CI_Controller
 		return $exec;
 	}
 
-	public function _send_email_activation($id, $to)
+	protected function _send_email_activation($id, $to)
 	{
 		$subject = APP_NAME . " | Account Activation";
 		$message = "";
@@ -602,7 +602,7 @@ class LoginController extends CI_Controller
 		echo json_encode(['code' => $code]);
 	}
 
-	public function _send_email_forgot_password($id, $to)
+	protected function _send_email_forgot_password($id, $to)
 	{
 		$subject = APP_NAME . " | Forgot Password";
 		$message = "";

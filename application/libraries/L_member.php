@@ -30,7 +30,7 @@ class L_member
 		}
 	}
 
-	public function check_cookies()
+	protected function check_cookies()
 	{
 		$cookies = get_cookie(KUE);
 
@@ -110,7 +110,7 @@ class L_member
 		redirect('logout');
 	}
 
-	public function reset_session($id, $email, $fullname, $phone_number, $is_active, $profile_picture)
+	protected function reset_session($id, $email, $fullname, $phone_number, $is_active, $profile_picture)
 	{
 		$this->ci->session->set_userdata(SESI . 'id', $id);
 		$this->ci->session->set_userdata(SESI . 'email', $email);
