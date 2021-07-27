@@ -113,7 +113,8 @@ if (isset($vitamin_js)) {
 			method: 'post',
 			dataType: 'json',
 			data: {
-				otp: $('#otp').val()
+				otp: $('#otp').val(),
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function(e) {
 				$.blockUI();
@@ -134,7 +135,10 @@ if (isset($vitamin_js)) {
 		return $.ajax({
 			url: '<?= site_url('otp_resend'); ?>',
 			method: 'post',
-			dataType: 'text',
+			dataType: 'json',
+			data: {
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>',
+			},
 			beforeSend: function() {
 				$.blockUI();
 			}

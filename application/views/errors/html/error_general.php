@@ -10,9 +10,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	<!-- Google Font: Source Sans Pro -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 	<!-- Font Awesome -->
-	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/plugins/fontawesome-free/css/all.min.css">
+	<link rel="stylesheet" href="<?= config_item('base_url'); ?>public/plugin/adminlte/plugins/fontawesome-free/css/all.min.css">
 	<!-- Theme style -->
-	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/dist/css/adminlte.min.css">
+	<link rel="stylesheet" href="<?= config_item('base_url'); ?>public/plugin/adminlte/dist/css/adminlte.min.css">
 
 	<title>Error</title>
 	<style>
@@ -41,7 +41,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 		<div class="row">
 			<div class="col-md-12">
 				<div class="error-template">
-					<img src="<?= base_url('public/img/logo.png'); ?>" class="img-fluid mb-3" alt="<?= APP_NAME; ?> LOGO">
+					<img src="<?= config_item('base_url'); ?>public/img/logo.png" class="img-fluid mb-3" alt="<?= APP_NAME; ?> LOGO" style="width: 100px;">
 					<h1>
 						Oops!</h1>
 					<h2><?php echo $heading; ?></h2>
@@ -58,10 +58,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 </html>
 
 <!-- jQuery 3.5 -->
-<script src="<?= base_url(); ?>vendor/components/jquery/jquery.min.js"></script>
+<script src="<?= config_item('base_url'); ?>vendor/components/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4.6 -->
-<script src="<?= base_url(); ?>vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="<?= config_item('base_url'); ?>vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="<?= base_url(); ?>public/plugin/adminlte/dist/js/adminlte.js"></script>
-<script src="<?= base_url(); ?>public/js/jquery.blockUI.js"></script>
-<script src="<?= base_url(); ?>public/js/sweetalert2.min.js"></script>
+<script src="<?= config_item('base_url'); ?>public/plugin/adminlte/dist/js/adminlte.js"></script>
+<script src="<?= config_item('base_url'); ?>public/js/jquery.blockUI.js"></script>
+<script src="<?= config_item('base_url'); ?>public/js/sweetalert2.min.js"></script>

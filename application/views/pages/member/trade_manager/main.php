@@ -289,6 +289,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
+					<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					<button type="submit" class="btn btn-primary">Submit</button>
 				</div>

@@ -7,6 +7,7 @@ class WalletController extends CI_Controller
 	protected $id_member;
 	protected $date;
 	protected $datetime;
+	protected $csrf;
 
 	public function __construct()
 	{
@@ -16,6 +17,11 @@ class WalletController extends CI_Controller
 		$this->id_member = $this->session->userdata(SESI . 'id');
 
 		$this->load->library('L_member', null, 'template');
+
+		$this->csrf = [
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		];
 	}
 
 	public function index()
@@ -26,6 +32,7 @@ class WalletController extends CI_Controller
 			'content'    => 'wallet/main',
 			'vitamin_js' => 'wallet/main_js',
 			'arr'        => $arr,
+			'csrf'       => $this->csrf,
 		];
 		$this->template->render($data);
 	}

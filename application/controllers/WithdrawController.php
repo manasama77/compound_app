@@ -17,6 +17,7 @@ class WithdrawController extends CI_Controller
 	protected $from_alias;
 	protected $ip_address;
 	protected $user_agent;
+	protected $csrf;
 
 	public function __construct()
 	{
@@ -41,6 +42,11 @@ class WithdrawController extends CI_Controller
 		$this->load->model('M_withdraw');
 		$this->load->model('M_dashboard');
 		$this->load->model('M_log_send_email_member');
+
+		$this->csrf = [
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		];
 	}
 
 	public function index()
@@ -56,6 +62,7 @@ class WithdrawController extends CI_Controller
 			'vitamin_js' => 'withdraw/main_js',
 			'profit'     => $profit,
 			'bonus'      => $bonus,
+			'csrf'       => $this->csrf,
 		];
 		$this->template->render($data);
 	}
@@ -136,6 +143,7 @@ class WithdrawController extends CI_Controller
 			'amount'         => $amount,
 			'wallet_label'   => $wallet_label,
 			'wallet_address' => $wallet_address,
+			'csrf'           => $this->csrf,
 		];
 		$this->template->render($data);
 	}

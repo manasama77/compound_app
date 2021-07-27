@@ -13,6 +13,7 @@ class M_log_bonus_royalty extends CI_Model
 				'log_bonus_royalty.type_package as type',
 				'log_bonus_royalty.package_name as package',
 				'log_bonus_royalty.description',
+				'log_bonus_royalty.package_amount',
 				'log_bonus_royalty.created_at',
 			])
 			->from('log_bonus_royalty')

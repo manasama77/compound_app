@@ -16,5 +16,10 @@
 				$('#company_share').html(company_share);
 			});
 		}
+
+		$('#form_submit').on('submit', function(e) {
+			$.blockUI();
+			$('#submit').attr('disabled', true);
+		});
 	});
 </script>

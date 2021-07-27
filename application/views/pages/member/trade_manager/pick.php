@@ -22,7 +22,7 @@
 
 			<div class="col-md-12">
 
-				<form class="form-horizontal" action="<?= site_url('trade_manager/checkout/coinpayment'); ?>" method="post">
+				<form id="form_submit" class="form-horizontal" action="<?= site_url('trade_manager/checkout/coinpayment'); ?>" method="post">
 
 					<!-- PRODUCT LIST -->
 					<div class="card">
@@ -111,7 +111,8 @@
 						<!-- /.card-body -->
 						<div class="card-footer text-center">
 							<input type="hidden" class="form-control" id="id_package" name="id_package" value="<?= $id_package; ?>">
-							<button type="submit" class="btn btn-primary btn-block btn-flat elevation-2">Checkout</button>
+							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
+							<button id="submit" type="submit" class="btn btn-primary btn-block btn-flat elevation-2">Checkout</button>
 						</div>
 						<!-- /.card-footer -->
 					</div>

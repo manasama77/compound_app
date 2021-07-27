@@ -16,6 +16,7 @@ class TradeManagerController extends CI_Controller
 	protected $ip_address;
 	protected $user_agent;
 	protected $id_member;
+	protected $csrf;
 
 	public function __construct()
 	{
@@ -40,6 +41,11 @@ class TradeManagerController extends CI_Controller
 		$this->ip_address = $this->input->ip_address();
 		$this->user_agent = $this->input->user_agent();
 
+		$this->csrf = [
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		];
+
 		$this->tree->setControlParams('tree', 'lft', 'rgt', 'id_member', 'id_upline', 'email');
 	}
 
@@ -52,6 +58,7 @@ class TradeManagerController extends CI_Controller
 			'content'            => 'trade_manager/main',
 			'vitamin_js'         => 'trade_manager/main_js',
 			'data_trade_manager' => $data_trade_manager,
+			'csrf'               => $this->csrf,
 		];
 		$this->template->render($data);
 	}
@@ -233,6 +240,7 @@ class TradeManagerController extends CI_Controller
 			'arr'          => $arr,
 			'arr_bg_color' => $arr_bg_color,
 			'arr_state'    => $arr_state,
+			'csrf'         => $this->csrf,
 		];
 		$this->template->render($data);
 	}
@@ -283,6 +291,7 @@ class TradeManagerController extends CI_Controller
 			'vitamin_js' => 'trade_manager/pick_js',
 			'id_package' => base64_encode(UYAH . $id),
 			'arr'        => $arr,
+			'csrf'       => $this->csrf,
 		];
 		$this->template->render($data);
 	}
@@ -607,6 +616,7 @@ class TradeManagerController extends CI_Controller
 			'time_left'   => $time_left,
 			'state'       => $state,
 			'state_badge' => $state_badge,
+			'csrf'        => $this->csrf,
 		];
 		$this->template->render($data);
 	}

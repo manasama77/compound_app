@@ -14,7 +14,9 @@
 	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 	<!-- Theme style -->
 	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/dist/css/adminlte.min.css">
+	<link href="<?= base_url(); ?>public/css/sweetalert2-theme-dark.css" rel="stylesheet">
 	<link rel="stylesheet" href="<?= base_url(); ?>public/css/login.css">
+	<link rel="icon" href="<?= base_url(); ?>public/img/logo.png">
 </head>
 
 <body class="hold-transition login-page">
@@ -51,9 +53,9 @@
 							<?= $this->session->flashdata('password_state_message'); ?>
 						</div>
 					</div>
-					<div class="row">
+					<div class="row mb-3">
 						<div class="col-12">
-							<div class="h-captcha" data-sitekey="3ee57b90-ce1a-422c-ab84-84fab9c5e97f"></div>
+							<div class="h-captcha text-center" data-sitekey="<?= H_SITE_KEY; ?>"></div>
 						</div>
 					</div>
 					<div class="row">
@@ -67,6 +69,7 @@
 						</div>
 						<!-- /.col -->
 						<div class="col-4">
+							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 							<button type="submit" class="btn btn-primary btn-block">Sign In</button>
 						</div>
 						<!-- /.col -->
@@ -92,13 +95,30 @@
 
 	<script src='https://www.hCaptcha.com/1/api.js' async defer></script>
 
+	<script src="<?= base_url(); ?>public/js/sweetalert2.min.js"></script>
+
 	<script>
 		$(document).ready(function() {
 			$('form').on('submit', function(e) {
 				let hcaptchaVal = $('[name=h-captcha-response]').val();
 				if (hcaptchaVal === "") {
 					event.preventDefault();
-					alert("Please complete the hCaptcha");
+					Swal.fire({
+						icon: 'error',
+						title: 'Oops...',
+						text: 'Please complete the hCaptcha!'
+					});
+				}
+			});
+
+			$('#eye').on('click', function() {
+				let pass = document.getElementById("password");
+				if (pass.type === "password") {
+					$('#eye').removeClass("fa-eye").addClass("fa-eye-slash");
+					pass.type = "text";
+				} else {
+					$('#eye').removeClass("fa-eye-slash").addClass("fa-eye");
+					pass.type = "password";
 				}
 			});
 		});

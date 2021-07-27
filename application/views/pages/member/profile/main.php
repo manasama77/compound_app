@@ -16,8 +16,6 @@
 
 <section class="content">
 	<div class="container-fluid">
-		<?php //echo '<pre>' . print_r($arr->result(), 1) . '</pre>'; 
-		?>
 		<div class="row">
 			<div class="col-md-3">
 
@@ -107,6 +105,7 @@
 									</div>
 									<div class="form-group row">
 										<div class="offset-sm-2 col-sm-10">
+											<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 											<button type="submit" class="btn btn-danger btn-block">Submit</button>
 										</div>
 									</div>
@@ -137,6 +136,7 @@
 									</div>
 									<div class="form-group row">
 										<div class="offset-sm-2 col-sm-10">
+											<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 											<button type="submit" class="btn btn-danger btn-block">Submit</button>
 										</div>
 									</div>

@@ -39,6 +39,7 @@
 					<div class="row">
 						<!-- /.col -->
 						<div class="col-12">
+							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 							<button type="submit" class="btn btn-primary btn-block">Send Email</button>
 						</div>
 						<!-- /.col -->
@@ -82,7 +83,8 @@
 			method: 'post',
 			dataType: 'json',
 			data: {
-				email: email
+				email: email,
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
 				$.blockUI();

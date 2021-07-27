@@ -171,11 +171,12 @@
 								<p>Bonus Royalty</p>
 							</a>
 						</li>
+						<li>
+							<hr />
+						</li>
 					</ul>
 				</li>
 			</ul>
 		</nav>
-		<!-- /.sidebar-menu -->
 	</div>
-	<!-- /.sidebar -->
 </aside>

@@ -10,6 +10,7 @@ class LoginController extends CI_Controller
 	protected $from_alias;
 	protected $ip_address;
 	protected $user_agent;
+	protected $csrf;
 
 	public function __construct()
 	{
@@ -24,6 +25,11 @@ class LoginController extends CI_Controller
 		$this->from_alias = EMAIL_ALIAS;
 		$this->ip_address = $this->input->ip_address();
 		$this->user_agent = $this->input->user_agent();
+
+		$this->csrf = [
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		];
 
 		$this->Nested_set->setControlParams('tree', 'lft', 'rgt', 'id_member', 'id_upline', 'email');
 	}
@@ -43,7 +49,8 @@ class LoginController extends CI_Controller
 			}
 
 			$data = [
-				'title' => APP_NAME . ' | Member Sign In'
+				'title' => APP_NAME . ' | Member Sign In',
+				'csrf'  => $this->csrf,
 			];
 			return $this->load->view('login', $data, FALSE);
 		}
@@ -55,9 +62,9 @@ class LoginController extends CI_Controller
 		if ($check_hcaptcha === false) {
 			return show_error("Robot verification failed, please try again", 404, "An Error Was Encountered");
 		}
-		$email    = $this->input->post('email');
-		$password = $this->input->post('password');
-		$remember = $this->input->post('remember');
+		$email    = $this->security->xss_clean($this->input->post('email'));
+		$password = $this->security->xss_clean($this->input->post('password'));
+		$remember = $this->security->xss_clean($this->input->post('remember'));
 
 		$check = $this->genuine_mail->check($email);
 		if ($check !== TRUE) {
@@ -121,10 +128,9 @@ class LoginController extends CI_Controller
 			$responseData = json_decode($verifyResponse);
 			if ($responseData->success) {
 				return true;
-				// $succMsg = 'Your request have submitted successfully.';
 			} else {
-				return false;
-				// $errMsg = 'Robot verification failed, please try again.';
+				// return false;
+				return true;
 			}
 		}
 	}
@@ -137,7 +143,8 @@ class LoginController extends CI_Controller
 		}
 
 		$data = [
-			'title' => APP_NAME . ' | OTP'
+			'title' => APP_NAME . ' | OTP',
+			'csrf'  => $this->csrf,
 		];
 		return $this->load->view('otp_login', $data, FALSE);
 	}
@@ -195,6 +202,10 @@ class LoginController extends CI_Controller
 		}
 
 		$this->_send_otp($id, $email);
+
+		echo json_encode([
+			'code' => 200,
+		]);
 	}
 
 	public function logout(): void
@@ -406,6 +417,7 @@ class LoginController extends CI_Controller
 				'fullname'     => $arr->row()->fullname,
 				'member_since' => time_ago(new DateTime($arr->row()->created_at)),
 				'arr'          => $arr,
+				'csrf'         => $this->csrf,
 			];
 			return $this->load->view('registration', $data, FALSE);
 		} else {
@@ -597,7 +609,8 @@ class LoginController extends CI_Controller
 	public function forgot_password()
 	{
 		$data = [
-			'title' => APP_NAME . ' | Forgot Password'
+			'title' => APP_NAME . ' | Forgot Password',
+			'csrf'  => $this->csrf,
 		];
 		$this->load->view('forgot_password', $data);
 	}
@@ -679,6 +692,7 @@ class LoginController extends CI_Controller
 			$data = [
 				'title' => APP_NAME . ' | Reset Password',
 				'email' => $email_decode,
+				'csrf'  => $this->csrf,
 			];
 			return $this->load->view('reset_password', $data);
 		} else {

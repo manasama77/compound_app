@@ -34,10 +34,11 @@
 								<thead>
 									<tr>
 										<th class="align-top" style="min-width: 120px;">Date Time</th>
-										<th class="text-center align-top" style="min-width: 120px;">Member</th>
+										<th class="align-top" style="min-width: 120px;">Member</th>
 										<th class="align-top">Package</th>
 										<th class="align-top" style="min-width: 120px;">Type</th>
-										<th class="align-top" style="min-width: 120px;">Description</th>
+										<th class="align-top text-right" style="min-width: 100px;">Amount</th>
+										<th class="align-top" style="min-width: 350px;">Description</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -49,7 +50,7 @@
 												<td class="align-top">
 													<?= $key->created_at; ?>
 												</td>
-												<td class="text-center align-top">
+												<td class="align-top">
 													<?= $key->fullname; ?>
 												</td>
 												<td class="align-top">
@@ -57,6 +58,9 @@
 												</td>
 												<td class="align-top">
 													<?= ucwords($key->type); ?></small>
+												</td>
+												<td class="align-top text-right">
+													<?= check_float($key->amount); ?>
 												</td>
 												<td class="align-top">
 													<?= $key->description; ?>

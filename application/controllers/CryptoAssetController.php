@@ -16,6 +16,7 @@ class CryptoAssetController extends CI_Controller
 	protected $ip_address;
 	protected $user_agent;
 	protected $id_member;
+	protected $csrf;
 
 	public function __construct()
 	{
@@ -40,6 +41,11 @@ class CryptoAssetController extends CI_Controller
 		$this->ip_address = $this->input->ip_address();
 		$this->user_agent = $this->input->user_agent();
 
+		$this->csrf = [
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		];
+
 		$this->tree->setControlParams('tree', 'lft', 'rgt', 'id_member', 'id_upline', 'email');
 	}
 
@@ -52,6 +58,7 @@ class CryptoAssetController extends CI_Controller
 			'content'           => 'crypto_asset/main',
 			'vitamin_js'        => 'crypto_asset/main_js',
 			'data_crypto_asset' => $data_crypto_asset,
+			'csrf'              => $this->csrf,
 		];
 		$this->template->render($data);
 	}
@@ -79,23 +86,23 @@ class CryptoAssetController extends CI_Controller
 		$return = [];
 		foreach ($data_crypto_asset as $key) {
 			$package                   = $key['package'];
-			$amount                    = check_float($key['amount']);
-			$profit_per_day            = check_float($key['profit_per_day']);
+			$amount                    = $key['amount'];
+			$profit_per_day            = $key['profit_per_day'];
 			$state                     = $key['state'];
 			$created_at                = $key['created_at'];
 			$expired_at                = $key['expired_at'];
 			$payment_method            = $key['payment_method'];
 			$txn_id                    = $key['txn_id'];
-			$amount_transfer           = check_float($key['amount_transfer']);
+			$amount_transfer           = $key['amount_transfer'];
 			$profit_montly_percentage  = $key['profit_montly_percentage'];
-			$profit_montly_value       = check_float($key['profit_montly_value']);
+			$profit_montly_value       = $key['profit_montly_value'];
 			$profit_self_percentage    = $key['profit_self_percentage'];
-			$profit_self_value         = check_float($key['profit_self_value']);
+			$profit_self_value         = $key['profit_self_value'];
 			$profit_upline_percentage  = $key['profit_upline_percentage'];
-			$profit_upline_value       = check_float($key['profit_upline_value']);
+			$profit_upline_value       = $key['profit_upline_value'];
 			$profit_company_percentage = $key['profit_company_percentage'];
-			$profit_company_value      = check_float($key['profit_company_value']);
-			$profit_asset              = check_float($key['profit_asset']);
+			$profit_company_value      = $key['profit_company_value'];
+			$profit_asset              = $key['profit_asset'];
 
 			$return = [
 				'package'                   => $package,
@@ -232,6 +239,7 @@ class CryptoAssetController extends CI_Controller
 			'arr'          => $arr,
 			'arr_bg_color' => $arr_bg_color,
 			'arr_state'    => $arr_state,
+			'csrf'         => $this->csrf,
 		];
 		$this->template->render($data);
 	}
@@ -282,6 +290,7 @@ class CryptoAssetController extends CI_Controller
 			'vitamin_js' => 'crypto_asset/pick_js',
 			'id_package' => base64_encode(UYAH . $id),
 			'arr'        => $arr,
+			'csrf'       => $this->csrf,
 		];
 		$this->template->render($data);
 	}
@@ -599,6 +608,7 @@ class CryptoAssetController extends CI_Controller
 			'time_left'   => $time_left,
 			'state'       => $state,
 			'state_badge' => $state_badge,
+			'csrf'        => $this->csrf,
 		];
 		$this->template->render($data);
 	}

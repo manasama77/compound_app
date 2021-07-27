@@ -15,9 +15,7 @@ class RewardsController extends CI_Controller
 		parent::__construct();
 		$this->load->library('L_member', null, 'template');
 		$this->load->helper('Floating_helper');
-
 		$this->load->model('M_member');
-
 
 		$this->date      = date('Y-m-d');
 		$this->datetime  = date('Y-m-d H:i:s');

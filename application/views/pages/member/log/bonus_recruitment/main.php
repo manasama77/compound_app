@@ -34,11 +34,11 @@
 								<thead>
 									<tr>
 										<th class="align-top" style="min-width: 120px;">Date Time</th>
-										<th class="text-center align-top" style="min-width: 120px;">Member</th>
-										<th class="align-top">Package</th>
+										<th class="align-top" style="min-width: 120px;">Member</th>
+										<th class="align-top" style="min-width: 80px;">Package</th>
 										<th class="align-top" style="min-width: 120px;">Type</th>
-										<th class="text-right align-top">Amount</th>
-										<th class="align-top" style="min-width: 200px;">Description</th>
+										<th class="text-right align-top" style="min-width: 100px;">Amount</th>
+										<th class="align-top" style="min-width: 350px;">Description</th>
 									</tr>
 								</thead>
 								<tbody>

@@ -7,6 +7,7 @@ class DownlineController extends CI_Controller
 	protected $id_member;
 	protected $date;
 	protected $datetime;
+	protected $csrf;
 
 	public function __construct()
 	{
@@ -19,6 +20,11 @@ class DownlineController extends CI_Controller
 		$this->load->helper('Floating_helper');
 		$this->load->model('M_dashboard');
 		$this->load->model('M_downline');
+
+		$this->csrf = [
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		];
 	}
 
 	public function index()
@@ -29,6 +35,7 @@ class DownlineController extends CI_Controller
 			'content'    => 'downline/main',
 			'vitamin_js' => 'downline/main_js',
 			'max_depth'  => $max_depth,
+			'csrf'       => $this->csrf,
 		];
 		$this->template->render($data);
 	}
