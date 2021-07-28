@@ -136,9 +136,21 @@
 							</a>
 						</li>
 						<li class="nav-item">
+							<a href="<?= site_url('log/profit_trade_manager'); ?>" class="nav-link">
+								<i class="fas fa-file nav-icon"></i>
+								<p>Profit Trade Manager</p>
+							</a>
+						</li>
+						<li class="nav-item">
 							<a href="<?= site_url('log/crypto_asset'); ?>" class="nav-link">
 								<i class="fas fa-file nav-icon"></i>
 								<p>Crypto Asset</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/profit_crypto_asset'); ?>" class="nav-link">
+								<i class="fas fa-file nav-icon"></i>
+								<p>Profit Crypto Asset</p>
 							</a>
 						</li>
 						<li class="nav-item">
