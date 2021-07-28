@@ -60,7 +60,7 @@
 													<?= ucwords($key->type); ?></small>
 												</td>
 												<td class="align-top text-right">
-													<?= check_float($key->amount); ?>
+													<?= check_float($key->package_amount); ?>
 												</td>
 												<td class="align-top">
 													<?= $key->description; ?>
