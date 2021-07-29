@@ -271,7 +271,7 @@
 					</table>
 				</div>
 				<h4 class="mt-3">Downline</h4>
-				<div class="table-resonsive">
+				<div class="table-responsive">
 					<table id="table_downline" class="table table-sm">
 						<thead>
 							<tr>
