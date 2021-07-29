@@ -358,7 +358,7 @@
 								<td class="logo" style="text-align: center;">
 									<h1>
 										<a href="<?= site_url(); ?>">
-											<img src="https://cryptoperty.id/public/img/logo.png" alt="<?= APP_NAME; ?> LOGO" title="<?= APP_NAME; ?>">
+											<img src="https://cryptoperty.id/public/img/logo.png" alt="<?= APP_NAME; ?> LOGO" title="<?= APP_NAME; ?>" style="width: 200px;">
 										</a>
 									</h1>
 								</td>
