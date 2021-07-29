@@ -1,0 +1,5 @@
+REVISI 29 07 2021
+
+- Registrasi hilangkan Captcha
+- OTP ganti Google Authenticator
+- ...
