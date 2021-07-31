@@ -5,6 +5,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class ProfileController extends CI_Controller
 {
 	protected $datetime;
+	protected $csrf;
 
 	public function __construct()
 	{
@@ -12,8 +13,12 @@ class ProfileController extends CI_Controller
 		$this->load->library('L_member', null, 'template');
 		$this->load->helper('Time_helper');
 
-
 		$this->datetime = date('Y-m-d H:i:s');
+
+		$this->csrf = [
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		];
 	}
 
 
@@ -23,6 +28,7 @@ class ProfileController extends CI_Controller
 			'title'      => APP_NAME . ' | Profile',
 			'content'    => 'profile/main',
 			'vitamin_js' => 'profile/main_js',
+			'csrf'       => $this->csrf,
 		];
 
 		$where = [

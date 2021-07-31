@@ -17,6 +17,7 @@
 	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/dist/css/adminlte.min.css">
 	<link href="<?= base_url(); ?>public/css/sweetalert2-theme-dark.css" rel="stylesheet">
 	<link href="<?= base_url(); ?>public/css/toastr.min.css" rel="stylesheet">
+	<link rel="icon" href="<?= base_url(); ?>public/img/logo.png">
 </head>
 
 <body>
@@ -26,20 +27,21 @@
 				<form id="form_otp">
 					<div class="card">
 						<div class="card-header">
-							Form OTP - Login
+							Verifikasi OTP <i>(one time password)</i>
 						</div>
 						<div class="card-body">
-							<div class="form-group">
+							<div class="form-group text-center">
 								<label for="otp">OTP</label>
 								<input type="number" class="form-control mb-2" id="otp" name="otp" min="100000" max="999999" placeholder="000000" autofocus required>
-								<span class="help-block"><small>We already sent OTP to <kbd><?= $this->session->userdata(SESI . 'email'); ?></kbd></small></span>
+								<span class="help-block"><small>Sistem telah mengirimkan kode OTP pada alamat email <kbd><?= $this->session->userdata(SESI . 'email'); ?></kbd></small></span>
 							</div>
 							<button type="button" class="btn btn-warning btn-sm btn-block" id="resend_button" onclick="resendOTP('<?= $this->session->userdata(SESI . 'email'); ?>');" disabled>
-								Didn't receive OTP Code ?<br />
-								Try send again<br />
-								(After <span id="time">03:00</span>)
+								Tidak menerima kode OTP ?<br />
+								Coba kirimkan kembali kode OTP<br />
+								(Setelah <span id="time">00:05</span>)
 							</button>
-							<button type="submit" class="btn btn-primary btn-block" id="submit_btn">Verify</button>
+							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
+							<button type="submit" class="btn btn-primary btn-block mt-3" id="submit_btn">Verifikasi</button>
 						</div>
 					</div>
 				</form>
@@ -79,7 +81,7 @@
 			"showMethod": "fadeIn",
 			"hideMethod": "fadeOut"
 		},
-		minutes = 10 * 1,
+		minutes = <?= TIMER_OTP; ?>,
 		display = $('#time');
 
 	$(document).ready(function() {
@@ -90,26 +92,6 @@
 			checkOTP();
 		});
 	});
-
-	function startTimer(duration, display) {
-		var timer = duration,
-			minutes, seconds;
-
-		setInterval(function() {
-			minutes = parseInt(timer / 60, 10);
-			seconds = parseInt(timer % 60, 10);
-
-			minutes = minutes < 10 ? "0" + minutes : minutes;
-			seconds = seconds < 10 ? "0" + seconds : seconds;
-
-			display.text(minutes + ":" + seconds);
-
-			if (--timer < 0) {
-				timer = 0;
-				$("#resend_button").attr('disabled', false);
-			}
-		}, 1000);
-	}
 
 	function checkOTP() {
 		let email = $('#email').val(),
@@ -122,6 +104,7 @@
 			data: {
 				email: email,
 				otp: otp,
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
 				$('#otp').attr('disabled', true);
@@ -159,7 +142,8 @@
 			method: 'post',
 			dataType: 'json',
 			data: {
-				email: email
+				email: email,
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
 				$("#resend_button").attr('disabled', true);
@@ -167,11 +151,31 @@
 			}
 		}).always(function() {
 			$.unblockUI();
-			startTimer(minutes, display);
 		}).fail(function(e) {
 			console.log(e);
 		}).done(function(e) {
 			console.log(e);
+			window.location.reload();
 		});
+	}
+
+	function startTimer(duration, display) {
+		let timer = duration,
+			minutes, seconds;
+
+		setInterval(function() {
+			minutes = parseInt(timer / 60, 10);
+			seconds = parseInt(timer % 60, 10);
+
+			minutes = minutes < 10 ? "0" + minutes : minutes;
+			seconds = seconds < 10 ? "0" + seconds : seconds;
+
+			display.text(minutes + ":" + seconds);
+
+			if (--timer < 0) {
+				timer = 0;
+				$("#resend_button").attr('disabled', false);
+			}
+		}, 1000);
 	}
 </script>

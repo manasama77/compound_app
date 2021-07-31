@@ -13,7 +13,7 @@ if (isset($vitamin_css)) {
 	<div class="wrapper">
 
 		<!-- Preloader -->
-		<?php //$this->load->view('layouts/member/_preloader'); 
+		<?php //$this->load->view('layouts/member/_preloader');
 		?>
 		<!-- /.Preloader -->
 
@@ -113,7 +113,8 @@ if (isset($vitamin_js)) {
 			method: 'post',
 			dataType: 'json',
 			data: {
-				otp: $('#otp').val()
+				otp: $('#otp').val(),
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function(e) {
 				$.blockUI();
@@ -134,7 +135,10 @@ if (isset($vitamin_js)) {
 		return $.ajax({
 			url: '<?= site_url('otp_resend'); ?>',
 			method: 'post',
-			dataType: 'text',
+			dataType: 'json',
+			data: {
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>',
+			},
 			beforeSend: function() {
 				$.blockUI();
 			}
@@ -149,6 +153,23 @@ if (isset($vitamin_js)) {
 					html: e.responseText,
 				});
 			}
+		});
+	}
+
+	function CopyUrl(id) {
+		let copyText = document.getElementById(id);
+		copyText.select();
+		copyText.setSelectionRange(0, 99999);
+		document.execCommand("copy");
+
+		Swal.fire({
+			position: 'top-end',
+			icon: 'success',
+			text: 'Copy Berhasil',
+			showConfirmButton: false,
+			toast: true,
+			timer: 3000,
+			timerProgressBar: true,
 		});
 	}
 </script>

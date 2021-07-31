@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-$route['default_controller']   = 'WelcomeController';
+$route['default_controller']   = 'LoginController/index';
 $route['404_override']         = '';
 $route['translate_uri_dashes'] = FALSE;
 
@@ -19,9 +19,6 @@ $route['forgot_password']					= 'LoginController/forgot_password';
 $route['send_forgot_password']				= 'LoginController/send_forgot_password';
 $route['reset_password/(:any)/(:any)'] 		= 'LoginController/reset_password/$1/$2';
 
-$route['test_get'] 		= 'LoginController/test_get';
-$route['test_get_delete'] 		= 'LoginController/test_get_delete';
-
 $route['dashboard']                 = 'DashboardController/index';
 $route['dashboard/downline_detail'] = 'DashboardController/downline_detail';
 
@@ -36,12 +33,15 @@ $route['trade_manager/add']                     = 'TradeManagerController/add';
 $route['trade_manager/pick/(:any)']             = 'TradeManagerController/pick/$1';
 $route['trade_manager/checkout/coinpayment'] 	= 'TradeManagerController/checkout_coinpayment';
 $route['trade_manager/checkout/(:any)']   		= 'TradeManagerController/checkout/$1';
-$route['trade_manager/get_tx_info']   			= 'TradeManagerController/get_tx_info';
 $route['trade_manager/detail']   				= 'TradeManagerController/detail';
 $route['trade_manager/update_extend']   		= 'TradeManagerController/update_extend';
 
-$route['crypto_asset']     = 'CryptoAssetController/index';
-$route['crypto_asset/add'] = 'CryptoAssetController/add';
+$route['crypto_asset']     						= 'CryptoAssetController/index';
+$route['crypto_asset/add'] 						= 'CryptoAssetController/add';
+$route['crypto_asset/pick/(:any)']             	= 'CryptoAssetController/pick/$1';
+$route['crypto_asset/checkout/coinpayment'] 	= 'CryptoAssetController/checkout_coinpayment';
+$route['crypto_asset/checkout/(:any)']   		= 'CryptoAssetController/checkout/$1';
+$route['crypto_asset/detail']   				= 'CryptoAssetController/detail';
 
 $route['downline']      = 'DownlineController/index';
 $route['downline/show'] = 'DownlineController/show';
@@ -51,22 +51,34 @@ $route['wallet/store']   = 'WalletController/store';
 $route['wallet/update']  = 'WalletController/update';
 $route['wallet/destroy'] = 'WalletController/destroy';
 
-$route['withdraw']                         = 'WithdrawController/index';
-$route['withdraw_auth']                    = 'WithdrawController/auth';
-$route['withdraw_rates']                   = 'WithdrawController/rates';
-$route['withdraw_generate_wallet_host']    = 'WithdrawController/generate_wallet_host';
-$route['withdraw_generate_wallet_address'] = 'WithdrawController/generate_wallet_address';
-$route['withdraw/otp']                     = 'WithdrawController/otp';
-$route['withdraw/process']                 = 'WithdrawController/process';
-$route['withdraw/success/(:any)']          = 'WithdrawController/success/$1';
+$route['withdraw'] 							= 'WithdrawController/index';
+$route['withdraw_auth'] 					= 'WithdrawController/auth';
+$route['withdraw_rates'] 					= 'WithdrawController/rates';
+$route['withdraw_render_wallet_label'] 		= 'WithdrawController/render_wallet_label';
+$route['withdraw_render_wallet_address'] 	= 'WithdrawController/render_wallet_address';
+$route['withdraw/otp'] 						= 'WithdrawController/otp';
+$route['withdraw/process'] 					= 'WithdrawController/process';
+$route['withdraw/success/(:any)'] 			= 'WithdrawController/success/$1';
 
 $route['rewards'] = 'RewardsController/index';
 
-$route['log/trade_manager'] = 'LogTradeManagerController/index';
+$route['log/trade_manager'] 				= 'LogTradeManagerController/index';
+$route['log/trade_manager/detail/(:any)'] 	= 'LogTradeManagerController/detail/$1';
+
+$route['log/profit_trade_manager'] = 'LogProfitTradeManagerController/index';
+
+$route['log/crypto_asset'] 				  	= 'LogCryptoAssetController/index';
+$route['log/crypto_asset/detail/(:any)'] 	= 'LogCryptoAssetController/detail/$1';
+
+$route['log/profit_crypto_asset'] = 'LogProfitCryptoAssetController/index';
 
 $route['log/recruitment']   = 'LogRecruitmentController/index';
 
 $route['log/withdraw'] = 'LogWithdrawController/index';
+
+$route['log/bonus_recruitment'] = 'LogBonusRecruitmentController/index';
+$route['log/bonus_ql']          = 'LogBonusQLController/index';
+$route['log/bonus_royalty']     = 'LogBonusRoyaltyController/index';
 
 $route['init']         = 'InitController/init';
 $route['init/country'] = 'InitController/country';
@@ -87,14 +99,17 @@ $route['coinpayment/convert']                = 'CoinPayment/convert';
 $route['coinpayment/convert_limits']         = 'CoinPayment/convert_limits';
 $route['coinpayment/get_withdrawal_history'] = 'CoinPayment/get_withdrawal_history';
 $route['coinpayment/get_withdrawal_info']    = 'CoinPayment/get_withdrawal_info';
-$route['coinpayment/ipn_trade_manager']      = 'CoinPayment/ipn_trade_manager';
-$route['coinpayment/success_trade_manager']  = 'CoinPayment/success_trade_manager';
-$route['coinpayment/cancel_trade_manager']   = 'CoinPayment/cancel_trade_manager';
+$route['coinpayment/ipn']      = 'CoinPayment/ipn';
 
-$route['blockio/get_new_address'] = 'BlockController/get_new_address';
+$route['coinpayment/success/(:any)']  = 'CoinPayment/success/$1';
+$route['coinpayment/cancel/(:any)']   = 'CoinPayment/cancel/$1';
 
-
-$route['scheduler/profit_daily_trade_manager']  = 'TaskSchedulerController/profit_daily_trade_manager';
-$route['scheduler/withdraw']                    = 'TaskSchedulerController/withdraw';
+$route['scheduler/profit_daily_trade_manager']  = 'TaskSchedulerController/profit_daily_trade_manager'; # done check
+$route['scheduler/profit_daily_crypto_asset']   = 'TaskSchedulerController/profit_daily_crypto_asset'; # done check
+$route['scheduler/withdraw']                    = 'TaskSchedulerController/withdraw'; # done check
 $route['scheduler/reward']                      = 'TaskSchedulerController/reward';
 $route['scheduler/check_trade_manager_expired'] = 'TaskSchedulerController/check_trade_manager_expired';
+$route['scheduler/check_crypto_asset_expired'] 	= 'TaskSchedulerController/check_crypto_asset_expired';
+$route['scheduler/coinpayment_tx_info_tm'] 	    = 'TaskSchedulerController/coinpayment_tx_info_tm'; # done check
+
+$route['test'] = 'TestController/index';

@@ -16,7 +16,7 @@
 			"showMethod": "fadeIn",
 			"hideMethod": "fadeOut"
 		},
-		minutes = 10 * 1,
+		minutes = <?= TIMER_OTP; ?>,
 		display = $('#time');
 
 	$(document).ready(function() {
@@ -58,6 +58,7 @@
 			dataType: 'json',
 			data: {
 				otp: otp,
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
 				$('#otp').attr('disabled', true);
@@ -95,7 +96,8 @@
 			method: 'post',
 			dataType: 'json',
 			data: {
-				email: email
+				email: email,
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
 				$("#resend_button").attr('disabled', true);
@@ -108,6 +110,7 @@
 			console.log(e);
 		}).done(function(e) {
 			console.log(e);
+			window.location.reload();
 		});
 	}
 </script>

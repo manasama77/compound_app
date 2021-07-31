@@ -1,21 +1,21 @@
 <script>
 	$('#document').ready(function() {
 		$("#amount").on('change', function() {
-			if ($('#amount').val() >= 100 && $('#receive_coin').val() != null) {
+			if ($('#amount').val() >= <?= LIMIT_WITHDRAW; ?> && $('#coin_type').val() != null) {
 				checkRates();
 			}
 		});
 
-		$("#receive_coin").on('change', function() {
-			if ($('#amount').val() >= 100 && $('#receive_coin').val() != null) {
+		$("#coin_type").on('change', function() {
+			if ($('#amount').val() >= <?= LIMIT_WITHDRAW; ?> && $('#coin_type').val() != null) {
 				checkRates();
 			}
 
-			generateHostWallet();
+			renderWalletLabel();
 		});
 
-		$('#wallet_host').on('change', function() {
-			if ($('#wallet_host').val() != null) {
+		$('#wallet_label').on('change', function() {
+			if ($('#wallet_label').val() != null) {
 				renderWalletAddress();
 			}
 		});
@@ -66,7 +66,7 @@
 
 	function checkRates() {
 		let amount = $('#amount').val();
-		let receive_coin = $('#receive_coin').val();
+		let coin_type = $('#coin_type').val();
 
 		$.ajax({
 			url: '<?= site_url('withdraw_rates'); ?>',
@@ -74,7 +74,7 @@
 			dataType: 'json',
 			data: {
 				amount: amount,
-				receive_coin: receive_coin,
+				coin_type: coin_type,
 			},
 			beforeSend: function() {
 				$.blockUI();
@@ -104,15 +104,15 @@
 		});
 	}
 
-	function generateHostWallet() {
-		let receive_coin = $('#receive_coin').val();
+	function renderWalletLabel() {
+		let coin_type = $('#coin_type').val();
 
 		$.ajax({
-			url: '<?= site_url('withdraw_generate_wallet_host'); ?>',
+			url: '<?= site_url('withdraw_render_wallet_label'); ?>',
 			method: 'get',
 			dataType: 'json',
 			data: {
-				receive_coin: receive_coin,
+				coin_type: coin_type,
 			},
 			beforeSend: function() {
 				$.blockUI();
@@ -129,28 +129,28 @@
 				});
 			}
 		}).done(function(e) {
-			let option = '<option value="" disabled selected>-Select Wallet Host-</option>';
+			let option = '<option value="" disabled selected>-Select Wallet Label-</option>';
 			if (e.code == 200) {
 				$.each(e.data, function(i, k) {
-					option += `<option value="${k.wallet_host}">${k.wallet_host.toUpperCase()}</option>`;
+					option += `<option value="${k.wallet_label}">${k.wallet_label}</option>`;
 				});
 			} else {
-				let option = '<option value="" disabled selected>-Select Wallet Host-</option>';
+				let option = '<option value="" disabled selected>-Select Wallet Label-</option>';
 			}
 
-			$('#wallet_host').html(option);
+			$('#wallet_label').html(option);
 		});
 	}
 
 	function renderWalletAddress() {
-		let wallet_host = $('#wallet_host').val();
+		let wallet_label = $('#wallet_label').val();
 
 		$.ajax({
-			url: '<?= site_url('withdraw_generate_wallet_address'); ?>',
+			url: '<?= site_url('withdraw_render_wallet_address'); ?>',
 			method: 'get',
 			dataType: 'json',
 			data: {
-				wallet_host: wallet_host,
+				wallet_label: wallet_label,
 			},
 			beforeSend: function() {
 				$.blockUI();

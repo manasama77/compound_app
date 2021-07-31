@@ -11,12 +11,12 @@
 
 	$(document).ready(function() {
 		$("#table_data").DataTable({
-			// "scrollX": "300px",
-			// "scrollY": "300px",
+			"scrollX": "300px",
+			"scrollY": "300px",
 			order: [
 				[0, 'asc']
 			],
-			responsive: true,
+			responsive: false,
 			lengthChange: false,
 			autoWidth: false,
 			buttons: ["copy", "csv", "excel", "pdf"],

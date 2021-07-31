@@ -143,14 +143,14 @@ class DashboardController extends CI_Controller
 			$total_invest_crypto_asset  = check_float($arr_balance->row()->total_invest_crypto_asset);
 			$profit                     = check_float($arr_balance->row()->profit);
 			$bonus                      = check_float($arr_balance->row()->bonus);
-			$total_omset                = check_float($arr_balance->row()->total_omset);
+			$downline_omset             = check_float($arr_balance->row()->downline_omset);
 
 			$data_balance = [
 				'total_invest_trade_manager' => $total_invest_trade_manager,
 				'total_invest_crypto_asset'  => $total_invest_crypto_asset,
 				'profit'                     => $profit,
 				'bonus'                      => $bonus,
-				'total_omset'                => $total_omset,
+				'downline_omset'             => $downline_omset,
 			];
 		}
 

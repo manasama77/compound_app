@@ -36,8 +36,8 @@
 							<div class="form-group">
 								<label for="depth">Depth</label>
 								<select class="form-control" id="depth" name="depth" required>
-									<?php for ($x = 1; $x < $max_depth; $x++) { ?>
-										<option value="<?= $x; ?>">Generation <?= $x; ?></option>
+									<?php for ($x = 1; $x <= $max_depth; $x++) { ?>
+										<option value="<?= $x; ?>" <?= ($x == $id_member_depth) ? 'selected' : ''; ?>>Generation <?= $x; ?></option>
 									<?php } ?>
 								</select>
 							</div>
@@ -175,7 +175,7 @@
 					</table>
 				</div>
 				<h4 class="mt-3">Downline</h4>
-				<div class="table-resonsive">
+				<div class="table-responsive">
 					<table class="table table-sm">
 						<thead>
 							<tr>

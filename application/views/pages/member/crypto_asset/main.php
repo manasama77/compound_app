@@ -38,11 +38,11 @@
 									<tr>
 										<th class="align-middle">Invoice</th>
 										<th class="align-middle">Package</th>
-										<th class="align-middle">Amount</th>
-										<th class="align-middle">Profit /Day</th>
-										<th class="text-center align-middle">Join At</th>
-										<th class="text-center align-middle">Expired At</th>
-										<th class="text-center align-middle">Extend Mode</th>
+										<th class="align-middle">Investment</th>
+										<th class="align-middle">Profit/Day</th>
+										<th class="text-center align-middle">Register Date</th>
+										<th class="text-center align-middle">Expired Date</th>
+										<th class="text-center align-middle">Total Profit Asset</th>
 										<th class="text-center align-middle">Status</th>
 										<th class="align-middle text-center"><i class="fas fa-cogs"></i></th>
 									</tr>
@@ -79,23 +79,8 @@
 													}
 													?>
 												</td>
-												<td class="align-middle text-center">
-													<?php
-													$is_extend = $key['is_extend'];
-													if ($is_extend == "auto") {
-														$badge_color = 'primary';
-													} elseif ($is_extend == "manual") {
-														$badge_color = 'danger';
-													}
-
-													$tooltip_text = "<h5>Extend Mode</h5><br/><b>Auto Extend</b> = Automatic extend subscription after expired<br/><b>Manual Extend</b> = Stop subscription after expired but you can withdraw the capital amount";
-													?>
-													<span class="badge badge-<?= $badge_color; ?>">
-														<?= STRTOUPPER($key['is_extend']); ?>
-													</span>
-													<button class="btn btn-sm bond_tooltip" data-toggle="tooltip" data-placement="top" data-html="true" title="<?= $tooltip_text; ?>">
-														<i class="fas fa-info-circle"></i>
-													</button>
+												<td class="align-middle">
+													<?= $key['profit_asset']; ?> <small>USDT</small>
 												</td>
 												<td class="text-center align-middle">
 													<?php
@@ -129,10 +114,12 @@
 																<button class="dropdown-item" onclick="showDetail('<?= $key['invoice']; ?>');">
 																	<i class="fas fa-eye fa-fw"></i> Detail
 																</button>
-																<hr />
-																<button class="dropdown-item" onclick="showExtend('<?= $key['invoice']; ?>', '<?= $key['package']; ?>', '<?= $key['is_extend']; ?>');">
-																	<i class="fas fa-business-time fa-fw"></i> Change Extend Mode
-																</button>
+																<?php if ($key['state'] == "waiting payment" || $key['state'] == "pending") { ?>
+																	<hr />
+																	<a href="<?= site_url('crypto_asset/checkout/' . base64_encode(UYAH . $key['invoice'])); ?>" class="dropdown-item">
+																		<i class="fas fa-coins fa-fw"></i> Payment Info
+																	</a>
+																<?php } ?>
 															</div>
 														</div>
 													</div>
@@ -143,7 +130,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- You Don't Have Any Package, why not try to add new one? -</td>
+											<td colspan="9" class="text-center text-danger">- You Don't Have Any Package, why not try to add new one? -</td>
 										</tr>
 
 									<?php endif; ?>
@@ -198,11 +185,6 @@
 								<th id="state"></th>
 							</tr>
 							<tr>
-								<th>Extend Mode</th>
-								<th>:</th>
-								<th id="is_extend"></th>
-							</tr>
-							<tr>
 								<th>Profit Monthly</th>
 								<th>:</th>
 								<th id="profit_monthly"></th>
@@ -211,6 +193,11 @@
 								<th>Profit Daily</th>
 								<th>:</th>
 								<th id="profit_daily"></th>
+							</tr>
+							<tr>
+								<th>Total Profit Asset</th>
+								<th>:</th>
+								<th id="profit_asset"></th>
 							</tr>
 							<tr>
 								<th class="align-top">Profit Sharing Rules</th>
@@ -272,6 +259,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
+					<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					<button type="submit" class="btn btn-primary">Submit</button>
 				</div>

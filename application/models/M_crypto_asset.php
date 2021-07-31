@@ -22,6 +22,11 @@ class M_crypto_asset extends CI_Model
 		return $this->db->set('profit', 'profit + ' . $profit, false)->where('id_member', $id_member)->update('member_balance');
 	}
 
+	public function update_member_profit_crypto_asset($invoice, $profit)
+	{
+		return $this->db->set('profit_asset', 'profit_asset + ' . $profit, false)->where('invoice', $invoice)->update('member_crypto_asset');
+	}
+
 	public function update_unknown_profit($profit)
 	{
 		return $this->db->set('amount_profit', 'amount_profit + ' . $profit, false)->where('id', 1)->update('unknown_balance');
@@ -90,7 +95,8 @@ class M_crypto_asset extends CI_Model
 			ptm.share_upline_percentage AS profit_upline_percentage,
 			mtm.profit_upline_per_day AS profit_upline_value,
 			ptm.share_company_percentage AS profit_company_percentage,
-			mtm.profit_company_per_day AS profit_company_value 
+			mtm.profit_company_per_day AS profit_company_value,
+			mtm.profit_asset
 		', false);
 		$this->db->from('et_member_crypto_asset AS mtm');
 		$this->db->join('et_package_crypto_asset AS ptm', 'ptm.id = mtm.id_package', 'left');
@@ -111,23 +117,23 @@ class M_crypto_asset extends CI_Model
 			foreach ($query->result() as $key) {
 				$invoice                   = $key->invoice;
 				$package                   = $key->package;
-				$amount                    = number_format($key->amount, 0);
-				$profit_per_day            = number_format($key->profit_per_day, 8);
+				$amount                    = check_float($key->amount);
+				$profit_per_day            = check_float($key->profit_per_day);
 				$state                     = $key->state;
 				$created_at                = $key->created_at;
 				$expired_at                = $key->expired_at;
-				$is_extend                 = $key->is_extend;
 				$payment_method            = $key->payment_method;
 				$txn_id                    = $key->txn_id;
-				$amount_transfer           = number_format($key->amount_transfer, 8);
-				$profit_montly_percentage  = number_format($key->profit_montly_percentage, 2);
-				$profit_montly_value       = number_format($key->profit_montly_value, 8);
-				$profit_self_percentage    = number_format($key->profit_self_percentage, 2);
-				$profit_self_value         = number_format($key->profit_self_value, 8);
-				$profit_upline_percentage  = number_format($key->profit_upline_percentage, 2);
-				$profit_upline_value       = number_format($key->profit_upline_value, 8);
-				$profit_company_percentage = number_format($key->profit_company_percentage, 2);
-				$profit_company_value      = number_format($key->profit_company_value, 8);
+				$amount_transfer           = check_float($key->amount_transfer);
+				$profit_montly_percentage  = check_float($key->profit_montly_percentage);
+				$profit_montly_value       = check_float($key->profit_montly_value);
+				$profit_self_percentage    = check_float($key->profit_self_percentage);
+				$profit_self_value         = check_float($key->profit_self_value);
+				$profit_upline_percentage  = check_float($key->profit_upline_percentage);
+				$profit_upline_value       = check_float($key->profit_upline_value);
+				$profit_company_percentage = check_float($key->profit_company_percentage);
+				$profit_company_value      = check_float($key->profit_company_value);
+				$profit_asset              = check_float($key->profit_asset);
 
 				$nested = [
 					'invoice'                   => $invoice,
@@ -137,7 +143,6 @@ class M_crypto_asset extends CI_Model
 					'state'                     => $state,
 					'created_at'                => $created_at,
 					'expired_at'                => $expired_at,
-					'is_extend'                 => $is_extend,
 					'payment_method'            => $payment_method,
 					'txn_id'                    => $txn_id,
 					'amount_transfer'           => $amount_transfer,
@@ -149,6 +154,7 @@ class M_crypto_asset extends CI_Model
 					'profit_upline_value'       => $profit_upline_value,
 					'profit_company_percentage' => $profit_company_percentage,
 					'profit_company_value'      => $profit_company_value,
+					'profit_asset'              => $profit_asset,
 				];
 
 				array_push($result, $nested);
@@ -156,6 +162,55 @@ class M_crypto_asset extends CI_Model
 		}
 
 		return $result;
+	}
+
+	public function get_expired_crypto_asset()
+	{
+		return $this->db
+			->select('*')
+			->from('et_member_crypto_asset AS mca')
+			->where('mca.deleted_at', null)
+			->where('mca.state', 'active')
+			->where('mca.expired_at <=', date('Y-m-d'))
+			->get();
+	}
+
+	public function update_state($data)
+	{
+		return $this->db->update_batch('member_cryoto_asset', $data, 'invoice');
+	}
+
+	public function update_member_crypto_asset_asset($id_member, $amount)
+	{
+		return $this->db
+			->set('total_invest_crypto_asset', 'total_invest_crypto_asset + ' . $amount, false)
+			->set('count_crypto_asset', 'count_crypto_asset + 1', false)
+			->where('id_member', $id_member)
+			->update('member_balance');
+	}
+
+	public function get_ca_unpaid()
+	{
+		return $this->db
+			->from('member_crypto_asset')
+			->where('deleted_at', null)
+			->where('state in', "('waiting payment', 'pending')", false)
+			->get();
+	}
+
+	public function get_group_invoice($id_member)
+	{
+		return $this->db
+			->select([
+				'member_crypto_asset.invoice',
+				'package_crypto_asset.name',
+			])
+			->from('member_crypto_asset')
+			->join('package_crypto_asset', 'package_crypto_asset.id = member_crypto_asset.id_package', 'left')
+			->where('member_crypto_asset.deleted_at', null)
+			->where('id_member', $id_member)
+			->group_by('member_crypto_asset.invoice')
+			->get();
 	}
 }
                         

@@ -49,7 +49,7 @@
 			// If the count down is finished, write some text
 			if (distance < 0) {
 				clearInterval(x);
-				document.getElementById("time_left").innerHTML = `<span class="badge badge-danger">Cancel / Time Out</span>`;
+				document.getElementById("time_left").innerHTML = `<span class="badge badge-danger">Melewati Batas Waktu Transfer</span>`;
 			}
 		}, 1000);
 	}

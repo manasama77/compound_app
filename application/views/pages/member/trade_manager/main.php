@@ -3,12 +3,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">List Trade Manager</h1>
+				<h1 class="m-0">Trade Manager Kamu</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Trade Manager</a></li>
-					<li class="breadcrumb-item active">List Trade Manager</li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Home</a></li>
+					<li class="breadcrumb-item active">Trade Manager Kamu</li>
 				</ol>
 			</div>
 		</div>
@@ -23,7 +23,7 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">List Trade Manager</h3>
+						<h3 class="card-title">List Trade Manager Kamu</h3>
 
 						<div class="card-tools">
 							<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -36,12 +36,16 @@
 							<table id="table_data" class="table">
 								<thead>
 									<tr>
+										<th class="text-center align-middle">Tanggal Registrasi</th>
 										<th class="align-middle">Invoice</th>
-										<th class="align-middle">Package</th>
-										<th class="align-middle">Investment</th>
-										<th class="align-middle">Profit/Day</th>
-										<th class="text-center align-middle">Join At</th>
-										<th class="text-center align-middle">Expired At</th>
+										<th class="align-middle">Paket</th>
+										<th class="align-middle">Nilai Investasi</th>
+										<th class="align-middle">Profit Per Bulan</th>
+										<th class="align-middle">Profit Per Hari</th>
+										<th class="align-middle">Profit Share Member Per Hari</th>
+										<th class="align-middle">Profit Share Upline Per Hari</th>
+										<th class="align-middle">Profit Share Perusahaan Per Hari</th>
+										<th class="text-center align-middle">Expired Date</th>
 										<th class="text-center align-middle">Extend Mode</th>
 										<th class="text-center align-middle">Status</th>
 										<th class="align-middle text-center"><i class="fas fa-cogs"></i></th>
@@ -90,12 +94,21 @@
 
 													$tooltip_text = "<h5>Extend Mode</h5><br/><b>Auto Extend</b> = Automatic extend subscription after expired<br/><b>Manual Extend</b> = Stop subscription after expired but you can withdraw the capital amount";
 													?>
-													<span class="badge badge-<?= $badge_color; ?>">
-														<?= STRTOUPPER($key['is_extend']); ?>
-													</span>
-													<button class="btn btn-sm bond_tooltip" data-toggle="tooltip" data-placement="top" data-html="true" title="<?= $tooltip_text; ?>">
-														<i class="fas fa-info-circle"></i>
-													</button>
+
+													<?php
+													if (in_array($key['state'], ['active', 'inactive', 'expired'])) {
+													?>
+														<span class="badge badge-<?= $badge_color; ?>">
+															<?= STRTOUPPER($key['is_extend']); ?>
+														</span>
+														<button class="btn btn-sm bond_tooltip" data-toggle="tooltip" data-placement="top" data-html="true" title="<?= $tooltip_text; ?>">
+															<i class="fas fa-info-circle"></i>
+														</button>
+													<?php
+													} else {
+														echo "-";
+													}
+													?>
 												</td>
 												<td class="text-center align-middle">
 													<?php
@@ -134,6 +147,12 @@
 																	<button class="dropdown-item" onclick="showExtend('<?= $key['invoice']; ?>', '<?= $key['package']; ?>', '<?= $key['is_extend']; ?>');">
 																		<i class="fas fa-business-time fa-fw"></i> Change Extend Mode
 																	</button>
+																<?php } ?>
+																<?php if ($key['state'] == "waiting payment" || $key['state'] == "pending") { ?>
+																	<hr />
+																	<a href="<?= site_url('trade_manager/checkout/' . base64_encode(UYAH . $key['invoice'])); ?>" class="dropdown-item">
+																		<i class="fas fa-coins fa-fw"></i> Payment Info
+																	</a>
 																<?php } ?>
 															</div>
 														</div>
@@ -274,6 +293,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
+					<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					<button type="submit" class="btn btn-primary">Submit</button>
 				</div>

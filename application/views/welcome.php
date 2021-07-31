@@ -47,7 +47,7 @@
 			<!-- Brand -->
 			<a class="navbar-brand" href="<?= site_url(); ?>">
 				<div class="navbar-brand-img">
-					<img src="<?= base_url(); ?>public/img/logo wide 2.png" alt="<?= APP_NAME; ?> Logo">
+					<img src="<?= base_url(); ?>public/img/logo.png" alt="<?= APP_NAME; ?> Logo">
 				</div>
 			</a>
 

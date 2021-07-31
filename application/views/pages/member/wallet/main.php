@@ -37,10 +37,10 @@
 								<thead>
 									<tr>
 										<th class="align-middle">#</th>
-										<th class="align-middle">Receive Coin</th>
-										<th class="align-middle" style="min-width: 120px !important;">Source</th>
+										<th class="align-middle">Coin Type</th>
+										<th class="align-middle">Label</th>
 										<th class="align-middle">Address</th>
-										<th class="align-middle text-center" style="min-width: 120px !important;"><i class="fas fa-cogs"></i></th>
+										<th class="align-middle text-center" style="min-width: 140px !important;"><i class="fas fa-cogs"></i></th>
 									</tr>
 								</thead>
 								<tbody id="v_data">
@@ -50,12 +50,14 @@
 									?>
 										<tr>
 											<td class="text-center align-middle"><?= $itteration++; ?></td>
-											<td class="align-middle"><?= STRTOUPPER($key->receive_coin); ?></td>
-											<td class="align-middle"><?= ucwords($key->wallet_host); ?></td>
-											<td class="align-middle"><?= $key->wallet_address; ?></td>
+											<td class="align-middle"><?= $key->coin_type; ?></td>
+											<td class="align-middle"><?= $key->wallet_label; ?></td>
+											<td class="align-middle"><small><?= $key->wallet_address; ?></small></td>
 											<td class="text-center align-middle" style="width: 120px;">
-												<button type="button" class="btn btn-warning btn-sm" onclick="editData('<?= $key->id; ?>', '<?= $key->receive_coin; ?>', '<?= $key->wallet_host; ?>', '<?= $key->wallet_address; ?>');">Edit</button>
-												<button type="button" class="btn btn-danger btn-sm" onclick="deleteData('<?= $key->id; ?>', '<?= $key->wallet_host; ?>', '<?= $key->wallet_address; ?>');">Delete</button>
+												<div class="btn-group">
+													<button type="button" class="btn btn-warning btn-sm" onclick="editData('<?= $key->id; ?>', '<?= $key->coin_type; ?>', '<?= $key->wallet_label; ?>', '<?= $key->wallet_address; ?>');"><i class="fas fa-pencil-alt fa-fw"></i> Edit</button>
+													<button type="button" class="btn btn-danger btn-sm" onclick="deleteData('<?= $key->id; ?>', '<?= $key->wallet_label; ?>', '<?= $key->wallet_address; ?>');"><i class="fas fa-trash-alt fa-fw"></i> Delete</button>
+												</div>
 											</td>
 										</tr>
 									<?php } ?>
@@ -80,23 +82,35 @@
 					<div class="card-body">
 						<form id="form_add">
 							<div class="form-group">
-								<label for="receive_coin">Receive Coin</label>
-								<select class="form-control" id="receive_coin" name="receive_coin" required>
-									<option value="bnb">BNB</option>
-									<option value="trx">TRX</option>
-									<option value="ltct">LTCT</option>
+								<label for="coin_type">Coin Type</label>
+								<select class="form-control" id="coin_type" name="coin_type" required>
+									<option value="BNB.BSC">BNB.BEP20 - BSC</option>
+									<option value="TRX">TRON</option>
+									<option value="LTCT">Litecoin Testnet</option>
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="wallet_host">Wallet Host</label>
-								<select class="form-control" id="wallet_host" name="wallet_host" required>
-									<option value="">-</option>
-								</select>
+								<label for="wallet_label">Wallet Label</label>
+								<input type="text" class="form-control" id="wallet_label" name="wallet_label" required>
 							</div>
 							<div class="form-group">
 								<label for="wallet_address">Wallet Address</label>
 								<input type="text" class="form-control" id="wallet_address" name="wallet_address" required>
 							</div>
+
+							<div class="alert alert-warning p-1">
+								<small>
+									<strong>Notes:</strong><br />
+									<ul class="p-3">
+										<li>One coin type one wallet address only</li>
+										<li>BNB.BEP20 are Binance that run on Binance Smart Chain Network. It different from BNB.BEP2 that run on Binance Chain Network</li>
+										<li>Make sure the wallet address you are input are valid</li>
+										<li>Also Make sure the wallet address are support for receive with the coin type. If not the withdrawal coin transaction will be burn / permanent lost</li>
+										<li><?= APP_NAME; ?> did not responsible for all your mistake input for invalid address or wrong target address</li>
+									</ul>
+								</small>
+							</div>
+							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 							<button type="submit" class="btn btn-primary btn-block">Submit</button>
 						</form>
 					</div>
@@ -119,18 +133,16 @@
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
-						<label for="receive_coin_edit">Receive Coin</label>
-						<select class="form-control" id="receive_coin_edit" name="receive_coin_edit" required>
-							<option value="bnb">BNB</option>
-							<option value="trx">TRX</option>
-							<option value="ltct">LTCT</option>
+						<label for="coin_type_edit">Coin Type</label>
+						<select class="form-control" id="coin_type_edit" name="coin_type_edit" required>
+							<option value="BNB.BSC">BNB.BEP20 - BSC</option>
+							<option value="TRX">TRON</option>
+							<option value="LTCT">Litecoin Testnet</option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="wallet_host_edit">Wallet Source</label>
-						<select class="form-control" id="wallet_host_edit" name="wallet_host_edit" required>
-							<option value="">-</option>
-						</select>
+						<label for="wallet_label_edit">Wallet Label</label>
+						<input type="text" class="form-control" id="wallet_label_edit" name="wallet_label_edit" required>
 					</div>
 					<div class="form-group">
 						<label for="wallet_address_edit">Wallet Address</label>
@@ -139,6 +151,7 @@
 				</div>
 				<div class="modal-footer">
 					<input type="hidden" id="id_edit" name="id_edit" required>
+					<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					<button type="submit" class="btn btn-primary">Submit</button>
 				</div>

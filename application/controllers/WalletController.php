@@ -7,6 +7,7 @@ class WalletController extends CI_Controller
 	protected $id_member;
 	protected $date;
 	protected $datetime;
+	protected $csrf;
 
 	public function __construct()
 	{
@@ -16,6 +17,11 @@ class WalletController extends CI_Controller
 		$this->id_member = $this->session->userdata(SESI . 'id');
 
 		$this->load->library('L_member', null, 'template');
+
+		$this->csrf = [
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		];
 	}
 
 	public function index()
@@ -26,21 +32,34 @@ class WalletController extends CI_Controller
 			'content'    => 'wallet/main',
 			'vitamin_js' => 'wallet/main_js',
 			'arr'        => $arr,
+			'csrf'       => $this->csrf,
 		];
 		$this->template->render($data);
 	}
 
 	public function store()
 	{
-		$code = 200;
-		$receive_coin   = $this->input->post('receive_coin');
-		$wallet_host    = $this->input->post('wallet_host');
-		$wallet_address = $this->input->post('wallet_address');
+		$code           = 200;
+		$coin_type      = $this->input->post('coin_type');
+		$wallet_label   = trim($this->input->post('wallet_label'));
+		$wallet_address = trim($this->input->post('wallet_address'));
+
+		$where_check = [
+			'deleted_at' => null,
+			'coin_type'  => $coin_type,
+		];
+		$check = $this->M_core->count('member_wallet', $where_check);
+
+		if ($check == 1) {
+			$code = 201;
+			echo json_encode(['code' => $code]);
+			exit;
+		}
 
 		$data = [
 			'id_member'      => $this->id_member,
-			'receive_coin'   => $receive_coin,
-			'wallet_host'    => $wallet_host,
+			'coin_type'      => $coin_type,
+			'wallet_label'   => $wallet_label,
 			'wallet_address' => $wallet_address,
 			'created_at'     => $this->datetime,
 			'updated_at'     => $this->datetime,
@@ -59,13 +78,13 @@ class WalletController extends CI_Controller
 	{
 		$code           = 200;
 		$id             = $this->input->post('id_edit');
-		$receive_coin   = $this->input->post('receive_coin_edit');
-		$wallet_host    = $this->input->post('wallet_host_edit');
-		$wallet_address = $this->input->post('wallet_address_edit');
+		$coin_type      = $this->input->post('coin_type_edit');
+		$wallet_label   = trim($this->input->post('wallet_label_edit'));
+		$wallet_address = trim($this->input->post('wallet_address_edit'));
 
 		$data = [
-			'receive_coin'   => $receive_coin,
-			'wallet_host'    => $wallet_host,
+			'coin_type'      => $coin_type,
+			'wallet_label'   => $wallet_label,
 			'wallet_address' => $wallet_address,
 			'updated_at'     => $this->datetime,
 		];

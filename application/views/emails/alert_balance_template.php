@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
 	<meta name="x-apple-disable-message-reformatting"> <!-- Disable auto-scale in iOS 10 Mail entirely -->
-	<title></title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+	<title>Alert CoinPayment Balance</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 
@@ -358,7 +358,7 @@
 								<td class="logo" style="text-align: center;">
 									<h1>
 										<a href="<?= site_url(); ?>">
-											<img src="<?= base_url('public/img/logo.png'); ?>" alt="<?= APP_NAME; ?> LOGO">
+											<img src="https://cryptoperty.id/public/img/logo.png" alt="<?= APP_NAME; ?> LOGO" title="<?= APP_NAME; ?>">
 										</a>
 									</h1>
 								</td>
@@ -367,8 +367,8 @@
 					</td>
 				</tr><!-- end tr -->
 				<tr>
-					<td valign="middle" class="hero bg_white" style="padding: 3em 0 2em 0;">
-						<img src="<?= base_url('public/img/undraw_warning_cyit.svg'); ?>" alt="Logo Warning" style="width: 300px; max-width: 600px; height: auto; margin: auto; display: block;">
+					<td valign="middle" class="hero bg_white" style="padding: 1em 0 1em 0;">
+						<img src="https://cryptoperty.id/public/img/undraw_warning_cyit.png" alt="Logo Warning" style="width: 200px; max-width: 200px; height: auto; margin: auto; display: block;">
 					</td>
 				</tr><!-- end tr -->
 				<tr>
@@ -377,8 +377,8 @@
 							<tr>
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
-										<h3>Insufficient Balance on Coin Payment <?= $receive_coin; ?></h3>
-										<h4>Someone try to withdraw <?= $amount; ?> <?= $receive_coin; ?> but coinpayment balance is on low, please try to transfer to coinpayment wallet <?= $receive_coin; ?></h4>
+										<h3>Insufficient Balance on Coin Payment <?= $coin_type; ?></h3>
+										<h4>Someone try to withdraw <?= $amount; ?> <?= $coin_type; ?> but coinpayment balance is on low, please fullfill coinpayment wallet <?= $coin_type; ?> so member can withdraw</h4>
 									</div>
 								</td>
 							</tr>

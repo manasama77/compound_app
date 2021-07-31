@@ -18,4 +18,5 @@
 	<link rel="stylesheet" href="<?= base_url(); ?>public/css/toastr.min.css">
 
 	<link href="<?= base_url(); ?>public/css/sweetalert2-theme-dark.css" rel="stylesheet">
+	<link rel="icon" href="<?= base_url(); ?>public/img/logo.png">
 </head>

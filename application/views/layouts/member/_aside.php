@@ -47,13 +47,13 @@
 						<li class="nav-item">
 							<a href="<?= site_url('trade_manager'); ?>" class="nav-link">
 								<i class="fas fa-robot nav-icon"></i>
-								<p>List Trade Manager</p>
+								<p>Trade Manager Kamu</p>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a href="<?= site_url('trade_manager/add'); ?>" class="nav-link">
 								<i class="fas fa-plus nav-icon"></i>
-								<p>Add Trade Manager</p>
+								<p>List Paket Trade Manager</p>
 							</a>
 						</li>
 					</ul>
@@ -64,7 +64,7 @@
 						<p>
 							Crypto Asset
 							<i class="right fas fa-angle-left"></i>
-							<span class="badge badge-success right">0</span>
+							<span class="badge badge-success right"><?= $aside_count_crypto_asset; ?></span>
 						</p>
 					</a>
 					<ul class="nav nav-treeview">
@@ -136,9 +136,21 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('login'); ?> log_crypto_asset.html" class="nav-link">
+							<a href="<?= site_url('log/profit_trade_manager'); ?>" class="nav-link">
+								<i class="fas fa-file nav-icon"></i>
+								<p>Profit Trade Manager</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/crypto_asset'); ?>" class="nav-link">
 								<i class="fas fa-file nav-icon"></i>
 								<p>Crypto Asset</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/profit_crypto_asset'); ?>" class="nav-link">
+								<i class="fas fa-file nav-icon"></i>
+								<p>Profit Crypto Asset</p>
 							</a>
 						</li>
 						<li class="nav-item">
@@ -153,11 +165,30 @@
 								<p>Withdraw</p>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/bonus_recruitment'); ?>" class="nav-link">
+								<i class="fas fa-wallet nav-icon"></i>
+								<p>Bonus Recruitment</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/bonus_ql'); ?>" class="nav-link">
+								<i class="fas fa-wallet nav-icon"></i>
+								<p>Bonus Qualification Leader</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/bonus_royalty'); ?>" class="nav-link">
+								<i class="fas fa-wallet nav-icon"></i>
+								<p>Bonus Royalty</p>
+							</a>
+						</li>
+						<li>
+							<hr />
+						</li>
 					</ul>
 				</li>
 			</ul>
 		</nav>
-		<!-- /.sidebar-menu -->
 	</div>
-	<!-- /.sidebar -->
 </aside>

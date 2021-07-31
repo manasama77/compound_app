@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
 	<meta name="x-apple-disable-message-reformatting"> <!-- Disable auto-scale in iOS 10 Mail entirely -->
-	<title></title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+	<title>Package Cancel</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 
@@ -358,7 +358,7 @@
 								<td class="logo" style="text-align: center;">
 									<h1>
 										<a href="<?= site_url(); ?>">
-											<img src="<?= base_url('public/img/logo.png'); ?>" alt="<?= APP_NAME; ?> LOGO">
+											<img src="https://cryptoperty.id/public/img/logo.png" alt="<?= APP_NAME; ?> LOGO" title="<?= APP_NAME; ?>">
 										</a>
 									</h1>
 								</td>
@@ -367,8 +367,8 @@
 					</td>
 				</tr><!-- end tr -->
 				<tr>
-					<td valign="middle" class="hero bg_white" style="padding: 3em 0 2em 0;">
-						<img src="<?= base_url('public/img/undraw_cancel_u1it.svg'); ?>" alt="Logo Cancel" style="width: 300px; max-width: 600px; height: auto; margin: auto; display: block;">
+					<td valign="middle" class="hero bg_white" style="padding: 1em 0 1em 0;">
+						<img src="https://cryptoperty.id/public/img/undraw_cancel_u1it.png" alt="Logo Cancel" style="width: 200px; max-width: 200px; height: auto; margin: auto; display: block;">
 					</td>
 				</tr><!-- end tr -->
 				<tr>
@@ -383,10 +383,8 @@
 							</tr>
 						</table>
 					</td>
-				</tr><!-- end tr -->
-				<!-- 1 Column Text + Button : END -->
+				</tr>
 			</table>
-
 		</div>
 	</center>
 </body>

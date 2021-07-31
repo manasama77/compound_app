@@ -6,8 +6,8 @@
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Trade Manager</a></li>
-					<li class="breadcrumb-item active">Add Trade Manager</li>
+					<li class="breadcrumb-item"><a href="<?= site_url('trade_manager'); ?>">Trade Manager</a></li>
+					<li class="breadcrumb-item active">Checkout Trade Manager</li>
 				</ol>
 			</div>
 		</div>
@@ -19,21 +19,25 @@
 
 		<div class="row">
 			<div class="col-md-12">
-				<!-- PRODUCT LIST -->
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Payment Information</h3>
+						<h3 class="card-title">Informasi Pembayaran</h3>
 
 						<div class="card-tools">
-							<a href="<?= site_url('trade_manager/add'); ?>" class="btn btn-dark btn-sm">
-								<i class="fas fa-chevron-left fa-fw"></i> Back to Package
-							</a>
+							<div class="btn-group">
+								<a href="<?= site_url('trade_manager/add'); ?>" class="btn btn-secondary btn-sm">
+									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke List Paket Trade Manager
+								</a>
+								<a href="<?= site_url('trade_manager'); ?>" class="btn btn-dark btn-sm">
+									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke Trade Manager Kamu
+								</a>
+							</div>
 						</div>
 					</div>
 					<div class="card-body">
 						<?php if ($state != "active") { ?>
 							<div class="alert alert-warning" role="alert">
-								System will automatic check status payment every 30 Second...
+								Sistem otomatis melakukan check pembayaran setiap 30 detik...
 							</div>
 						<?php } ?>
 						<?php if ($state == "waiting payment") { ?>
@@ -43,53 +47,72 @@
 							<table class="table">
 								<tbody>
 									<tr>
-										<td>Status</td>
+										<td style="width: 200px;">Invoice</td>
+										<td>:</td>
+										<td class="text-left">
+											<span id="state_badge"><?= $arr->row()->invoice; ?></span>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 200px;">Paket Trade Manager</td>
+										<td>:</td>
+										<td class="text-left">
+											<span id="state_badge"><?= $arr->row()->package_name; ?> <small>(<?= $arr->row()->package_code; ?>)</small></span>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 200px;">Status Pembayaran</td>
 										<td>:</td>
 										<td class="text-left">
 											<span id="state_badge"><?= $state_badge; ?></span>
 										</td>
 									</tr>
 									<tr>
-										<td>Total Amount To Send</td>
+										<td>Total Transfer</td>
 										<td>:</td>
-										<td class="text-left"><?= $arr->row()->amount_coin; ?> <?= $arr->row()->currency2; ?></td>
+										<td class="text-left font-weight-bold"><?= $arr->row()->amount_2; ?> <small><?= $arr->row()->currency2; ?></small></td>
 									</tr>
 									<tr>
-										<td>Send To Address</td>
+										<td>Wallet Address Tujuan</td>
 										<td>:</td>
-										<td class="text-left"><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></td>
-									</tr>
-									<tr>
-										<td>Amount Received</td>
-										<td>:</td>
-										<td class="text-left">
-											<span id="receivedf"></span> <span id="coin"></span>
+										<td class="text-left font-weight-bold">
+											<div class="input-group">
+												<input type="text" class="form-control text-dark" id="receiver_wallet_address" value="<?= $arr->row()->receiver_wallet_address; ?>" readonly />
+												<div class="input-group-append">
+													<button type="button" class="btn btn-dark" id="copy" onclick="CopyUrl('receiver_wallet_address');">
+														<i class="fas fa-clipboard fa-fw"></i> Copy
+													</button>
+												</div>
+											</div>
 										</td>
 									</tr>
 									<tr>
-										<td>Time Left to Transfer</td>
+										<td>Total Diterima</td>
 										<td>:</td>
 										<td class="text-left">
+											<span id="receivedf"></span> <span id="coin"><?= $arr->row()->receive_amount; ?> <small><?= $arr->row()->currency2; ?></small></span>
+										</td>
+									</tr>
+									<tr>
+										<td>Batas Waktu Transfer</td>
+										<td>:</td>
+										<td class="text-left font-weight-bold">
 											<span id="time_left"></span>
 										</td>
 									</tr>
 									<tr>
-										<td>Payment ID</td>
+										<td>ID Pembayaran</td>
 										<td>:</td>
 										<td class="text-left"><code class="text-dark"><?= $arr->row()->txn_id; ?></code></td>
 									</tr>
 									<tr>
-										<td>Coinpayment Checkout Page</td>
-										<td>:</td>
-										<td class="text-left">
-											<a href="<?= $arr->row()->checkout_url; ?>" target="_blank"><?= $arr->row()->checkout_url; ?></a>
-										</td>
-									</tr>
-									<tr>
-										<td>Coinpayment Status Page</td>
-										<td>:</td>
-										<td class="text-left">
-											<a href="<?= $arr->row()->status_url; ?>" target="_blank"><?= $arr->row()->status_url; ?></a>
+										<td colspan="3" class="text-center">
+											<a href="<?= $arr->row()->checkout_url; ?>" target="_blank" class="btn btn-app bg-indigo elevation-1">
+												<i class="fas fa-link"></i> Coinpayment Checkout
+											</a>
+											<a href="<?= $arr->row()->status_url; ?>" target="_blank" class="btn btn-app bg-indigo elevation-1">
+												<i class="fas fa-link"></i> Coinpayment Status
+											</a>
 										</td>
 									</tr>
 								</tbody>
@@ -109,10 +132,10 @@
 										<div class="tab-pane fade show active" id="v-pills-q1" role="tabpanel">
 											<ol>
 												<li>
-													Please send <mark><?= $arr->row()->amount_coin; ?> <?= $arr->row()->currency2; ?></mark> to address <mark><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></mark>. <span class="text-danger">(Make sure to send enough to cover any coin transaction fees!)</span> You will need to initiate the payment using your software or online wallet and copy/paste the address and payment amount into it. We will email you when all funds have been received. If you send funds that don't confirm by the timeout or don't send enough coins you will receive an automatic email to claim your funds within 8 hours. If you don't receive the email contact us with the information below and CoinPayments.net will send you a refund:
+													Please send <mark><?= $arr->row()->amount_2; ?> <?= $arr->row()->currency2; ?></mark> to address <mark><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></mark>. <span class="text-danger">(Make sure to send enough to cover any coin transaction fees!)</span> You will need to initiate the payment using your software or online wallet and copy/paste the address and payment amount into it. We will email you when all funds have been received. If you send funds that don't confirm by the timeout or don't send enough coins you will receive an automatic email to claim your funds within 8 hours. If you don't receive the email contact us with the information below and CoinPayments.net will send you a refund:
 													<ul class="mb-3">
 														<li>The transaction ID: <mark><code class="text-dark"><?= $arr->row()->txn_id; ?></code></mark></li>
-														<li>A payment address to send the funds to <?= $arr->row()->receiver_wallet_address; ?>.</li>
+														<li>A payment address to send the funds to <?= $arr->row()->receiver_wallet_address; ?></li>
 													</ul>
 												</li>
 												<li>

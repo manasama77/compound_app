@@ -13,10 +13,10 @@ class CryptoAssetController extends CI_Controller
 	protected $ipn_secret_key;
 	protected $from;
 	protected $from_alias;
-	protected $to;
 	protected $ip_address;
 	protected $user_agent;
 	protected $id_member;
+	protected $csrf;
 
 	public function __construct()
 	{
@@ -25,21 +25,26 @@ class CryptoAssetController extends CI_Controller
 		$this->load->library('Nested_set', null, 'tree');
 		$this->load->model('M_crypto_asset');
 		$this->load->model('M_log_send_email_member');
+		$this->load->helper('Floating_helper');
 
-		$this->date 			= date('Y-m-d');
+		$this->date     		= date('Y-m-d');
 		$this->datetime 		= date('Y-m-d H:i:s');
-		$this->api_link 		= 'https://www.coinpayments.net/api.php';
-		$this->public_key 		= '0d79d9c15454272a3ea638332ff716217b1530d57d2bb8023a0b5835a4c2c6bd';
-		$this->private_key 		= '90c986299927C62d1250999244da7fEF08263769818AA8875e90e446f5d78d30';
-		$this->merchant_id 		= '12d2c4c617ebe6fb9e401a92ed7039fd';
-		$this->ipn_secret_key 	= 'YmlvbmVyIElQTg==';
-		$this->id_member        = $this->session->userdata(SESI . 'id');
+		$this->api_link       	= CP_API_LINK;
+		$this->public_key     	= CP_PUB_KEY;
+		$this->private_key    	= CP_PRV_KEY;
+		$this->merchant_id    	= CP_MERCH_ID;
+		$this->ipn_secret_key 	= CP_IPN_SEC_KEY;
+		$this->id_member		= $this->session->userdata(SESI . 'id');
 
-		$this->from       = 'adam.pm59@gmail.com';
-		$this->from_alias = 'Admin Test';
-		$this->to         = 'adam.pm77@gmail.com';
+		$this->from       = EMAIL_ADMIN;
+		$this->from_alias = EMAIL_ALIAS;
 		$this->ip_address = $this->input->ip_address();
 		$this->user_agent = $this->input->user_agent();
+
+		$this->csrf = [
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		];
 
 		$this->tree->setControlParams('tree', 'lft', 'rgt', 'id_member', 'id_upline', 'email');
 	}
@@ -53,6 +58,7 @@ class CryptoAssetController extends CI_Controller
 			'content'           => 'crypto_asset/main',
 			'vitamin_js'        => 'crypto_asset/main_js',
 			'data_crypto_asset' => $data_crypto_asset,
+			'csrf'              => $this->csrf,
 		];
 		$this->template->render($data);
 	}
@@ -85,7 +91,6 @@ class CryptoAssetController extends CI_Controller
 			$state                     = $key['state'];
 			$created_at                = $key['created_at'];
 			$expired_at                = $key['expired_at'];
-			$is_extend                 = $key['is_extend'];
 			$payment_method            = $key['payment_method'];
 			$txn_id                    = $key['txn_id'];
 			$amount_transfer           = $key['amount_transfer'];
@@ -97,6 +102,7 @@ class CryptoAssetController extends CI_Controller
 			$profit_upline_value       = $key['profit_upline_value'];
 			$profit_company_percentage = $key['profit_company_percentage'];
 			$profit_company_value      = $key['profit_company_value'];
+			$profit_asset              = $key['profit_asset'];
 
 			$return = [
 				'package'                   => $package,
@@ -105,7 +111,6 @@ class CryptoAssetController extends CI_Controller
 				'state'                     => $state,
 				'created_at'                => $created_at,
 				'expired_at'                => $expired_at,
-				'is_extend'                 => $is_extend,
 				'payment_method'            => $payment_method,
 				'txn_id'                    => $txn_id,
 				'amount_transfer'           => $amount_transfer,
@@ -117,6 +122,7 @@ class CryptoAssetController extends CI_Controller
 				'profit_upline_value'       => $profit_upline_value,
 				'profit_company_percentage' => $profit_company_percentage,
 				'profit_company_value'      => $profit_company_value,
+				'profit_asset'              => $profit_asset,
 			];
 		}
 
@@ -157,53 +163,71 @@ class CryptoAssetController extends CI_Controller
 		if ($arr_member_crypto_asset->num_rows() > 0) {
 			foreach ($arr_member_crypto_asset->result() as $key) {
 				if ($key->id_package == 1) {
-					for ($x = 0; $x < 6; $x++) {
-						$arr_state[$x] = '0';
+					if (in_array($key->state, ['active'])) {
+						$arr_state[0] = '1';
+					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
+						$arr_state[0] = '2';
 					}
 				}
 
 				if ($key->id_package == 2) {
-					for ($x = 0; $x < 1; $x++) {
-						if ($arr_state[$x] != '1') {
-							$arr_state[$x] = '2';
-						}
+					if (in_array($key->state, ['active'])) {
+						$arr_state[1] = '1';
+					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
+						$arr_state[1] = '2';
+					}
+
+					for ($x = 0; $x <= 1; $x++) {
+						$arr_state[$x] = '2';
 					}
 				}
 
 				if ($key->id_package == 3) {
-					for ($x = 0; $x < 2; $x++) {
-						if ($arr_state[$x] != '1') {
-							$arr_state[$x] = '2';
-						}
+					if (in_array($key->state, ['active'])) {
+						$arr_state[2] = '1';
+					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
+						$arr_state[2] = '2';
+					}
+
+					for ($x = 0; $x <= 2; $x++) {
+						$arr_state[$x] = '2';
 					}
 				}
 
 				if ($key->id_package == 4) {
-					for ($x = 0; $x < 3; $x++) {
-						if ($arr_state[$x] != '1') {
-							$arr_state[$x] = '2';
-						}
+					if (in_array($key->state, ['active'])) {
+						$arr_state[3] = '1';
+					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
+						$arr_state[3] = '2';
+					}
+
+					for ($x = 0; $x <= 3; $x++) {
+						$arr_state[$x] = '2';
 					}
 				}
 
 				if ($key->id_package == 5) {
-					for ($x = 0; $x < 4; $x++) {
-						if ($arr_state[$x] != '1') {
-							$arr_state[$x] = '2';
-						}
+					if (in_array($key->state, ['active'])) {
+						$arr_state[4] = '1';
+					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
+						$arr_state[4] = '2';
+					}
+
+					for ($x = 0; $x <= 4; $x++) {
+						$arr_state[$x] = '2';
 					}
 				}
 
 				if ($key->id_package == 6) {
-					for ($x = 0; $x < 5; $x++) {
-						if ($arr_state[$x] != '1') {
-							$arr_state[$x] = '2';
-						}
+					if (in_array($key->state, ['active'])) {
+						$arr_state[5] = '1';
+					} elseif (in_array($key->state, ['waiting payment', 'pending', 'inactive', 'expired'])) {
+						$arr_state[5] = '2';
 					}
-				}
 
-				if (in_array($key->state, ['active', 'waiting payment', 'pending'])) {
-					$arr_state[$key->id_package - 1] = '1';
+					for ($x = 0; $x <= 5; $x++) {
+						$arr_state[$x] = '2';
+					}
 				}
 			}
 		}
@@ -215,6 +239,7 @@ class CryptoAssetController extends CI_Controller
 			'arr'          => $arr,
 			'arr_bg_color' => $arr_bg_color,
 			'arr_state'    => $arr_state,
+			'csrf'         => $this->csrf,
 		];
 		$this->template->render($data);
 	}
@@ -224,11 +249,10 @@ class CryptoAssetController extends CI_Controller
 		$id = str_replace(UYAH, '', base64_decode($id));
 
 		$where_check = [
-			'id_member'     => $this->session->userdata(SESI . 'id'),
-			'id_package >'     => $id,
-			'state !='         => 'cancel',
-			'state !='         => 'expired',
-			'deleted_at'     => null,
+			'id_member' 	=> $this->session->userdata(SESI . 'id'),
+			'id_package >' 	=> $id,
+			'state !=' 		=> 'cancel',
+			'deleted_at' 	=> null,
 		];
 		$arr_check = $this->M_core->get('member_crypto_asset', '*', $where_check);
 
@@ -266,6 +290,7 @@ class CryptoAssetController extends CI_Controller
 			'vitamin_js' => 'crypto_asset/pick_js',
 			'id_package' => base64_encode(UYAH . $id),
 			'arr'        => $arr,
+			'csrf'       => $this->csrf,
 		];
 		$this->template->render($data);
 	}
@@ -278,15 +303,15 @@ class CryptoAssetController extends CI_Controller
 		$buyer_email    = $this->session->userdata(SESI . 'email');
 		$buyer_name     = $this->session->userdata(SESI . 'fullname');
 		$id_package     = str_replace(UYAH, '', base64_decode($this->input->post('id_package')));
-		$payment_method = $this->input->post('payment_method');
+		$payment_method = 'coinpayment';
 		$coin_type      = $this->input->post('coin_type');
 
 		$where_check = [
-			'id_member'     => $this->session->userdata(SESI . 'id'),
-			'id_package >'     => $id_package,
-			'state !='         => 'cancel',
-			'state !='         => 'expired',
-			'deleted_at'     => null,
+			'id_member' 	=> $this->session->userdata(SESI . 'id'),
+			'id_package >' 	=> $id_package,
+			'state !=' 		=> 'cancel',
+			'state !=' 		=> 'expired',
+			'deleted_at' 	=> null,
 		];
 		$arr_check = $this->M_core->get('member_crypto_asset', '*', $where_check);
 
@@ -328,7 +353,7 @@ class CryptoAssetController extends CI_Controller
 			$new_sequence = "0" . $sequence;
 		}
 
-		$invoice = "INV-" . date('Ymd') . '-' . $new_sequence;
+		$invoice = "CA-" . date('Ymd') . '-' . $new_sequence;
 
 		$where = [
 			'id'         => $id_package,
@@ -348,15 +373,6 @@ class CryptoAssetController extends CI_Controller
 		$profit_upline_per_day  = $arr_package->row()->share_upline_value;
 		$profit_company_per_day = $arr_package->row()->share_company_value;
 
-		if ($id_package == 6) {
-			$amount                 = $this->input->post('total_transfer');
-			$profit_per_month       = ($amount * 15) / 100;
-			$profit_per_day         = ($profit_per_month / 30);
-			$profit_self_per_day    = ($profit_per_day * 90) / 100;
-			$profit_upline_per_day  = ($profit_per_day * 5) / 100;
-			$profit_company_per_day = ($profit_per_day * 5) / 100;
-		}
-
 		$data_member_package = [
 			'invoice'                => $invoice,
 			'sequence'               => $sequence,
@@ -375,8 +391,10 @@ class CryptoAssetController extends CI_Controller
 			'state'                  => 'waiting payment',
 			'expired_at'             => $expired_at,
 			'is_qualified'           => 'no',
-			'is_royalt'              => 'no',
-			'is_extend'              => 'auto',
+			'is_royalty'             => 'no',
+			'profit_asset'           => 0,
+			'can_claim'              => 'no',
+			'claim_at'               => null,
 			'created_at'             => $this->datetime,
 			'updated_at'             => $this->datetime,
 			'deleted_at'             => null,
@@ -459,8 +477,6 @@ class CryptoAssetController extends CI_Controller
 
 	public function _create_transaction($data)
 	{
-		$code = 500;
-
 		$req['amount']      = $data['amount'];
 		$req['currency1']   = 'USDT';
 		$req['currency2']   = $data['coin_type'];
@@ -469,29 +485,17 @@ class CryptoAssetController extends CI_Controller
 		$req['item_name']   = $data['item_name'];
 		$req['item_number'] = $data['item_number'];
 		$req['invoice']     = $data['invoice'];
+		$req['custom']      = 'crypto_asset';
 		$req['ipn_url']     = site_url('coinpayment/ipn');
-		$req['success_url'] = site_url('coinpayment/success');
-		$req['cance_url']   = site_url('coinpayment/cancel');
+		$req['success_url'] = site_url('coinpayment/success/' . $data['invoice']);
+		$req['cance_url']   = site_url('coinpayment/cancel/' . $data['invoice']);
 
 		$exec = $this->_coinpayments_api_call('create_transaction', $req);
 
 		if ($exec['error'] == "ok") {
 			$code = 200;
-
-			$data = [
-				'txn_id'           => $exec['result']['txn_id'],
-				'amount'           => $exec['result']['amount'],
-				'receiver_address' => $exec['result']['address'],
-				'state'            => 'waiting payment',
-				'created_at'       => $this->datetime,
-				'updated_at'       => $this->datetime,
-				'deleted_at'       => null,
-			];
-
-			$this->M_core->store('coinpayment_ipn', $data);
 		} else {
-			echo show_error($exec['error'], 500, "An Error Was Encountered");
-			exit;
+			$code = 500;
 		}
 
 		$result = [
@@ -604,230 +608,9 @@ class CryptoAssetController extends CI_Controller
 			'time_left'   => $time_left,
 			'state'       => $state,
 			'state_badge' => $state_badge,
+			'csrf'        => $this->csrf,
 		];
 		$this->template->render($data);
-	}
-
-	public function get_tx_info()
-	{
-		header('Content-Type: application/json');
-		$this->db->trans_begin();
-
-		$code                = 200;
-		$member_is_qualified = 'no';
-		$member_is_royalty   = 'no';
-
-		$txn_id = $this->input->get('txid');
-
-		$req['txid'] = $txn_id;
-		$req['full'] = 0; // if set 1 will display checkout information
-
-		$where_state = ['txn_id' => $txn_id];
-		$arr_state   = $this->M_core->get('member_crypto_asset', '*', $where_state);
-
-		$invoice      = $arr_state->row()->invoice;
-		$id_member    = $arr_state->row()->id_member;
-		$id_package   = $arr_state->row()->id_package;
-		$amount_usd   = $arr_state->row()->amount_usd;
-		$amount_coin  = $arr_state->row()->amount_coin;
-		$currency2    = $arr_state->row()->currency2;
-		$buyer_email  = $arr_state->row()->buyer_email;
-		$buyer_name   = $arr_state->row()->buyer_name;
-		$item_name    = $arr_state->row()->item_name;
-		$state_trade  = $arr_state->row()->state;
-		$is_qualified = $arr_state->row()->is_qualified;
-		$is_royalty   = $arr_state->row()->is_royalty;
-
-		$exec = $this->_coinpayments_api_call('get_tx_info', $req);
-		if ($exec['error'] != "ok") {
-			$this->db->trans_rollback();
-			$return = [
-				'code'        => 500,
-				'status_text' => $exec['result']['status_text'],
-			];
-			echo json_encode($return);
-			exit;
-		}
-
-		$status      = $exec['result']['status'];
-		$status_text = $exec['result']['status_text'];
-
-		$status = 100; //adam debug only
-
-		if ($status >= 100 || $status == 2) {
-			// payment is complete or queued for nightly payout or success
-			$state       = 'active';
-			$badge_color = 'success';
-			$description = "[$this->datetime] Member $buyer_email Package $item_name Active";
-
-			if ($state_trade != "active") {
-				$arr_member = $this->M_core->get('member', 'id_upline', ['id' => $id_member]);
-				$id_upline  = $arr_member->row()->id_upline;
-
-				$arr_upline        = $this->M_core->get('member', 'email, fullname, deleted_at', ['id' => $id_upline]);
-				$email_upline      = $arr_upline->row()->email;
-				$fullname_upline   = $arr_upline->row()->fullname;
-				$deleted_at_upline = $arr_upline->row()->deleted_at;
-
-				// PART BONUS SPONSOR START
-				if ($arr_upline->num_rows() == 1) {
-					$amount_bonus_upline = ($amount_usd * 10) / 100;
-
-					if ($id_upline != null) {
-
-						if ($deleted_at_upline == null) {
-							$this->M_crypto_asset->update_member_bonus($id_upline, $amount_bonus_upline);
-
-							$id_upline_log = $id_upline;
-							$desc_log      = "$fullname_upline ($email_upline) get bonus recruitment of member $buyer_name ($buyer_email) $amount_bonus_upline USDT";
-						} else {
-							$this->M_crypto_asset->update_unknown_balance($amount_bonus_upline);
-
-							$id_upline_log = null;
-							$desc_log      = "Unknown Balance get bonus recruitment of member $buyer_name ($buyer_email) $amount_bonus_upline USDT";
-						}
-
-						$data_log = [
-							'id_member'      => $id_upline_log,
-							'id_downline'    => $id_member,
-							'type_package'   => 'trade manager',
-							'invoice'        => $invoice,
-							'id_package'     => $id_package,
-							'package_name'   => $item_name,
-							'package_amount' => $amount_usd,
-							'state'          => 'get bonus',
-							'description'    => $desc_log,
-							'created_at'     => $this->datetime,
-						];
-						$this->M_core->store_uuid('log_bonus_recruitment', $data_log);
-					}
-				}
-				// PART BONUS SPONSOR END
-
-				// PART QUALIFIKASI LEVEL START
-				if ($is_qualified == "no") {
-					// adamx
-					$member_is_qualified = $this->_update_qualified($id_member, $id_upline, $amount_usd, $invoice, $id_package, $item_name);
-				}
-				// PART QUALIFIKASI LEVEL END
-
-				// PART ROYALTY START
-				if ($is_royalty == "no") {
-					$member_is_royalty = $this->_update_royalty($id_member, $amount_usd, $invoice, $id_package, $item_name);
-				}
-				// PART ROYALTY END
-
-				// UPDATE TOTAL OMSET START
-				$update_omset = $this->_update_omset($id_member, $amount_usd);
-				if ($update_omset === false) {
-					$this->db->trans_rollback();
-					$return = [
-						'code'        => 500,
-						'status_text' => "Failed to Update Upline Sales Turnover",
-					];
-					echo json_encode($return);
-					exit;
-				}
-				// UPDATE TOTAL OMSET END
-			}
-
-			$this->_send_package_active($id_member, $buyer_email, $invoice, $item_name);
-		} else if ($status < 0) {
-			//payment error, this is usually final but payments will sometimes be reopened if there was no exchange rate conversion or with seller consent
-			$state = 'cancel';
-			$badge_color = 'warning';
-			$description = "[$this->datetime] Member $buyer_email Package $item_name Payment Timeout";
-		} else {
-			//payment is pending, you can optionally add a note to the order page
-			$state = 'waiting payment';
-			$badge_color = 'secondary';
-			$description = "[$this->datetime] Member $buyer_email Pick Package $item_name. Waiting for Payment Transfer";
-		}
-
-		$state_badge = '<span class="badge badge-' . $badge_color . '">' . strtoupper($state) . '</span>';
-
-		$where = ['txn_id' => $txn_id];
-		$data  = [
-			'state'       => $state,
-			'status_code' => $status,
-			'updated_at'  => $this->datetime,
-		];
-		$this->M_core->update('coinpayment_ipn', $data, $where);
-
-		$data = [
-			'state'        => $state,
-			'is_qualified' => $member_is_qualified,
-			'is_royalty'   => $member_is_royalty,
-			'updated_at'   => $this->datetime,
-		];
-		$where = ['txn_id' => $txn_id];
-		$this->M_core->update('member_crypto_asset', $data, $where);
-
-		$where = [
-			'id_member' => $this->session->userdata(SESI . 'id'),
-			'state'     => 'active',
-		];
-		$arr = $this->M_core->get('member_crypto_asset', 'amount_usd, state', $where);
-
-		$total_invest_crypto_asset = 0;
-		$count_crypto_asset        = 0;
-
-		if ($arr->num_rows() > 0) {
-			foreach ($arr->result() as $key) {
-				$total_invest_crypto_asset += $key->amount_usd;
-				$count_crypto_asset++;
-			}
-		}
-
-		$data = [
-			'total_invest_crypto_asset' => $total_invest_crypto_asset,
-			'count_crypto_asset'        => $count_crypto_asset,
-			'updated_at'                 => $this->datetime,
-		];
-		$where = ['id_member' => $this->session->userdata(SESI . 'id')];
-		$this->M_core->update('member_balance', $data, $where);
-
-		$where_count = [
-			'id_member' => $this->session->userdata(SESI . 'id'),
-			'invoice'   => $invoice,
-		];
-		$arr_count = $this->M_core->get('log_member_crypto_asset', 'id', $where_count, null, null, 1);
-
-		if ($arr_count->num_rows() == 0) {
-			$data_log = [
-				'id_member'         => $this->session->userdata(SESI . 'id'),
-				'invoice'           => $invoice,
-				'amount_invest'     => $amount_usd,
-				'amount_transfer'   => $amount_coin,
-				'currency_transfer' => $currency2,
-				'txn_id'            => $txn_id,
-				'state'             => $state,
-				'description'       => $description,
-				'created_at'        => $this->datetime,
-				'updated_at'        => $this->datetime,
-			];
-			$this->M_core->store_uuid('log_member_crypto_asset', $data_log);
-		} else {
-			$data_log = [
-				'state'             => $state,
-				'description'       => $description,
-				'updated_at'        => $this->datetime,
-			];
-			$this->M_core->update('log_member_crypto_asset', $data_log, $where_count);
-		}
-
-		$return = [
-			'code'        => $code,
-			'state'       => $state,
-			'status_text' => $status_text,
-			'receivedf'   => $exec['result']['receivedf'],
-			'coin'        => $exec['result']['coin'],
-			'exec'        => $exec,
-			'state_badge' => $state_badge,
-		];
-
-		$this->db->trans_commit();
-		echo json_encode($return);
 	}
 
 	protected function _update_qualified($id_member, $id_upline, $amount_usd, $invoice, $id_package, $item_name)
@@ -1071,42 +854,6 @@ class CryptoAssetController extends CI_Controller
 		}
 
 		return true;
-	}
-
-	public function update_extend()
-	{
-		$invoice   = $this->input->post('invoice_extend');
-		$is_extend = $this->input->post('is_extend_mode');
-
-		$where_count = [
-			'id_member' => $this->id_member,
-			'invoice' => $invoice,
-		];
-		$arr_check = $this->M_core->get('member_crypto_asset', '*', $where_count);
-
-		if ($arr_check->num_rows() == 0) {
-			echo json_encode(['code' => 404, 'status_text' => "Invoice Not Found"]);
-			exit;
-		}
-
-		$current_obj = new DateTime('now');
-		$expired_obj = new DateTime($arr_check->row()->expired_at);
-		$diff        = $current_obj->diff($expired_obj);
-
-		if ($diff->format('%R') == "-") {
-			echo json_encode(['code' => 500, 'status_text' => "Package Expired"]);
-			exit;
-		}
-
-		$data = ['is_extend' => $is_extend];
-		$exec = $this->M_core->update('member_crypto_asset', $data, $where_count);
-
-		if (!$exec) {
-			echo json_encode(['code' => 500, 'status_text' => "Update Failed, please try again!"]);
-			exit;
-		}
-
-		echo json_encode(['code' => 200, 'status_text' => "Update Success"]);
 	}
 }
         

@@ -16,79 +16,26 @@
 
 <section class="content">
 	<div class="container-fluid">
-
+		<h4>List Invoice</h4>
 		<div class="row">
-
-			<div class="col-12">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">Log Trade Manager</h3>
-
-						<div class="card-tools">
-							<button type="button" class="btn btn-tool" data-card-widget="collapse">
-								<i class="fas fa-minus"></i>
-							</button>
+			<?php foreach ($arr->result() as $key) : ?>
+				<div class="col-lg-3 col-6">
+					<a href="<?= site_url('log/trade_manager/detail/' . $key->invoice); ?>">
+						<div class="small-box bg-primary">
+							<div class="inner">
+								<h5><?= $key->name; ?></h5>
+								<p><?= $key->invoice; ?></p>
+							</div>
+							<div class="icon">
+								<i class="fas fa-file-invoice-dollar"></i>
+							</div>
+							<span class="small-box-footer">
+								More info <i class="fas fa-arrow-circle-right"></i>
+							</span>
 						</div>
-					</div>
-					<div class="card-body">
-						<div class="table-responsive">
-							<table id="table_data" class="table table-bordered table-striped">
-								<thead>
-									<tr>
-										<th class="text-center align-middle" style="min-width: 100px;">Date</th>
-										<th class="align-middle">Invoice</th>
-										<th class="text-right align-middle" style="min-width: 130px;">Amount Invest</th>
-										<th class="text-right align-middle" style="min-width: 130px;">Amount Transfer</th>
-										<th class="text-center align-middle">Status</th>
-										<th class="align-middle" style="min-width: 500px;">Description</th>
-										<th class="align-middle">TXID</th>
-									</tr>
-								</thead>
-								<tbody>
-
-									<?php if ($arr->num_rows() > 0) : ?>
-										<?php foreach ($arr->result() as $key) : ?>
-
-											<tr>
-												<td class="text-center align-middle">
-													<?= $key->created_at; ?>
-												</td>
-												<td class="align-middle">
-													<?= $key->invoice; ?>
-												</td>
-												<td class="text-right align-middle">
-													<?= number_format($key->amount_invest, 8); ?> <small>USDT</small>
-												</td>
-												<td class="text-right align-middle">
-													<?= number_format($key->amount_transfer, 8); ?> <small><?= $key->currency_transfer; ?></small>
-												</td>
-												<td class="text-center align-middle">
-													<?= strtoupper($key->state); ?>
-												</td>
-												<td class="align-middle">
-													<small><?= $key->description; ?></small>
-												</td>
-												<td class="align-middle">
-													<small><?= $key->txn_id; ?></small>
-												</td>
-											</tr>
-
-										<?php endforeach; ?>
-									<?php else : ?>
-
-										<tr>
-											<td colspan="7" class="text-center text-danger">- You Don't Have Any History Withdraw -</td>
-										</tr>
-
-									<?php endif; ?>
-
-								</tbody>
-							</table>
-						</div>
-					</div>
+					</a>
 				</div>
-			</div>
+			<?php endforeach; ?>
 		</div>
 	</div>
 </section>
-<!-- /.Main Content -->

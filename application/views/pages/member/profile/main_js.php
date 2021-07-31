@@ -72,7 +72,8 @@
 			method: 'post',
 			dataType: 'json',
 			data: {
-				current_password: $('#current_password').val()
+				current_password: $('#current_password').val(),
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
 				$.blockUI();
@@ -136,7 +137,8 @@
 			method: 'post',
 			dataType: 'json',
 			data: {
-				new_password: $('#new_password').val()
+				new_password: $('#new_password').val(),
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
 				$.blockUI();

@@ -8,9 +8,9 @@ class LoginController extends CI_Controller
 	protected $datetime;
 	protected $from;
 	protected $from_alias;
-	protected $to;
 	protected $ip_address;
 	protected $user_agent;
+	protected $csrf;
 
 	public function __construct()
 	{
@@ -21,11 +21,15 @@ class LoginController extends CI_Controller
 		$this->load->model('M_log_send_email_member');
 
 		$this->datetime   = date('Y-m-d H:i:s');
-		$this->from       = 'adam.pm59@gmail.com';
-		$this->from_alias = 'Admin Test';
-		$this->to         = 'adam.pm77@gmail.com';
+		$this->from       = EMAIL_ADMIN;
+		$this->from_alias = EMAIL_ALIAS;
 		$this->ip_address = $this->input->ip_address();
 		$this->user_agent = $this->input->user_agent();
+
+		$this->csrf = [
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		];
 
 		$this->Nested_set->setControlParams('tree', 'lft', 'rgt', 'id_member', 'id_upline', 'email');
 	}
@@ -45,7 +49,8 @@ class LoginController extends CI_Controller
 			}
 
 			$data = [
-				'title' => APP_NAME . ' | Member Sign In'
+				'title' => APP_NAME . ' | Member Sign In',
+				'csrf'  => $this->csrf,
 			];
 			return $this->load->view('login', $data, FALSE);
 		}
@@ -53,13 +58,13 @@ class LoginController extends CI_Controller
 
 	public function auth()
 	{
-		$email    = $this->input->post('email');
-		$password = $this->input->post('password');
-		$remember = $this->input->post('remember');
+		$email    = $this->security->xss_clean($this->input->post('email'));
+		$password = $this->security->xss_clean($this->input->post('password'));
+		$remember = $this->security->xss_clean($this->input->post('remember'));
 
 		$check = $this->genuine_mail->check($email);
 		if ($check !== TRUE) {
-			return show_error($check, 404, "An Error Was Encountered");
+			return show_error($check, 404, "Terjadi Kesalahan...");
 		}
 
 		$where = [
@@ -74,9 +79,9 @@ class LoginController extends CI_Controller
 			$this->session->set_flashdata('email_state_message', 'Email Not Found');
 			redirect('login');
 		} elseif ($arr_user->row()->is_active == 'no') {
-			$msg = 'Account Has Not Active, Activate First. To Activate Check Your Email';
+			$msg = 'Akun belum aktif, silahkan aktivasi terlebih dahulu. Untuk melakukan aktivasi silahkan cek email kamu';
 			if (date($arr_user->row()->updated_at) > date($arr_user->row()->created_at)) {
-				$msg = 'Account has disabled by Admin.';
+				$msg = 'Akun telah dimatikan oleh Admin';
 			}
 			$this->session->set_flashdata('email_value', $email);
 			$this->session->set_flashdata('email_state', 'is-invalid');
@@ -101,13 +106,15 @@ class LoginController extends CI_Controller
 				SESI . 'email' => $email,
 			]);
 
-			$check = $this->_send_otp($id, $email);
+			if (ENVIRONMENT == "production") {
+				$check = $this->_send_otp($id, $email);
 
-			if ($check === true) {
-				redirect('otp');
+				if ($check === true) {
+				}
 			}
+			redirect('otp');
 
-			return show_error('Failed to send Email, please try again', 500, 'An Error Was Encountered');
+			return show_error('Sistem gagal mengiri email, silahkan coba kembali', 500, 'Terjadi Kesalahan...');
 		}
 	}
 
@@ -119,7 +126,8 @@ class LoginController extends CI_Controller
 		}
 
 		$data = [
-			'title' => APP_NAME . ' | OTP'
+			'title' => APP_NAME . ' | OTP',
+			'csrf'  => $this->csrf,
 		];
 		return $this->load->view('otp_login', $data, FALSE);
 	}
@@ -177,6 +185,10 @@ class LoginController extends CI_Controller
 		}
 
 		$this->_send_otp($id, $email);
+
+		echo json_encode([
+			'code' => 200,
+		]);
 	}
 
 	public function logout(): void
@@ -195,14 +207,14 @@ class LoginController extends CI_Controller
 		redirect('login');
 	}
 
-	public function _set_cookie(): string
+	protected function _set_cookie(): string
 	{
 		$key_cookies = random_string('alnum', 64);
 		set_cookie(KUE, $key_cookies, 86400);
 		return $key_cookies;
 	}
 
-	public function _set_session($id, $fullname, $email, $phone_number, $cookies, $is_active, $profile_picture): void
+	protected function _set_session($id, $fullname, $email, $phone_number, $cookies, $is_active, $profile_picture): void
 	{
 		$data = [
 			SESI . 'id'              => $id,
@@ -224,7 +236,7 @@ class LoginController extends CI_Controller
 		$this->M_core->update('member', $data, $where);
 	}
 
-	public function _check_cookies($cookies): void
+	protected function _check_cookies($cookies): void
 	{
 		$where_cookies = [
 			'cookies'    => $cookies,
@@ -258,7 +270,7 @@ class LoginController extends CI_Controller
 		}
 	}
 
-	public function _check_session()
+	protected function _check_session()
 	{
 		$id    = $this->session->userdata(SESI . 'id');
 		$email = $this->session->userdata(SESI . 'email');
@@ -268,9 +280,9 @@ class LoginController extends CI_Controller
 		}
 
 		$where = [
-			'id'        => $id,
-			'email'     => $email,
-			'is_active' => 'yes',
+			'id'         => $id,
+			'email'      => $email,
+			'is_active'  => 'yes',
 			'deleted_at' => null,
 		];
 
@@ -283,7 +295,7 @@ class LoginController extends CI_Controller
 		return true;
 	}
 
-	public function _send_otp($id, $to): bool
+	protected function _send_otp($id, $to): bool
 	{
 		$subject = APP_NAME . " | OTP (One Time Password)";
 		$message = "";
@@ -388,6 +400,7 @@ class LoginController extends CI_Controller
 				'fullname'     => $arr->row()->fullname,
 				'member_since' => time_ago(new DateTime($arr->row()->created_at)),
 				'arr'          => $arr,
+				'csrf'         => $this->csrf,
 			];
 			return $this->load->view('registration', $data, FALSE);
 		} else {
@@ -402,7 +415,7 @@ class LoginController extends CI_Controller
 
 			$check = $this->genuine_mail->check($email);
 			if ($check !== TRUE) {
-				return show_error($check, 404, "An Error Was Encountered");
+				return show_error($check, 404, "Terjadi Kesalahan...");
 			}
 
 			$data = [
@@ -432,14 +445,14 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'An Error Was Encountered');
+				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$where     = ['email' => $email];
 			$arr       = $this->M_core->get('member', 'id', $where);
 			$id_member = $arr->row()->id;
 
-			$data = [
+			$data                         =  [
 				'id_member'                  => $id_member,
 				'total_invest_trade_manager' => 0,
 				'count_trade_manager'        => 0,
@@ -447,6 +460,9 @@ class LoginController extends CI_Controller
 				'count_crypto_asset'         => 0,
 				'profit'                     => 0,
 				'bonus'                      => 0,
+				'self_omset'                 => 0,
+				'downline_omset'             => 0,
+				'total_omset'                => 0,
 				'created_at'                 => $this->datetime,
 				'updated_at'                 => $this->datetime,
 				'deleted_at'                 => null,
@@ -456,7 +472,7 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'An Error Was Encountered');
+				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$add_tree_downline = $this->_add_tree_downline($id_member, $email, $id);
@@ -489,14 +505,14 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'An Error Was Encountered');
+				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$check = $this->_send_email_activation($id_member, $email);
 
 			if ($check == "no") {
 				$this->db->trans_rollback();
-				return show_error('Cannot Send Email, Please check your <mark>Email Address</mark>', 500, 'An Error Was Encountered');
+				return show_error('Cannot Send Email, Please check your <mark>Email Address</mark>', 500, 'Terjadi Kesalahan...');
 			}
 
 			$this->db->trans_commit();
@@ -504,7 +520,7 @@ class LoginController extends CI_Controller
 		}
 	}
 
-	public function _add_tree_downline($id_member, $email, $id_upline)
+	protected function _add_tree_downline($id_member, $email, $id_upline)
 	{
 		$where_upline = ['id_member' => $id_upline];
 		$data_upline  = $this->Nested_set->getNodeWhere($where_upline);
@@ -526,7 +542,7 @@ class LoginController extends CI_Controller
 		return $exec;
 	}
 
-	public function _send_email_activation($id, $to)
+	protected function _send_email_activation($id, $to)
 	{
 		$subject = APP_NAME . " | Account Activation";
 		$message = "";
@@ -576,7 +592,8 @@ class LoginController extends CI_Controller
 	public function forgot_password()
 	{
 		$data = [
-			'title' => APP_NAME . ' | Forgot Password'
+			'title' => APP_NAME . ' | Forgot Password',
+			'csrf'  => $this->csrf,
 		];
 		$this->load->view('forgot_password', $data);
 	}
@@ -604,7 +621,7 @@ class LoginController extends CI_Controller
 		echo json_encode(['code' => $code]);
 	}
 
-	public function _send_email_forgot_password($id, $to)
+	protected function _send_email_forgot_password($id, $to)
 	{
 		$subject = APP_NAME . " | Forgot Password";
 		$message = "";
@@ -658,6 +675,7 @@ class LoginController extends CI_Controller
 			$data = [
 				'title' => APP_NAME . ' | Reset Password',
 				'email' => $email_decode,
+				'csrf'  => $this->csrf,
 			];
 			return $this->load->view('reset_password', $data);
 		} else {
@@ -682,17 +700,6 @@ class LoginController extends CI_Controller
 			];
 			return $this->load->view('reset_password_success', $data);
 		}
-	}
-
-	public function test_get()
-	{
-		$this->load->view('test_get');
-	}
-
-	public function test_get_delete()
-	{
-		echo $this->input->post('username') . "<br/>";
-		echo $this->input->post('password') . "<br/>";
 	}
 }
         

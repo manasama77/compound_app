@@ -27,58 +27,7 @@
 			e.preventDefault();
 			updateData();
 		});
-
-		generateWalletSource('add');
-
-		$('#receive_coin').on('change', function() {
-			generateWalletSource('add');
-		});
-
-		$('#receive_coin_edit').on('change', function() {
-			generateWalletSource('edit');
-		});
 	});
-
-	function generateWalletSource(type) {
-		console.log(type);
-		let receive_coin = '';
-
-		if (type == "add") {
-			receive_coin = $('#receive_coin').val();
-		} else {
-			receive_coin = $('#receive_coin_edit').val();
-		}
-
-		let option = '<option value="">-</option>';
-
-		if (receive_coin == "bnb") {
-			console.log(receive_coin);
-			option = `
-			<option value="binance mainnet">Binance Mainnet</option>
-			<option value="trustwallet">Trust Wallet</option>
-			<option value="tokocrypto">TokoCrypto</option>
-			<option value="indodax">Indodax</option>
-			`;
-		} else if (receive_coin == "trx") {
-			option = `
-			<option value="tronlink mainnet">TronLink</option>
-			<option value="trustwallet">TrustWallet</option>
-			<option value="binance mainnet">Binance Mainnet</option>
-			<option value="tokocrypto">TokoCrypto</option>
-			<option value="indodax">Indodax</option>
-			`;
-		} else if (receive_coin == "ltct") {
-			option = `<option value="litecoin wallet testnet">LiteCoin Test</option>`;
-		}
-
-		if (type == "add") {
-			console.log(option)
-			$('#wallet_host').html(option);
-		} else {
-			$('#wallet_host_edit').html(option);
-		}
-
-	}
 
 	function storeData() {
 		$.ajax({
@@ -108,6 +57,12 @@
 					title: 'Oops...',
 					text: 'Failed connect to Database, please contact web developer',
 				});
+			} else if (e.code == 201) {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Oops...',
+					text: `Wallet Address with Coin Type ${$('#coin_type :selected').val()} already registered`,
+				});
 			} else if (e.code == 200) {
 				Swal.fire({
 					position: 'top-end',
@@ -124,10 +79,10 @@
 		});
 	}
 
-	function editData(id, receive_coin, wallet_host, wallet_address) {
+	function editData(id, coin_type, wallet_label, wallet_address) {
 		$('#id_edit').val(id);
-		$('#receive_coin_edit').val(receive_coin).trigger('change');
-		$('#wallet_host_edit').val(wallet_host);
+		$('#coin_type_edit').val(coin_type);
+		$('#wallet_label_edit').val(wallet_label);
 		$('#wallet_address_edit').val(wallet_address);
 		$('#modal_edit').modal('show');
 	}
@@ -180,10 +135,10 @@
 		});
 	}
 
-	function deleteData(id, wallet_host, wallet_address) {
+	function deleteData(id, wallet_label, wallet_address) {
 		Swal.fire({
 			title: 'Are you sure?',
-			text: `Delete Wallet ${wallet_address} from ${wallet_host}`,
+			text: `Delete Wallet ${wallet_address} with label ${wallet_label}`,
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
@@ -202,7 +157,8 @@
 			method: 'post',
 			dataType: 'json',
 			data: {
-				id: id
+				id: id,
+				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
 				$.blockUI();

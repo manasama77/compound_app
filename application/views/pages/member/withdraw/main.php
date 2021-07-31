@@ -72,19 +72,19 @@
 							<div class="form-group">
 								<label for="amount">Amount</label>
 								<div class="input-group mb-2">
-									<input type="number" class="form-control" id="amount" name="amount" step="0.00000001" min="100" placeholder="Amount" value="<?= set_value('amount'); ?>" required>
+									<input type="number" class="form-control" id="amount" name="amount" step="0.00000001" min="<?= LIMIT_WITHDRAW; ?>" placeholder="Amount" value="<?= set_value('amount'); ?>" required>
 									<div class="input-group-append">
-										<div class="input-group-text">USDT</div>
+										<div class="input-group-text bg-primary">USDT</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="receive_coin">Coin Receive</label>
-								<select class="form-control" id="receive_coin" name="receive_coin" required>
-									<option value="" disabled selected>-Pick Coin Receive-</option>
-									<option value="trx">Tron Coin Mainnet (TRX)</option>
-									<option value="bnb">Binance Coin Mainnet (BNB)</option>
-									<option value="ltct">Litecoin Testnet (LTCT)</option>
+								<label for="coin_type">Coin Type</label>
+								<select class="form-control" id="coin_type" name="coin_type" required>
+									<option value="" disabled selected>-Pick Coin Type-</option>
+									<option value="BNB.BSC">BNB.BEP20 - BSC</option>
+									<option value="TRX">TRON</option>
+									<option value="LTCT">Litecoin Testnet</option>
 								</select>
 							</div>
 							<div class="form-group">
@@ -92,9 +92,9 @@
 								<input type="text" class="form-control" id="estimation" name="estimation" required readonly>
 							</div>
 							<div class="form-group">
-								<label for="wallet_host">Wallet Host</label>
-								<select class="form-control" id="wallet_host" name="wallet_host" required>
-									<option value="" disabled selected>-Select Wallet Host-</option>
+								<label for="wallet_label">Wallet Label</label>
+								<select class="form-control" id="wallet_label" name="wallet_label" required>
+									<option value="" disabled selected>-Select Wallet Label-</option>
 								</select>
 							</div>
 							<div class="form-group">
@@ -102,8 +102,19 @@
 								<select class="form-control" id="wallet_address" name="wallet_address" required>
 									<option value="" disabled selected>-Select Wallet Address-</option>
 								</select>
-								<small class="form-text text-danger"><i class="fas fa-info-circle fa-fw"></i>Please make sure your wallet address are valid address. We can't responsible and cover for invalid wallet address or fail withdraw transaction</small>
 							</div>
+							<div class="alert alert-warning p-1">
+								<small>
+									<strong>Notes:</strong><br />
+									<ul class="p-3">
+										<li>BNB.BEP20 are Binance that run on Binance Smart Chain Network. It different from BNB.BEP2 that run on Binance Chain Network</li>
+										<li>Make sure the wallet address you are input are valid</li>
+										<li>Also Make sure the wallet address are support for receive with the coin type. If not the withdrawal coin transaction will be burn / permanent lost</li>
+										<li><?= APP_NAME; ?> did not responsible for all your mistake input for invalid address or wrong target address</li>
+									</ul>
+								</small>
+							</div>
+							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 							<button type="submit" class="btn btn-primary btn-block elevation-2">Withdraw</button>
 						</div>
 					</div>
@@ -112,71 +123,3 @@
 		</div>
 	</div>
 </section>
-<!-- /.Main Content -->
-
-<div class="modal fade" id="modal_detail" data-backdrop="static" data-keyboard="false" tabindex="-1">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Detail</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Amount</th>
-							<th>:</th>
-							<th id="amount_usd"></th>
-						</tr>
-						<tr>
-							<th>Duration</th>
-							<th>:</th>
-							<th id="contract_duration"></th>
-						</tr>
-						<tr>
-							<th>Profit Monthly</th>
-							<th>:</th>
-							<th id="profit_monthly"></th>
-						</tr>
-						<tr>
-							<th>Profit Daily</th>
-							<th>:</th>
-							<th id="profit_daily"></th>
-						</tr>
-						<tr>
-							<th class="align-top">Profit Rules</th>
-							<th class="align-top">:</th>
-							<th>
-								<table class="table">
-									<thead>
-										<tr>
-											<th>Self</th>
-											<th>:</th>
-											<th id="profit_self"></th>
-										</tr>
-										<tr>
-											<th>Upline</th>
-											<th>:</th>
-											<th id="profit_upline"></th>
-										</tr>
-										<tr>
-											<th>Company</th>
-											<th>:</th>
-											<th id="profit_company"></th>
-										</tr>
-									</thead>
-								</table>
-							</th>
-						</tr>
-					</thead>
-				</table>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>

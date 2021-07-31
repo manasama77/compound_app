@@ -25,7 +25,7 @@
 
 					<div class="info-box-content">
 						<span class="info-box-text font-weight-bold">
-							Main Line Total Turnover <small><?= $downline_main_line; ?></small>
+							Main Line Total Turnover<br /><small><?= $downline_main_line; ?></small>
 						</span>
 						<span class="info-box-number">
 							<?= $omset_main_line; ?>
@@ -36,7 +36,7 @@
 			</div>
 			<div class="col-12 col-sm-6 col-md-4">
 				<div class="info-box">
-					<span class="info-box-icon bg-primary elevation-1"><i class="fas fa-coins"></i></span>
+					<span class="info-box-icon bg-info elevation-1"><i class="fas fa-coins"></i></span>
 
 					<div class="info-box-content">
 						<span class="info-box-text font-weight-bold">Other Line Total Turnover</span>

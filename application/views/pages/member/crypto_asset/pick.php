@@ -22,7 +22,7 @@
 
 			<div class="col-md-12">
 
-				<form class="form-horizontal" action="<?= site_url('trade_manager/checkout/coinpayment'); ?>" method="post">
+				<form id="form_submit" class="form-horizontal" action="<?= site_url('crypto_asset/checkout/coinpayment'); ?>" method="post">
 
 					<!-- PRODUCT LIST -->
 					<div class="card">
@@ -30,7 +30,7 @@
 							<h3 class="card-title">Package Detail</h3>
 
 							<div class="card-tools">
-								<a href="<?= site_url('trade_manager/add'); ?>" class="btn btn-dark btn-sm">
+								<a href="<?= site_url('crypto_asset/add'); ?>" class="btn btn-dark btn-sm">
 									<i class="fas fa-chevron-left fa-fw"></i> Back to Package
 								</a>
 							</div>
@@ -42,13 +42,13 @@
 									<p class="card-text">
 									<ul>
 										<li>
-											Total Investment: <span id="total_investment"><?= number_format($arr->row()->amount, 0); ?></span> USDT
+											Total Investment: <span id="total_investment"><?= check_float($arr->row()->amount); ?></span> USDT
 										</li>
 										<li>
-											Profit per Month: <?= number_format($arr->row()->profit_per_month_percent, 0); ?>%
+											Profit per Month: <?= check_float($arr->row()->profit_per_month_percent); ?>%
 										</li>
 										<li>
-											Profit per Day: <span id="profit_per_day_x"><?= number_format($arr->row()->profit_per_day_value, 8); ?></span> USDT
+											Profit per Day: <span id="profit_per_day_x"><?= check_float($arr->row()->profit_per_day_value); ?></span> USDT
 										</li>
 										<li>
 											Contract Duration: <?= $arr->row()->contract_duration; ?> Day
@@ -57,13 +57,13 @@
 											Profit Share Rules:
 											<ul>
 												<li>
-													Self: <?= number_format($arr->row()->share_self_percentage, 0); ?>% (<span id="self_share"><?= number_format($arr->row()->share_self_value, 8); ?></span> USDT)
+													Self: <?= check_float($arr->row()->share_self_percentage); ?>% (<span id="self_share"><?= check_float($arr->row()->share_self_value); ?></span> USDT)
 												</li>
 												<li>
-													Upline: <?= number_format($arr->row()->share_upline_percentage, 0); ?>% (<span id="upline_share"><?= number_format($arr->row()->share_upline_value, 8); ?></span> USDT)
+													Upline: <?= check_float($arr->row()->share_upline_percentage); ?>% (<span id="upline_share"><?= check_float($arr->row()->share_upline_value); ?></span> USDT)
 												</li>
 												<li>
-													Company: <?= number_format($arr->row()->share_company_percentage, 0); ?>% (<span id="company_share"><?= number_format($arr->row()->share_company_value, 8); ?></span> USDT) </li>
+													Company: <?= check_float($arr->row()->share_company_percentage); ?>% (<span id="company_share"><?= check_float($arr->row()->share_company_value); ?></span> USDT) </li>
 											</ul>
 										</li>
 									</ul>
@@ -74,15 +74,7 @@
 										<label for="id_wallet_admin" class="col-form-label col-md-4">Total Investment<sup class="text-danger">*</sup></label>
 										<div class="col-md-7">
 											<div class="input-group">
-												<?php
-												$readonly = "";
-												$min      = "10001";
-												if (str_replace(UYAH, "", base64_decode($id_package)) != "6") {
-													$readonly = "readonly";
-													$min = "1";
-												}
-												?>
-												<input type="number" class="form-control" id="total_transfer" name="total_transfer" value="<?= $arr->row()->amount; ?>" required <?= $readonly; ?> min="<?= $min; ?>">
+												<input type="text" class="form-control" id="total_transfer" name="total_transfer" value="<?= $arr->row()->amount; ?>" required readonly>
 												<div class="input-group-append">
 													<span class="input-group-text">USDT</span>
 												</div>
@@ -93,16 +85,9 @@
 										<label for="coin_type" class="col-form-label col-md-4">Coin Type</label>
 										<div class="col-md-7">
 											<select class="form-control" id="coin_type" name="coin_type" required>
+												<option value="USDT.ERC20">Tether USD - ERC20 (USDT.ERC20)</option>
+												<!-- <option value="USDT.BEP20">Tether USD - BSC Chain (USDT.BEP20)</option> -->
 												<option value="LTCT">Lite Coin Test (LTCT)</option>
-												<option value="BTC">BTC</option>
-											</select>
-										</div>
-									</div>
-									<div class="form-group row">
-										<label for="payment_method" class="col-form-label col-md-4">Payment Method</label>
-										<div class="col-md-7">
-											<select class="form-control" id="payment_method" name="payment_method" required>
-												<option value="coinpayment">Coin Payment</option>
 											</select>
 										</div>
 									</div>
@@ -112,7 +97,8 @@
 						<!-- /.card-body -->
 						<div class="card-footer text-center">
 							<input type="hidden" class="form-control" id="id_package" name="id_package" value="<?= $id_package; ?>">
-							<button type="submit" class="btn btn-primary btn-block btn-flat">Checkout</button>
+							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
+							<button id="submit" type="submit" class="btn btn-primary btn-block btn-flat">Checkout</button>
 						</div>
 						<!-- /.card-footer -->
 					</div>

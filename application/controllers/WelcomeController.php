@@ -7,7 +7,8 @@ class WelcomeController extends CI_Controller
 
 	public function index()
 	{
-		return $this->load->view('welcome');
+		// return $this->load->view('welcome');
+		return $this->load->view('coming_soon');
 	}
 }
         
