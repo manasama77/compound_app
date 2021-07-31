@@ -3,12 +3,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">List Trade Manager</h1>
+				<h1 class="m-0">Trade Manager Kamu</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Trade Manager</a></li>
-					<li class="breadcrumb-item active">List Trade Manager</li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Home</a></li>
+					<li class="breadcrumb-item active">Trade Manager Kamu</li>
 				</ol>
 			</div>
 		</div>
@@ -23,7 +23,7 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">List Trade Manager</h3>
+						<h3 class="card-title">List Trade Manager Kamu</h3>
 
 						<div class="card-tools">
 							<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -36,11 +36,15 @@
 							<table id="table_data" class="table">
 								<thead>
 									<tr>
+										<th class="text-center align-middle">Tanggal Registrasi</th>
 										<th class="align-middle">Invoice</th>
-										<th class="align-middle">Package</th>
-										<th class="align-middle">Investment</th>
-										<th class="align-middle">Profit/Day</th>
-										<th class="text-center align-middle">Register Date</th>
+										<th class="align-middle">Paket</th>
+										<th class="align-middle">Nilai Investasi</th>
+										<th class="align-middle">Profit Per Bulan</th>
+										<th class="align-middle">Profit Per Hari</th>
+										<th class="align-middle">Profit Share Member Per Hari</th>
+										<th class="align-middle">Profit Share Upline Per Hari</th>
+										<th class="align-middle">Profit Share Perusahaan Per Hari</th>
 										<th class="text-center align-middle">Expired Date</th>
 										<th class="text-center align-middle">Extend Mode</th>
 										<th class="text-center align-middle">Status</th>

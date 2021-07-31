@@ -155,4 +155,21 @@ if (isset($vitamin_js)) {
 			}
 		});
 	}
+
+	function CopyUrl(id) {
+		let copyText = document.getElementById(id);
+		copyText.select();
+		copyText.setSelectionRange(0, 99999);
+		document.execCommand("copy");
+
+		Swal.fire({
+			position: 'top-end',
+			icon: 'success',
+			text: 'Copy Berhasil',
+			showConfirmButton: false,
+			toast: true,
+			timer: 3000,
+			timerProgressBar: true,
+		});
+	}
 </script>

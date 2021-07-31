@@ -13,22 +13,6 @@
 		//
 	});
 
-	function CopyUrl() {
-		let copyText = document.getElementById("recruitment_link");
-		copyText.select();
-		copyText.setSelectionRange(0, 99999);
-		document.execCommand("copy");
-
-		Swal.fire({
-			position: 'top-end',
-			icon: 'success',
-			text: 'Copied Recruitment Link',
-			showConfirmButton: true,
-			timer: 2000,
-			timerProgressBar: true,
-		});
-	}
-
 	function showModalDownline(id_member, fullname) {
 
 		$.ajax({

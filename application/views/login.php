@@ -27,9 +27,8 @@
 				<a href="<?= base_url(); ?>" class="h1"><b><?= APP_NAME; ?></b></a>
 			</div>
 			<div class="card-body">
-				<p class="login-box-msg">Sign in to start your session</p>
 
-				<form action="<?= site_url('auth'); ?>" method="post">
+				<form id="form" action="<?= site_url('auth'); ?>" method="post">
 					<div class="input-group mb-3">
 						<input type="email" class="form-control lowercase <?= $this->session->flashdata('email_state'); ?>" id="email" name="email" placeholder="Email" autocomplete="email" value="<?= $this->session->flashdata('email_value'); ?>" required>
 						<div class="input-group-append">
@@ -63,21 +62,21 @@
 							<div class="icheck-primary">
 								<input type="checkbox" id="remember" name="remember" value="yes">
 								<label for="remember">
-									Remember Me
+									Ingatkan Saya
 								</label>
 							</div>
 						</div>
 						<!-- /.col -->
 						<div class="col-4">
 							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
-							<button type="submit" class="btn btn-primary btn-block">Sign In</button>
+							<button type="submit" class="btn btn-primary btn-block g-recaptcha">Masuk</button>
 						</div>
 						<!-- /.col -->
 					</div>
 				</form>
 
 				<p class="mb-1 mt-3">
-					<a href="<?= site_url('forgot_password'); ?>">I forgot my password</a>
+					<a href="<?= site_url('forgot_password'); ?>">Lupa Password ?</a>
 				</p>
 			</div>
 			<!-- /.card-body -->
@@ -93,24 +92,13 @@
 	<!-- AdminLTE App -->
 	<script src="<?= base_url(); ?>public/plugin/adminlte/dist/js/adminlte.min.js"></script>
 
-	<script src='https://www.hCaptcha.com/1/api.js' async defer></script>
+	<script src="https://www.google.com/recaptcha/api.js?render=<?= RECAPTCHAV3_KEY; ?>"></script>
+
 
 	<script src="<?= base_url(); ?>public/js/sweetalert2.min.js"></script>
 
 	<script>
 		$(document).ready(function() {
-			$('form').on('submit', function(e) {
-				let hcaptchaVal = $('[name=h-captcha-response]').val();
-				if (hcaptchaVal === "") {
-					event.preventDefault();
-					Swal.fire({
-						icon: 'error',
-						title: 'Oops...',
-						text: 'Please complete the hCaptcha!'
-					});
-				}
-			});
-
 			$('#eye').on('click', function() {
 				let pass = document.getElementById("password");
 				if (pass.type === "password") {
@@ -122,6 +110,17 @@
 				}
 			});
 		});
+
+		function onClick(e) {
+			e.preventDefault();
+			grecaptcha.ready(function() {
+				grecaptcha.execute('reCAPTCHA_site_key', {
+					action: 'submit'
+				}).then(function(token) {
+					// Add your logic to submit to your backend server here.
+				});
+			});
+		}
 	</script>
 </body>
 

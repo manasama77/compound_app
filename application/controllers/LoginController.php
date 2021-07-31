@@ -58,17 +58,13 @@ class LoginController extends CI_Controller
 
 	public function auth()
 	{
-		$check_hcaptcha = $this->_hcaptcha();
-		if ($check_hcaptcha === false) {
-			return show_error("Robot verification failed, please try again", 404, "An Error Was Encountered");
-		}
 		$email    = $this->security->xss_clean($this->input->post('email'));
 		$password = $this->security->xss_clean($this->input->post('password'));
 		$remember = $this->security->xss_clean($this->input->post('remember'));
 
 		$check = $this->genuine_mail->check($email);
 		if ($check !== TRUE) {
-			return show_error($check, 404, "An Error Was Encountered");
+			return show_error($check, 404, "Terjadi Kesalahan...");
 		}
 
 		$where = [
@@ -83,9 +79,9 @@ class LoginController extends CI_Controller
 			$this->session->set_flashdata('email_state_message', 'Email Not Found');
 			redirect('login');
 		} elseif ($arr_user->row()->is_active == 'no') {
-			$msg = 'Account Has Not Active, Activate First. To Activate Check Your Email';
+			$msg = 'Akun belum aktif, silahkan aktivasi terlebih dahulu. Untuk melakukan aktivasi silahkan cek email kamu';
 			if (date($arr_user->row()->updated_at) > date($arr_user->row()->created_at)) {
-				$msg = 'Account has disabled by Admin.';
+				$msg = 'Akun telah dimatikan oleh Admin';
 			}
 			$this->session->set_flashdata('email_value', $email);
 			$this->session->set_flashdata('email_state', 'is-invalid');
@@ -110,28 +106,15 @@ class LoginController extends CI_Controller
 				SESI . 'email' => $email,
 			]);
 
-			$check = $this->_send_otp($id, $email);
+			if (ENVIRONMENT == "production") {
+				$check = $this->_send_otp($id, $email);
 
-			if ($check === true) {
-				redirect('otp');
+				if ($check === true) {
+				}
 			}
+			redirect('otp');
 
-			return show_error('Failed to send Email, please try again', 500, 'An Error Was Encountered');
-		}
-	}
-
-	protected function _hcaptcha()
-	{
-		if ($this->input->post('h-captcha-response') && !empty($this->input->post('h-captcha-response'))) {
-			$secret = H_SITE_KEY;
-			$verifyResponse = file_get_contents('https://hcaptcha.com/siteverify?secret=' . $secret . '&response=' . $this->input->post('h-captcha-response') . '&remoteip=' . $_SERVER['REMOTE_ADDR']);
-			$responseData = json_decode($verifyResponse);
-			if ($responseData->success) {
-				return true;
-			} else {
-				// return false;
-				return true;
-			}
+			return show_error('Sistem gagal mengiri email, silahkan coba kembali', 500, 'Terjadi Kesalahan...');
 		}
 	}
 
@@ -432,7 +415,7 @@ class LoginController extends CI_Controller
 
 			$check = $this->genuine_mail->check($email);
 			if ($check !== TRUE) {
-				return show_error($check, 404, "An Error Was Encountered");
+				return show_error($check, 404, "Terjadi Kesalahan...");
 			}
 
 			$data = [
@@ -462,7 +445,7 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'An Error Was Encountered');
+				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$where     = ['email' => $email];
@@ -489,7 +472,7 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'An Error Was Encountered');
+				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$add_tree_downline = $this->_add_tree_downline($id_member, $email, $id);
@@ -522,14 +505,14 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'An Error Was Encountered');
+				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$check = $this->_send_email_activation($id_member, $email);
 
 			if ($check == "no") {
 				$this->db->trans_rollback();
-				return show_error('Cannot Send Email, Please check your <mark>Email Address</mark>', 500, 'An Error Was Encountered');
+				return show_error('Cannot Send Email, Please check your <mark>Email Address</mark>', 500, 'Terjadi Kesalahan...');
 			}
 
 			$this->db->trans_commit();

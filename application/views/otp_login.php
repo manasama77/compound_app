@@ -27,21 +27,21 @@
 				<form id="form_otp">
 					<div class="card">
 						<div class="card-header">
-							Form OTP - Login
+							Verifikasi OTP <i>(one time password)</i>
 						</div>
 						<div class="card-body">
-							<div class="form-group">
+							<div class="form-group text-center">
 								<label for="otp">OTP</label>
 								<input type="number" class="form-control mb-2" id="otp" name="otp" min="100000" max="999999" placeholder="000000" autofocus required>
-								<span class="help-block"><small>We already sent OTP to <kbd><?= $this->session->userdata(SESI . 'email'); ?></kbd></small></span>
+								<span class="help-block"><small>Sistem telah mengirimkan kode OTP pada alamat email <kbd><?= $this->session->userdata(SESI . 'email'); ?></kbd></small></span>
 							</div>
 							<button type="button" class="btn btn-warning btn-sm btn-block" id="resend_button" onclick="resendOTP('<?= $this->session->userdata(SESI . 'email'); ?>');" disabled>
-								Didn't receive OTP Code ?<br />
-								Try send again<br />
-								(After <span id="time">00:05</span>)
+								Tidak menerima kode OTP ?<br />
+								Coba kirimkan kembali kode OTP<br />
+								(Setelah <span id="time">00:05</span>)
 							</button>
 							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
-							<button type="submit" class="btn btn-primary btn-block" id="submit_btn">Verify</button>
+							<button type="submit" class="btn btn-primary btn-block mt-3" id="submit_btn">Verifikasi</button>
 						</div>
 					</div>
 				</form>

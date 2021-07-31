@@ -16,6 +16,8 @@ class TradeManagerController extends CI_Controller
 	protected $ip_address;
 	protected $user_agent;
 	protected $id_member;
+	protected $member_email;
+	protected $member_fullname;
 	protected $csrf;
 
 	public function __construct()
@@ -27,14 +29,16 @@ class TradeManagerController extends CI_Controller
 		$this->load->model('M_log_send_email_member');
 		$this->load->helper('Floating_helper');
 
-		$this->date     		= date('Y-m-d');
-		$this->datetime 		= date('Y-m-d H:i:s');
-		$this->api_link       	= CP_API_LINK;
-		$this->public_key     	= CP_PUB_KEY;
-		$this->private_key    	= CP_PRV_KEY;
-		$this->merchant_id    	= CP_MERCH_ID;
-		$this->ipn_secret_key 	= CP_IPN_SEC_KEY;
-		$this->id_member		= $this->session->userdata(SESI . 'id');
+		$this->date            = date('Y-m-d');
+		$this->datetime        = date('Y-m-d H:i:s');
+		$this->api_link        = CP_API_LINK;
+		$this->public_key      = CP_PUB_KEY;
+		$this->private_key     = CP_PRV_KEY;
+		$this->merchant_id     = CP_MERCH_ID;
+		$this->ipn_secret_key  = CP_IPN_SEC_KEY;
+		$this->id_member       = $this->session->userdata(SESI . 'id');
+		$this->member_email    = $this->session->userdata(SESI . 'email');
+		$this->member_fullname = $this->session->userdata(SESI . 'fullname');
 
 		$this->from       = EMAIL_ADMIN;
 		$this->from_alias = EMAIL_ALIAS;
@@ -54,7 +58,7 @@ class TradeManagerController extends CI_Controller
 	{
 		$data_trade_manager = $this->M_trade_manager->get_member_trade_manager($this->id_member);
 		$data = [
-			'title'              => APP_NAME . ' | List Trade Manager',
+			'title'              => APP_NAME . ' | Trade Manager Kamu',
 			'content'            => 'trade_manager/main',
 			'vitamin_js'         => 'trade_manager/main_js',
 			'data_trade_manager' => $data_trade_manager,
@@ -134,11 +138,7 @@ class TradeManagerController extends CI_Controller
 
 	public function add()
 	{
-		$where = [
-			'is_active' => 'yes',
-			'deleted_at' => null,
-		];
-		$arr = $this->M_core->get('package_trade_manager', '*', $where);
+		$arr = $this->M_trade_manager->get_package();
 
 		$arr_bg_color = [
 			'black',
@@ -149,7 +149,7 @@ class TradeManagerController extends CI_Controller
 			'light',
 		];
 
-		$where_member_trade_manager = ['id_member' => $this->session->userdata(SESI . 'id')];
+		$where_member_trade_manager = ['id_member' => $this->id_member];
 		$arr_member_trade_manager   = $this->M_core->get('member_trade_manager', 'id_package, state', $where_member_trade_manager);
 
 		$arr_state = [
@@ -234,7 +234,7 @@ class TradeManagerController extends CI_Controller
 		}
 
 		$data = [
-			'title'        => APP_NAME . ' | Add Trade Manager',
+			'title'        => APP_NAME . ' | List Paket Trade Manager',
 			'content'      => 'trade_manager/add',
 			'vitamin_js'   => 'trade_manager/add_js',
 			'arr'          => $arr,
@@ -245,25 +245,32 @@ class TradeManagerController extends CI_Controller
 		$this->template->render($data);
 	}
 
-	public function pick($id)
+	public function pick($id_konfigurasi_trade_manager = null)
 	{
-		$id = str_replace(UYAH, '', base64_decode($id));
+		if ($id_konfigurasi_trade_manager == null) {
+			return show_404();
+		}
+
+		$id_konfigurasi_trade_manager = str_replace(UYAH, '', base64_decode($id_konfigurasi_trade_manager));
+
+		$where                    = ['id' => $id_konfigurasi_trade_manager];
+		$id_package_trade_manager = $this->M_core->get('konfigurasi_trade_manager', 'id_package_trade_manager', $where)->row()->id_package_trade_manager;
 
 		$where_check = [
-			'id_member' 	=> $this->session->userdata(SESI . 'id'),
-			'id_package >' 	=> $id,
+			'id_member' 	=> $this->id_member,
+			'id_package >' 	=> $id_package_trade_manager,
 			'state !=' 		=> 'cancel',
 			'deleted_at' 	=> null,
 		];
 		$arr_check = $this->M_core->get('member_trade_manager', '*', $where_check);
 
 		if ($arr_check->num_rows() > 0) {
-			return show_error("Trade Manager Package disabled because you can't pick a package that tier lower than active package!", 503, "Something wrong here...");
+			return show_error("Tidak dapat memilih paket yang nilai investasinya lebih rendah dari paket yang telah aktif", 503, "Terjadi Kesalahan...");
 		}
 
 		$where_check = [
-			'id_member'  => $this->session->userdata(SESI . 'id'),
-			'id_package' => $id,
+			'id_member'  => $this->id_member,
+			'id_package' => $id_package_trade_manager,
 			'deleted_at' => null,
 		];
 		$arr_check = $this->M_core->get('member_trade_manager', '*', $where_check);
@@ -273,25 +280,21 @@ class TradeManagerController extends CI_Controller
 				$state = $key->state;
 
 				if (in_array($state, ['waiting payment', 'pending'])) {
-					return show_error("Trade Manager Package disabled because current package are still waiting for payment", 503, "Something wrong here...");
+					return show_error("Paket ini tidak dapat dipilih dikarenakan masih menunggu proses pembayaran / verifikasi pembayaran oleh sistem", 503, "Terjadi Kesalahan...");
 				}
 			}
 		}
 
-		$where = [
-			'id'         => $id,
-			'is_active'  => 'yes',
-			'deleted_at' => null,
-		];
-		$arr = $this->M_core->get('package_trade_manager', '*', $where);
+		$arr = $this->M_trade_manager->get_package($id_konfigurasi_trade_manager);
 
 		$data = [
-			'title'      => APP_NAME . ' | Add Trade Manager',
-			'content'    => 'trade_manager/pick',
-			'vitamin_js' => 'trade_manager/pick_js',
-			'id_package' => base64_encode(UYAH . $id),
-			'arr'        => $arr,
-			'csrf'       => $this->csrf,
+			'title'                        => APP_NAME . ' | Pilih Paket Trade Manager',
+			'content'                      => 'trade_manager/pick',
+			'vitamin_js'                   => 'trade_manager/pick_js',
+			'id_package_trade_manager'     => base64_encode(UYAH . $id_package_trade_manager),
+			'id_konfigurasi_trade_manager' => base64_encode(UYAH . $id_konfigurasi_trade_manager),
+			'arr'                          => $arr,
+			'csrf'                         => $this->csrf,
 		];
 		$this->template->render($data);
 	}
@@ -300,12 +303,12 @@ class TradeManagerController extends CI_Controller
 	{
 		$this->db->trans_begin();
 
-		$id_member      = $this->session->userdata(SESI . 'id');
-		$buyer_email    = $this->session->userdata(SESI . 'email');
-		$buyer_name     = $this->session->userdata(SESI . 'fullname');
-		$id_package     = str_replace(UYAH, '', base64_decode($this->input->post('id_package')));
-		$payment_method = 'coinpayment';
-		$coin_type      = $this->input->post('coin_type');
+		$id_member       = $this->id_member;
+		$member_email    = $this->member_email;
+		$member_fullname = $this->member_fullname;
+		$id_package      = str_replace(UYAH, '', base64_decode($this->input->post('id_package_trade_manager')));
+		$id_config       = str_replace(UYAH, '', base64_decode($this->input->post('id_konfigurasi_trade_manager')));
+		$coin_type       = $this->input->post('coin_type');
 
 		$where_check = [
 			'id_member' 	=> $this->session->userdata(SESI . 'id'),
@@ -317,7 +320,7 @@ class TradeManagerController extends CI_Controller
 		$arr_check = $this->M_core->get('member_trade_manager', '*', $where_check);
 
 		if ($arr_check->num_rows() > 0) {
-			return show_error("Trade Manager Package disabled because you can't pick a package that tier lower than active package!", 503, "Something wrong here...");
+			return show_error("Tidak dapat memilih paket yang nilai investasinya lebih rendah dari paket yang telah aktif", 503, "Terjadi Kesalahan...");
 		}
 
 		$where_check = [
@@ -332,13 +335,13 @@ class TradeManagerController extends CI_Controller
 				$state = $key->state;
 
 				if (in_array($state, ['waiting payment', 'pending'])) {
-					return show_error("Trade Manager Package disabled because current package are still waiting for payment", 503, "Something wrong here...");
+					return show_error("Paket ini tidak dapat dipilih dikarenakan masih menunggu proses pembayaran / verifikasi pembayaran oleh sistem", 503, "Terjadi Kesalahan...");
 				}
 			}
 		}
 
 		$current_date_object = new DateTime($this->date);
-		$expired_at          = $current_date_object->modify('+365 day')->format('Y-m-d');
+		$expired_package     = $current_date_object->modify('+365 day')->format('Y-m-d');
 
 		$sequence = $this->_get_new_sequence();
 		$new_sequence = '';
@@ -356,98 +359,126 @@ class TradeManagerController extends CI_Controller
 
 		$invoice = "TM-" . date('Ymd') . '-' . $new_sequence;
 
-		$where = [
-			'id'         => $id_package,
-			'is_active'  => 'yes',
-			'deleted_at' => null,
-		];
-		$arr_package = $this->M_core->get('package_trade_manager', 'amount, name, code, share_self_value, share_upline_value, share_company_value', $where, null, null, 1);
+		$arr_package = $this->M_trade_manager->get_package($id_config);
 
-		if ($arr_package->num_rows() == 0) {
-			return show_error("Package Not Found", 404, "An Error Was Encountered!");
+		if (count($arr_package) == 0) {
+			return show_error("Paket tidak ditemukan", 404, "Terjadi Kesalahan");
 		}
 
-		$amount                 = $arr_package->row()->amount;
-		$item_name              = $arr_package->row()->name;
-		$item_number            = $arr_package->row()->code;
-		$profit_self_per_day    = $arr_package->row()->share_self_value;
-		$profit_upline_per_day  = $arr_package->row()->share_upline_value;
-		$profit_company_per_day = $arr_package->row()->share_company_value;
+		$amount                    = $arr_package[0]['amount'];
+		$package_code              = $arr_package[0]['code'];
+		$package_name              = $arr_package[0]['name'];
+		$contract_duration         = $arr_package[0]['contract_duration'];
+		$profit_per_month_percent  = $arr_package[0]['profit_per_month_percent'];
+		$profit_per_month_value    = $arr_package[0]['profit_per_month_value'];
+		$profit_per_day_percentage = $arr_package[0]['profit_per_day_percentage'];
+		$profit_per_day_value      = $arr_package[0]['profit_per_day_value'];
+		$share_self_percentage     = $arr_package[0]['share_self_percentage'];
+		$share_self_value          = $arr_package[0]['share_self_value'];
+		$share_upline_percentage   = $arr_package[0]['share_upline_percentage'];
+		$share_upline_value        = $arr_package[0]['share_upline_value'];
+		$share_company_percentage  = $arr_package[0]['share_company_percentage'];
+		$share_company_value       = $arr_package[0]['share_company_value'];
 
 		if ($id_package == 6) {
 			$amount                 = $this->input->post('total_transfer');
-			$profit_per_month       = ($amount * 15) / 100;
-			$profit_per_day         = ($profit_per_month / 30);
-			$profit_self_per_day    = ($profit_per_day * 90) / 100;
-			$profit_upline_per_day  = ($profit_per_day * 5) / 100;
-			$profit_company_per_day = ($profit_per_day * 5) / 100;
+			$profit_per_month_value = ($amount * $profit_per_month_percent) / 100;
+			$profit_per_day_value   = ($amount * $profit_per_day_percentage) / 100;
+			$share_self_value       = ($profit_per_day_value * $share_self_percentage) / 100;
+			$share_upline_value     = ($profit_per_day_value * $share_upline_percentage) / 100;
+			$share_company_value    = ($profit_per_day_value * $share_company_percentage) / 100;
 		}
 
 		$data_member_package = [
-			'invoice'                => $invoice,
-			'sequence'               => $sequence,
-			'id_member'              => $id_member,
-			'id_package'             => $id_package,
-			'payment_method'         => $payment_method,
-			'amount_usd'             => $amount,
-			'profit_self_per_day'    => $profit_self_per_day,
-			'profit_upline_per_day'  => $profit_upline_per_day,
-			'profit_company_per_day' => $profit_company_per_day,
-			'currency1'              => 'USDT',
-			'currency2'              => $coin_type,
-			'buyer_email'            => $buyer_email,
-			'buyer_name'             => $buyer_name,
-			'item_name'              => $item_name,
-			'state'                  => 'waiting payment',
-			'expired_at'             => $expired_at,
-			'is_qualified'           => 'no',
-			'is_royalty'             => 'no',
-			'is_extend'              => 'auto',
-			'created_at'             => $this->datetime,
-			'updated_at'             => $this->datetime,
-			'deleted_at'             => null,
+			'invoice'                   => $invoice,
+			'sequence'                  => $sequence,
+			'payment_method'            => 'coinpayment',
+			'id_member'                 => $id_member,
+			'member_fullname'           => $member_fullname,
+			'member_email'              => $member_email,
+			'id_package'                => $id_package,
+			'id_konfigurasi'            => $id_config,
+			'package_code'              => $package_code,
+			'package_name'              => $package_name,
+			'receiver_wallet_address'   => null,
+			'txn_id'                    => null,
+			'amount_1'                  => $amount,
+			'amount_2'                  => 0,
+			'currency1'                 => 'USDT',
+			'currency2'                 => $coin_type,
+			'state'                     => 'waiting payment',
+			'timeout'                   => 0,
+			'qrcode_url'                => null,
+			'status_url'                => null,
+			'checkout_url'              => null,
+			'expired_package'           => $expired_package,
+			'expired_payment'           => null,
+			'is_qualified'              => 'no',
+			'is_royalty'                => 'no',
+			'is_extend'                 => 'auto',
+			'profit_per_month_percent'  => $profit_per_month_percent,
+			'profit_per_month_value'    => $profit_per_month_value,
+			'profit_per_day_percentage' => $profit_per_day_percentage,
+			'profit_per_day_value'      => $profit_per_day_value,
+			'share_self_percentage'     => $share_self_percentage,
+			'share_self_value'          => $share_self_value,
+			'share_upline_percentage'   => $share_upline_percentage,
+			'share_upline_value'        => $share_upline_value,
+			'share_company_percentage'  => $share_company_percentage,
+			'share_company_value'       => $share_company_value,
+			'created_at'                => $this->datetime,
+			'updated_at'                => $this->datetime,
+			'deleted_at'                => null,
 		];
 		$exec = $this->M_core->store('member_trade_manager', $data_member_package);
 
 		if (!$exec) {
 			$this->db->trans_rollback();
-			return show_error("Connection Failed, Please try again!", 500, "An Error Was Encountered!");
+			return show_error("Tidak terhubung dengan database", 500, "Terjadi Kesalahan");
 		}
 
 		$data_package = [
-			'amount'      => $amount,
-			'coin_type'   => $coin_type,
-			'buyer_email' => $buyer_email,
-			'buyer_name'  => $buyer_name,
-			'item_name'   => $item_name,
-			'item_number' => $item_number,
-			'invoice'     => $invoice,
+			'amount'          => $amount,
+			'coin_type'       => $coin_type,
+			'member_email'    => $member_email,
+			'member_fullname' => $member_fullname,
+			'package_name'    => $package_name,
+			'package_code'    => $package_code,
+			'invoice'         => $invoice,
 		];
 
 		$exec = $this->_create_transaction($data_package);
 
 		if ($exec['code'] == 500) {
 			$this->db->trans_rollback();
-			return show_error($exec['error'], 500, "An Error Was Encountered!");
+			return show_error($exec['error'], 500, "Terjadi Kesalahan");
 		}
 
-		$txn_id      = $exec['data']['txn_id'];
-		$amount_coin = $exec['data']['amount'];
+		$txn_id                  = $exec['data']['txn_id'];
+		$amount_coin             = $exec['data']['amount'];
+		$timeout                 = $exec['data']['timeout'];
+		$receiver_wallet_address = $exec['data']['address'];
+		$qrcode_url              = $exec['data']['qrcode_url'];
+		$checkout_url            = $exec['data']['checkout_url'];
+		$status_url              = $exec['data']['status_url'];
+		$expired_payment_obj     = new DateTime($this->datetime);
+		$expired_payment         = $expired_payment_obj->modify('+' . $timeout . ' second')->format("Y-m-d H:i:s");
 
 		$data = [
 			'txn_id'                  => $txn_id,
-			'amount_coin'             => $amount_coin,
-			'receiver_wallet_address' => $exec['data']['address'],
-			'timeout'                 => $exec['data']['timeout'],
-			'checkout_url'            => $exec['data']['checkout_url'],
-			'status_url'              => $exec['data']['status_url'],
-			'qrcode_url'              => $exec['data']['qrcode_url'],
+			'amount_2'                => $amount_coin,
+			'receiver_wallet_address' => $receiver_wallet_address,
+			'timeout'                 => $timeout,
+			'expired_payment'         => $expired_payment,
+			'qrcode_url'              => $qrcode_url,
+			'checkout_url'            => $checkout_url,
+			'status_url'              => $status_url,
 		];
 		$exec = $this->M_core->update('member_trade_manager', $data, ['invoice' => $invoice]);
 
 		if (!$exec) {
 			$this->db->trans_rollback();
-			return show_error("Connection Failed, Please try again!", 500, "An Error Was Encountered!");
+			return show_error("Tidak terhubung dengan database", 500, "Terjadi Kesalahan");
 		}
 
 		$where_log = [
@@ -465,15 +496,15 @@ class TradeManagerController extends CI_Controller
 				'currency_transfer' => $coin_type,
 				'txn_id'            => $txn_id,
 				'state'             => 'waiting payment',
-				'description'       => "[$this->datetime] Member $buyer_email Pick Package $item_name. Waiting for Payment Transfer",
+				'description'       => "[$this->datetime] Member $member_email Pick Package $package_name. Waiting for Payment Transfer",
 				'created_at'        => $this->datetime,
 			];
 			$this->M_core->store_uuid('log_member_trade_manager', $data_log);
 		} else {
 			$data_log = [
-				'state'             => 'waiting payment',
-				'description'       => "[$this->datetime] Member $buyer_email Pick Package $item_name. Waiting for Payment Transfer",
-				'updated_at'        => $this->datetime,
+				'state'       => 'waiting payment',
+				'description' => "[$this->datetime] Member $member_email Memilih Paket $package_name. Menunggu pembayaran",
+				'updated_at'  => $this->datetime,
 			];
 			$this->M_core->update('log_member_trade_manager', $data_log, $where_log);
 		}
@@ -483,18 +514,18 @@ class TradeManagerController extends CI_Controller
 		redirect('trade_manager/checkout/' . base64_encode(UYAH . $invoice));
 	}
 
-	public function _create_transaction($data)
+	protected function _create_transaction($data)
 	{
 		$req['amount']      = $data['amount'];
 		$req['currency1']   = 'USDT';
 		$req['currency2']   = $data['coin_type'];
-		$req['buyer_email'] = $data['buyer_email'];
-		$req['buyer_name']  = $data['buyer_name'];
-		$req['item_name']   = $data['item_name'];
-		$req['item_number'] = $data['item_number'];
+		$req['buyer_email'] = $data['member_email'];
+		$req['buyer_name']  = $data['member_fullname'];
+		$req['item_name']   = $data['package_name'];
+		$req['item_number'] = $data['package_code'];
 		$req['invoice']     = $data['invoice'];
 		$req['custom']      = 'trade_manager';
-		$req['ipn_url']     = site_url('coinpayment/ipn');
+		$req['ipn_url']     = site_url('coinpayment/ipn/trade_manager/' . $data['invoice']);
 		$req['success_url'] = site_url('coinpayment/success/' . $data['invoice']);
 		$req['cance_url']   = site_url('coinpayment/cancel/' . $data['invoice']);
 
@@ -515,7 +546,7 @@ class TradeManagerController extends CI_Controller
 		return $result;
 	}
 
-	public function _get_new_sequence()
+	protected function _get_new_sequence()
 	{
 		$exec = $this->M_trade_manager->latest_sequence();
 
@@ -526,7 +557,7 @@ class TradeManagerController extends CI_Controller
 		return 1;
 	}
 
-	public function _coinpayments_api_call($cmd, $req = array())
+	protected function _coinpayments_api_call($cmd, $req = array())
 	{
 		// Set the API command and required fields
 		$req['version'] = 1;
@@ -581,32 +612,38 @@ class TradeManagerController extends CI_Controller
 		$arr   = $this->M_core->get('member_trade_manager', '*', $where);
 
 		if ($arr->num_rows() == 0) {
-			return show_error("Data Invoice Not Found", 404, "An Error Was Encountered");
+			return show_error("Invoice Tidak Ditemukan", 404, "Terjadi Kesalahan");
 		}
 
 		$state = $arr->row()->state;
 
-		$time_left   = 0;
+		$time_left = 0;
 
 		if ($state == "waiting payment") {
 			$time_left_obj = new DateTime($arr->row()->created_at);
 			$time_left     = $time_left_obj->modify('+' . $arr->row()->timeout . ' seconds')->format('Y-m-d H:i:s');
 			$badge_color   = 'info';
+			$badge_text    = 'Menunggu Pembayaran';
 		} elseif ($state == "pending") {
 			$time_left_obj = new DateTime($arr->row()->created_at);
 			$time_left     = $time_left_obj->modify('+' . $arr->row()->timeout . ' seconds')->format('Y-m-d H:i:s');
 			$badge_color   = 'secondary';
+			$badge_text    = 'Pembayaran Sedang Diproses';
 		} elseif ($state == "active") {
 			$badge_color = 'success';
+			$badge_text  = 'Pembayaran Berhasil';
 		} elseif ($state == "inactive") {
 			$badge_color = 'dark';
+			$badge_text  = 'Tidak Aktif';
 		} elseif ($state == "cancel") {
 			$badge_color = 'warning';
+			$badge_text  = 'Transaksi Dibatalkan';
 		} elseif ($state == "expired") {
 			$badge_color = 'danger';
+			$badge_text  = 'Pembayaran Melewati Batas Waktu';
 		}
 
-		$state_badge = '<span class="badge badge-' . $badge_color . '">' . strtoupper($state) . '</span>';
+		$state_badge = '<span class="badge badge-' . $badge_color . '">' . strtoupper($badge_text) . '</span>';
 
 		$data = [
 			'title'       => APP_NAME . ' | Checkout',

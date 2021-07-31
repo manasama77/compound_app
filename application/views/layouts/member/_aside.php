@@ -47,13 +47,13 @@
 						<li class="nav-item">
 							<a href="<?= site_url('trade_manager'); ?>" class="nav-link">
 								<i class="fas fa-robot nav-icon"></i>
-								<p>List Trade Manager</p>
+								<p>Trade Manager Kamu</p>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a href="<?= site_url('trade_manager/add'); ?>" class="nav-link">
 								<i class="fas fa-plus nav-icon"></i>
-								<p>Add Trade Manager</p>
+								<p>List Paket Trade Manager</p>
 							</a>
 						</li>
 					</ul>

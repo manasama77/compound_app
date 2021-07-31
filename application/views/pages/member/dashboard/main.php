@@ -129,7 +129,7 @@
 							<div class="input-group">
 								<input type="text" class="form-control" id="recruitment_link" value="<?= $recruitment_link; ?>" readonly />
 								<div class="input-group-append">
-									<button type="button" class="btn btn-dark" id="copy" onclick="CopyUrl();">
+									<button type="button" class="btn btn-dark" id="copy" onclick="CopyUrl('recruitment_link');">
 										<i class="fas fa-clipboard fa-fw"></i> Copy
 									</button>
 								</div>
