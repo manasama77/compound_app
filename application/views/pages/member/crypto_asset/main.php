@@ -37,11 +37,11 @@
 								<thead>
 									<tr>
 										<th class="align-middle">Invoice</th>
-										<th class="align-middle">Package</th>
-										<th class="align-middle">Investment</th>
-										<th class="align-middle">Profit/Day</th>
-										<th class="text-center align-middle">Register Date</th>
-										<th class="text-center align-middle">Expired Date</th>
+										<th class="align-middle">Paket</th>
+										<th class="align-middle">Investasi</th>
+										<th class="align-middle">Profit/Hari</th>
+										<th class="text-center align-middle">Tanggal pendaftaran</th>
+										<th class="text-center align-middle">Tanggal Kedaluwarsa</th>
 										<th class="text-center align-middle">Total Profit Asset</th>
 										<th class="text-center align-middle">Status</th>
 										<th class="align-middle text-center"><i class="fas fa-cogs"></i></th>
@@ -117,7 +117,7 @@
 																<?php if ($key['state'] == "waiting payment" || $key['state'] == "pending") { ?>
 																	<hr />
 																	<a href="<?= site_url('crypto_asset/checkout/' . base64_encode(UYAH . $key['invoice'])); ?>" class="dropdown-item">
-																		<i class="fas fa-coins fa-fw"></i> Payment Info
+																		<i class="fas fa-coins fa-fw"></i> Informasi pembayaran
 																	</a>
 																<?php } ?>
 															</div>
@@ -130,7 +130,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="9" class="text-center text-danger">- You Don't Have Any Package, why not try to add new one? -</td>
+											<td colspan="9" class="text-center text-danger">- Anda Tidak Memiliki Paket, mengapa tidak mencoba menambahkan yang baru? -</td>
 										</tr>
 
 									<?php endif; ?>
@@ -165,12 +165,12 @@
 								<th id="amount"></th>
 							</tr>
 							<tr>
-								<th>Subscription At</th>
+								<th>Berlangganan Di</th>
 								<th>:</th>
 								<th id="created_at"></th>
 							</tr>
 							<tr>
-								<th class="align-top">Payment</th>
+								<th class="align-top">Pembayaran</th>
 								<th class="align-top">:</th>
 								<th class="align-top" id="payment"></th>
 							</tr>
@@ -185,12 +185,12 @@
 								<th id="state"></th>
 							</tr>
 							<tr>
-								<th>Profit Monthly</th>
+								<th>Profit Bulanan</th>
 								<th>:</th>
 								<th id="profit_monthly"></th>
 							</tr>
 							<tr>
-								<th>Profit Daily</th>
+								<th>Profit Harian</th>
 								<th>:</th>
 								<th id="profit_daily"></th>
 							</tr>

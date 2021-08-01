@@ -67,13 +67,13 @@
 							<table id="table_data" class="table table-sm">
 								<thead>
 									<tr>
-										<th class="align-middle">Picture</th>
-										<th class="align-middle">Fullname</th>
+										<th class="align-middle">Foto</th>
+										<th class="align-middle">Nama Lengkap</th>
 										<th class="align-middle">Email</th>
-										<th class="align-middle">Phone Number</th>
+										<th class="align-middle">Nomor Telepon</th>
 										<th class="text-center align-middle" style="width: 200px;">Upline</th>
-										<th class="text-center align-middle">Generation</th>
-										<th class="text-center align-middle">Total Turnover</th>
+										<th class="text-center align-middle">Generasi</th>
+										<th class="text-center align-middle">Total Omzet</th>
 										<th class="text-center align-middle">Total Downline</th>
 										<th class="text-center align-middle">
 											<i class="fas fa-cog"></i>
@@ -128,7 +128,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- You Don't Have Any Friend On Your Circle -</td>
+											<td colspan="8" class="text-center text-danger">- Anda Tidak Memiliki Downline -</td>
 										</tr>
 
 									<?php endif; ?>
@@ -160,16 +160,16 @@
 					<table class="table table-sm">
 						<thead>
 							<tr>
-								<th class="align-middle">Package</th>
-								<th class="align-middle">Amount</th>
-								<th class="align-middle">Profit /Day</th>
-								<th class="align-middle">Duration</th>
+								<th class="align-middle">Paket</th>
+								<th class="align-middle">Nilai</th>
+								<th class="align-middle">Profit /Hari</th>
+								<th class="align-middle">Durasi</th>
 								<th class="align-middle">Status</th>
 							</tr>
 						</thead>
 						<tbody id="v_trade_manager">
 							<tr>
-								<td colspan="5" class="text-center align-middle">-No Package Active-</td>
+								<td colspan="5" class="text-center align-middle">-Tidak Ada Paket Aktif-</td>
 							</tr>
 						</tbody>
 					</table>
@@ -179,12 +179,12 @@
 					<table class="table table-sm">
 						<thead>
 							<tr>
-								<th class="align-middle">Fullname</th>
+								<th class="align-middle">Nama Lengkap</th>
 								<th class="align-middle">Email</th>
-								<th class="align-middle">Phone Number</th>
+								<th class="align-middle">Nomor Telepon</th>
 								<th class="align-middle">Upline</th>
-								<th class="align-middle">Generation</th>
-								<th class="align-middle text-right">Total Turnover</th>
+								<th class="align-middle">Generasi</th>
+								<th class="align-middle text-right">Total Omzet</th>
 								<th class="align-middle text-center">Total Downline</th>
 							</tr>
 						</thead>

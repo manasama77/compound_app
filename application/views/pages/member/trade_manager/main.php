@@ -164,7 +164,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- You Don't Have Any Package, why not try to add new one? -</td>
+											<td colspan="8" class="text-center text-danger">- Anda Tidak Memiliki Paket, mengapa tidak mencoba menambahkan yang baru? -</td>
 										</tr>
 
 									<?php endif; ?>
@@ -224,12 +224,12 @@
 								<th id="is_extend"></th>
 							</tr>
 							<tr>
-								<th>Profit Monthly</th>
+								<th>Profit Bulanan</th>
 								<th>:</th>
 								<th id="profit_monthly"></th>
 							</tr>
 							<tr>
-								<th>Profit Daily</th>
+								<th>Profit Harian</th>
 								<th>:</th>
 								<th id="profit_daily"></th>
 							</tr>

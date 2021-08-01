@@ -33,12 +33,12 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
-										<th class="align-top" style="min-width: 120px;">Date Time</th>
+										<th class="align-top" style="min-width: 120px;">Tanggal Waktu</th>
 										<th class="align-top" style="min-width: 120px;">Member</th>
-										<th class="align-top" style="min-width: 80px;">Package</th>
+										<th class="align-top" style="min-width: 80px;">Paket</th>
 										<th class="align-top" style="min-width: 120px;">Type</th>
-										<th class="align-top text-right" style="min-width: 100px;">Amount</th>
-										<th class="align-top" style="min-width: 350px;">Description</th>
+										<th class="align-top text-right" style="min-width: 100px;">nilai</th>
+										<th class="align-top" style="min-width: 350px;">Deksripsi</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -71,7 +71,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- You Don't Have Any History Bonus Royalty -</td>
+											<td colspan="8" class="text-center text-danger">-Kamu Tidak Memiliki Bonus Royalti-</td>
 										</tr>
 
 									<?php endif; ?>

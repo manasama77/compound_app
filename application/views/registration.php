@@ -40,15 +40,15 @@
 
 		<div class="card">
 			<div class="card-body register-card-body">
-				<p class="login-box-msg">Registration new membership</p>
+				<p class="login-box-msg">Pendaftaran membership baru</p>
 				<?php if ($arr->num_rows() != 0) { ?>
 					<p class="login-box-msg">Reffered by:<br><?= $fullname; ?> <small>(<?= $email; ?>)</small></p>
 				<?php } ?>
 
 				<?php if ($arr->num_rows() == 0) { ?>
 					<div class="alert alert-warning" role="alert">
-						<h4 class="alert-heading">Registration Link Wrong!</h4>
-						<p>Make sure the URL that you get from right person.</p>
+						<h4 class="alert-heading">Link Pendaftaran Salah!</h4>
+						<p>Pastikan URL yang Anda dapatkan dari orang yang tepat.</p>
 						<hr>
 						<p class="mb-0">Still having an issue ? Why not ask again to your Upline for the link</p>
 					</div>
@@ -140,7 +140,7 @@
 								<input type="hidden" class="form-control" id="id_upline" name="id_upline" value="" readonly>
 								<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 								<button type="submit" class="btn btn-primary btn-block mb-3">Register</button>
-								<a href="<?= site_url('login'); ?>" class="text-center">I already have a membership</a>
+								<a href="<?= site_url('login'); ?>" class="text-center">saya sudah punya membership</a>
 
 							</div>
 						</div>

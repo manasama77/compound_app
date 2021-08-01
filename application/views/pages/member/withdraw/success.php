@@ -52,7 +52,7 @@
 						</table>
 					</div>
 					<hr>
-					<p class="mb-0"><i class="fas fa-info-circle"></i> Please wait maximum 24 hour for system to process your withdraw request.</p>
+					<p class="mb-0"><i class="fas fa-info-circle"></i> Harap tunggu maksimal 24 jam agar sistem memproses permintaan Withdraw Anda.</p>
 				</div>
 			</div>
 		</div>

@@ -7,7 +7,7 @@
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
 					<li class="breadcrumb-item"><a href="#">Trade Manager</a></li>
-					<li class="breadcrumb-item active">Add Trade Manager</li>
+					<li class="breadcrumb-item active">Tambah Trade Manager</li>
 				</ol>
 			</div><!-- /.col -->
 		</div><!-- /.row -->
@@ -27,11 +27,11 @@
 					<!-- PRODUCT LIST -->
 					<div class="card">
 						<div class="card-header">
-							<h3 class="card-title">Package Detail</h3>
+							<h3 class="card-title">Paket Detail</h3>
 
 							<div class="card-tools">
 								<a href="<?= site_url('crypto_asset/add'); ?>" class="btn btn-dark btn-sm">
-									<i class="fas fa-chevron-left fa-fw"></i> Back to Package
+									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke Paket
 								</a>
 							</div>
 						</div>
@@ -42,16 +42,16 @@
 									<p class="card-text">
 									<ul>
 										<li>
-											Total Investment: <span id="total_investment"><?= check_float($arr->row()->amount); ?></span> USDT
+											Total Investasi: <span id="total_investment"><?= check_float($arr->row()->amount); ?></span> USDT
 										</li>
 										<li>
-											Profit per Month: <?= check_float($arr->row()->profit_per_month_percent); ?>%
+											Profit per Bulan: <?= check_float($arr->row()->profit_per_month_percent); ?>%
 										</li>
 										<li>
-											Profit per Day: <span id="profit_per_day_x"><?= check_float($arr->row()->profit_per_day_value); ?></span> USDT
+											Profit per Hari: <span id="profit_per_day_x"><?= check_float($arr->row()->profit_per_day_value); ?></span> USDT
 										</li>
 										<li>
-											Contract Duration: <?= $arr->row()->contract_duration; ?> Day
+											Durasi Kontrak: <?= $arr->row()->contract_duration; ?> Hari
 										</li>
 										<li>
 											Profit Share Rules:

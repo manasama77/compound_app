@@ -24,9 +24,9 @@
 			<div class="col-sm-12 col-md-4 offset-md-4 mt-5">
 				<div class="alert alert-success" role="alert">
 					<h4 class="alert-heading"><a href="<?= site_url('activation_account_success'); ?>">Well done!</a></h4>
-					<p>You're registration success, please check your email for activation!</p>
+					<p>Pendaftaran Anda berhasil, silakan periksa email Anda untuk aktivasi!</p>
 					<hr>
-					<p class="mb-0">Be sure check your Inbox Folder or Spam Folder!</p>
+					<p class="mb-0">Pastikan memeriksa Folder Kotak Masuk atau Folder Spam Anda!</p>
 					<hr>
 					<a href="<?= site_url('login'); ?>" class="btn btn-success btn-block">Go to Login Page</a>
 				</div>

@@ -35,13 +35,13 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
-										<th class="align-middle">Picture</th>
-										<th class="align-middle">Fullname</th>
+										<th class="align-middle">Foto</th>
+										<th class="align-middle">Nama Lengkap</th>
 										<th class="align-middle">Email</th>
-										<th class="align-middle">Phone Number</th>
-										<th class="text-center align-middle">Generation</th>
+										<th class="align-middle">Nomor Telepon</th>
+										<th class="text-center align-middle">Generasi</th>
 										<th class="text-center align-middle">Upline</th>
-										<th class="text-center align-middle" style="min-width: 150px; width: 150px;">Join Date</th>
+										<th class="text-center align-middle" style="min-width: 150px; width: 150px;">Tanggal Bergabung</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -79,7 +79,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="7" class="text-center text-danger">- You Don't Have Any Friend On Your Circle -</td>
+											<td colspan="7" class="text-center text-danger">- KAMU TIDAK MEMILIKI DOWNLINE-</td>
 										</tr>
 
 									<?php endif; ?>

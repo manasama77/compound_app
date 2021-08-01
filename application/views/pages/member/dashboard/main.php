@@ -24,7 +24,7 @@
 					</span>
 
 					<div class="info-box-content">
-						<span class="info-box-text">Total Turnover</span>
+						<span class="info-box-text">Total omzet</span>
 						<span class="info-box-number">
 							<?= $data_card['data_balance']['downline_omset']; ?>
 							<small>USDT</small>
@@ -146,7 +146,7 @@
 
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Latest Member</h3>
+						<h3 class="card-title"> Member Terbaru</h3>
 
 						<div class="card-tools">
 							<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -159,13 +159,13 @@
 							<table class="table table-sm">
 								<thead>
 									<tr>
-										<th class="align-middle">Picture</th>
-										<th class="align-middle">Fullname</th>
+										<th class="align-middle">Foto</th>
+										<th class="align-middle">Nama Lengkap</th>
 										<th class="align-middle">Email</th>
-										<th class="align-middle">Phone Number</th>
+										<th class="align-middle">Nomor Telepon</th>
 										<th class="text-center align-middle" style="width: 200px;">Upline</th>
-										<th class="text-center align-middle">Generation</th>
-										<th class="text-center align-middle">Total Turnover</th>
+										<th class="text-center align-middle">Generasi</th>
+										<th class="text-center align-middle">Total Omzet</th>
 										<th class="text-center align-middle">Total Downline</th>
 										<th class="text-center align-middle">
 											<i class="fas fa-cog"></i>
@@ -256,16 +256,16 @@
 					<table id="table_downline" class="table table-sm">
 						<thead>
 							<tr>
-								<th class="align-middle">Package</th>
-								<th class="align-middle">Amount</th>
-								<th class="align-middle">Profit /Day</th>
-								<th class="align-middle">Duration</th>
+								<th class="align-middle">paket</th>
+								<th class="align-middle">Nilai</th>
+								<th class="align-middle">Profit /Hari</th>
+								<th class="align-middle">Durasi</th>
 								<th class="align-middle">Status</th>
 							</tr>
 						</thead>
 						<tbody id="v_trade_manager">
 							<tr>
-								<td colspan="5" class="text-center align-middle">-No Package Active-</td>
+								<td colspan="5" class="text-center align-middle">-Tidak Ada Paket Aktif-</td>
 							</tr>
 						</tbody>
 					</table>
@@ -275,12 +275,12 @@
 					<table id="table_downline" class="table table-sm">
 						<thead>
 							<tr>
-								<th class="align-middle">Fullname</th>
+								<th class="align-middle">Nama Lengkap</th>
 								<th class="align-middle">Email</th>
-								<th class="align-middle">Phone Number</th>
+								<th class="align-middle">Nomor Telepon</th>
 								<th class="align-middle">Upline</th>
-								<th class="align-middle">Generation</th>
-								<th class="align-middle">Total Turnover</th>
+								<th class="align-middle">Generasi</th>
+								<th class="align-middle">Total Omzet</th>
 								<th class="align-middle">Total Downline</th>
 							</tr>
 						</thead>

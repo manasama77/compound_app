@@ -24,7 +24,7 @@
 				<a href="index2.html" class="h1"><b><?= APP_NAME; ?></b></a>
 			</div>
 			<div class="card-body">
-				<p class="login-box-msg">We will send email to reset your password</p>
+				<p class="login-box-msg">Kami Akan Mengirimkan email untuk Reset Password Anda</p>
 
 				<form id="form_forgot_password">
 					<div class="input-group mb-3">
@@ -40,7 +40,7 @@
 						<!-- /.col -->
 						<div class="col-12">
 							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
-							<button type="submit" class="btn btn-primary btn-block">Send Email</button>
+							<button type="submit" class="btn btn-primary btn-block">Kirim Email</button>
 						</div>
 						<!-- /.col -->
 					</div>

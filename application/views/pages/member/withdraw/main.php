@@ -108,9 +108,9 @@
 									<strong>Notes:</strong><br />
 									<ul class="p-3">
 										<li>BNB.BEP20 are Binance that run on Binance Smart Chain Network. It different from BNB.BEP2 that run on Binance Chain Network</li>
-										<li>Make sure the wallet address you are input are valid</li>
+										<li>Pastikan alamat dompet yang Anda masukan valid</li>
 										<li>Also Make sure the wallet address are support for receive with the coin type. If not the withdrawal coin transaction will be burn / permanent lost</li>
-										<li><?= APP_NAME; ?> did not responsible for all your mistake input for invalid address or wrong target address</li>
+										<li><?= APP_NAME; ?> tidak bertanggung jawab atas semua kesalahan input Anda untuk alamat yang tidak valid atau alamat target yang salah</li>
 									</ul>
 								</small>
 							</div>

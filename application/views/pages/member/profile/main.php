@@ -31,7 +31,7 @@
 								<br><span class="badge badge-primary">Founder</span>
 							<?php } ?>
 						</h4>
-						<p class="text-muted text-center">Member since<br><?= $member_since; ?></p>
+						<p class="text-muted text-center">Member Sejak<br><?= $member_since; ?></p>
 					</div>
 				</div>
 
@@ -54,7 +54,7 @@
 
 						<?php if ($country_name != null) { ?>
 							<hr>
-							<strong><i class="fas fa-globe mr-1"></i> Country</strong>
+							<strong><i class="fas fa-globe mr-1"></i> Negara</strong>
 							<p class="text-muted mb-0">
 								<?= $country_name; ?>
 							</p>
@@ -78,20 +78,20 @@
 							<div class="tab-pane active" id="settings">
 								<form class="form-horizontal" id="form_setting">
 									<div class="form-group row">
-										<label for="fullname" class="col-sm-2 col-form-label">Name</label>
+										<label for="fullname" class="col-sm-2 col-form-label">Nama</label>
 										<div class="col-sm-10">
 											<input type="text" class="form-control" id="fullname" name="fullname" placeholder="Name" value="<?= $arr->row()->fullname; ?>">
 										</div>
 									</div>
 									<div class="form-group row">
-										<label for="phone_number" class="col-sm-2 col-form-label">Phone Number</label>
+										<label for="phone_number" class="col-sm-2 col-form-label">Nomor Telepon</label>
 										<div class="col-sm-10">
 											<input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="Phone Number" value="<?= $arr->row()->phone_number; ?>">
 										</div>
 									</div>
 									<hr />
 									<div class="form-group row">
-										<label for="phone_number" class="col-sm-2 col-form-label">Country</label>
+										<label for="phone_number" class="col-sm-2 col-form-label">Negara</label>
 										<div class="col-sm-10">
 											<input class="form-control" list="country_list" id="country_code" name="country_code" placeholder="Select Country" value="<?= $arr->row()->country_code; ?>">
 											<datalist id="country_list">
@@ -115,7 +115,7 @@
 							<div class="tab-pane" id="reset_password">
 								<form class="form-horizontal" id="form_reset_password">
 									<div class="form-group row">
-										<label for="current_password" class="col-sm-2 col-form-label">Current Password</label>
+										<label for="current_password" class="col-sm-2 col-form-label">Password Saat ini</label>
 										<div class="col-sm-10">
 											<input type="password" class="form-control" id="current_password" name="current_password" placeholder="Current Password" required>
 										</div>

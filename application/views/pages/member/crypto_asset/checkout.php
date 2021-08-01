@@ -21,18 +21,18 @@
 			<div class="col-md-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Payment Information</h3>
+						<h3 class="card-title">Informasi Pembayaran</h3>
 
 						<div class="card-tools">
 							<a href="<?= site_url('crypto_asset/add'); ?>" class="btn btn-dark btn-sm">
-								<i class="fas fa-chevron-left fa-fw"></i> Back to Package
+								<i class="fas fa-chevron-left fa-fw"></i> Kembali ke Paket
 							</a>
 						</div>
 					</div>
 					<div class="card-body">
 						<?php if ($state != "active") { ?>
 							<div class="alert alert-warning" role="alert">
-								System will automatic check status payment every 30 Second...
+								Sistem akan otomatis memeriksa status pembayaran setiap 30 Detik...
 							</div>
 						<?php } ?>
 						<?php if ($state == "waiting payment") { ?>
@@ -49,31 +49,31 @@
 										</td>
 									</tr>
 									<tr>
-										<td>Total Amount To Send</td>
+										<td>Nominal Transfer</td>
 										<td>:</td>
 										<td class="text-left"><?= $arr->row()->amount_coin; ?> <?= $arr->row()->currency2; ?></td>
 									</tr>
 									<tr>
-										<td>Send To Address</td>
+										<td>Kirim Ke Alamat</td>
 										<td>:</td>
 										<td class="text-left"><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></td>
 									</tr>
 									<tr>
-										<td>Amount Received</td>
+										<td>Jumlah Yang di terima</td>
 										<td>:</td>
 										<td class="text-left">
 											<span id="receivedf"></span> <span id="coin"></span>
 										</td>
 									</tr>
 									<tr>
-										<td>Time Left to Transfer</td>
+										<td>Waktu Tersisa untuk Transfer</td>
 										<td>:</td>
 										<td class="text-left">
 											<span id="time_left"></span>
 										</td>
 									</tr>
 									<tr>
-										<td>Payment ID</td>
+										<td>ID pembayaran</td>
 										<td>:</td>
 										<td class="text-left"><code class="text-dark"><?= $arr->row()->txn_id; ?></code></td>
 									</tr>
@@ -108,14 +108,14 @@
 										<div class="tab-pane fade show active" id="v-pills-q1" role="tabpanel">
 											<ol>
 												<li>
-													Please send <mark><?= $arr->row()->amount_coin; ?> <?= $arr->row()->currency2; ?></mark> to address <mark><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></mark>. <span class="text-danger">(Make sure to send enough to cover any coin transaction fees!)</span> You will need to initiate the payment using your software or online wallet and copy/paste the address and payment amount into it. We will email you when all funds have been received. If you send funds that don't confirm by the timeout or don't send enough coins you will receive an automatic email to claim your funds within 8 hours. If you don't receive the email contact us with the information below and CoinPayments.net will send you a refund:
+													Tolong Kirim <mark><?= $arr->row()->amount_coin; ?> <?= $arr->row()->currency2; ?></mark> Ke Alamat <mark><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></mark>. <span class="text-danger">(Make sure to send enough to cover any coin transaction fees!)</span> You will need to initiate the payment using your software or online wallet and copy/paste the address and payment amount into it. We will email you when all funds have been received. If you send funds that don't confirm by the timeout or don't send enough coins you will receive an automatic email to claim your funds within 8 hours. If you don't receive the email contact us with the information below and CoinPayments.net will send you a refund:
 													<ul class="mb-3">
 														<li>The transaction ID: <mark><code class="text-dark"><?= $arr->row()->txn_id; ?></code></mark></li>
 														<li>A payment address to send the funds to <?= $arr->row()->receiver_wallet_address; ?></li>
 													</ul>
 												</li>
 												<li>
-													After sending payment, review the status of your transaction <a href="<?= $arr->row()->status_url; ?>" target="_blank">on this page</a>. Once the payment is confirmed several times in the block chain, the payment will be completed and the merchant will be notified. The confirmation process usually takes 10-45 minutes but varies based on the coin's target block time and number of block confirms required. The status page is available for the next 30 days.
+													Setelah mengirim pembayaran, tinjau status transaksi Anda <a href="<?= $arr->row()->status_url; ?>" target="_blank">on this page</a>. Once the payment is confirmed several times in the block chain, the payment will be completed and the merchant will be notified. The confirmation process usually takes 10-45 minutes but varies based on the coin's target block time and number of block confirms required. The status page is available for the next 30 days.
 												</li>
 											</ol>
 										</div>

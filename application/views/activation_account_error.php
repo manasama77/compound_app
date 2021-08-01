@@ -44,12 +44,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 					<img src="<?= base_url('public/img/logo.png'); ?>" class="img-fluid mb-3" alt="<?= APP_NAME; ?> LOGO">
 					<h1>
 						Oops!</h1>
-					<h2>Something Wrong!</h2>
+					<h2>Terjadi Kesalahan!</h2>
 					<div class="error-details">
 						<?= $message; ?>
 						<br>
 						<?php if ($type == "activation_not_same") { ?>
-							<button type="button" class="btn btn-warning mt-3" onclick="resendActivation('<?= $id; ?>', '<?= $email; ?>')">Resend Activation Link</button>
+							<button type="button" class="btn btn-warning mt-3" onclick="resendActivation('<?= $id; ?>', '<?= $email; ?>')">Kirim Ulang Link Aktivasi</button>
 						<?php } ?>
 					</div>
 				</div>

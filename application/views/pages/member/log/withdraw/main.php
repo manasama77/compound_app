@@ -33,11 +33,11 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
-										<th class="text-center align-middle" style="min-width: 120px;">Date</th>
+										<th class="text-center align-middle" style="min-width: 120px;">Tanggal</th>
 										<th class="align-middle">Invoice</th>
 										<th class="text-right align-middle" style="min-width: 120px;">Amount 1</th>
 										<th class="text-right align-middle" style="min-width: 120px;">Amount 2</th>
-										<th class="text-center align-middle">Source</th>
+										<th class="text-center align-middle">Sumber</th>
 										<th class="align-middle">Wallet</th>
 										<th class="text-center align-middle">Status</th>
 										<th class="align-middle">TXID</th>

@@ -28,12 +28,12 @@
 							<table class="table table-bordered table-striped" id="table_data">
 								<thead>
 									<tr>
-										<th style="min-width: 100px;">Date</th>
+										<th style="min-width: 100px;">Tanggal</th>
 										<th style="min-width: 100px;">Member</th>
 										<th style="min-width: 100px;">Invoice</th>
-										<th style="min-width: 100px;">Package</th>
+										<th style="min-width: 100px;">Paket</th>
 										<th class="text-right" style="min-width: 100px;">Profit</th>
-										<th style="min-width: 350px;">Description</th>
+										<th style="min-width: 350px;">Deksripsi</th>
 									</tr>
 								</thead>
 								<tbody>

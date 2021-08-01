@@ -55,8 +55,8 @@
 								<span class="help-block"><small>We already sent OTP to <kbd><?= $this->session->userdata(SESI . 'email'); ?></kbd></small></span>
 							</div>
 							<button type="button" class="btn btn-warning btn-sm btn-block elevation-2 mb-3" id="resend_button" onclick="resendOTP('<?= $this->session->userdata(SESI . 'email'); ?>');" disabled>
-								Didn't receive OTP Code ?<br />
-								Try send again<br />
+								Tidak menerima Kode OTP ?<br />
+								Coba kirim lagi<br />
 								(After <span id="time">01:00</span>)
 							</button>
 							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />

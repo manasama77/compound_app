@@ -2,12 +2,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">Add Crypto Asset</h1>
+				<h1 class="m-0">Tambah Crypto Asset</h1>
 			</div><!-- /.col -->
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
 					<li class="breadcrumb-item"><a href="#">Crypto Asset</a></li>
-					<li class="breadcrumb-item active">Add Crypto Asset</li>
+					<li class="breadcrumb-item active">Tambah Crypto Asset</li>
 				</ol>
 			</div><!-- /.col -->
 		</div><!-- /.row -->
@@ -33,7 +33,7 @@
 									<img src="<?= base_url(); ?>public/img/package_logo/<?= $key->logo; ?>" class="img-fluid" alt="starter">
 									<?php if ($arr_state[$x] == 0) { ?>
 										<a href="<?= site_url('crypto_asset/pick/' . base64_encode(UYAH . $key->id)); ?>" class="btn btn-dark btn-flat btn-block font-weight-bold">
-											<i class="fas fa-toggle-off fa-fw"></i> Pick Package
+											<i class="fas fa-toggle-off fa-fw"></i> Pilih Paket
 										</a>
 									<?php } elseif ($arr_state[$x] == 1) { ?>
 										<span class="btn btn-success btn-flat btn-block font-weight-bold">
@@ -53,16 +53,16 @@
 									<p class="card-text">
 									<ul>
 										<li>
-											Total Investment: <?= check_float($key->amount); ?> USDT
+											Total Investasi: <?= check_float($key->amount); ?> USDT
 										</li>
 										<li>
-											Profit (%) /Month: <?= check_float($key->profit_per_month_percent); ?>%
+											Profit (%) /Bulan: <?= check_float($key->profit_per_month_percent); ?>%
 										</li>
 										<li>
-											Profit /Day: <?= check_float($key->profit_per_day_value); ?> USDT
+											Profit /Hari: <?= check_float($key->profit_per_day_value); ?> USDT
 										</li>
 										<li>
-											Contract Duration: <?= $key->contract_duration; ?> Day
+											Durasi Contract : <?= $key->contract_duration; ?> Hari
 										</li>
 									</ul>
 									</p>

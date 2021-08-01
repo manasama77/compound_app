@@ -39,7 +39,7 @@
 										<th class="align-middle">#</th>
 										<th class="align-middle">Coin Type</th>
 										<th class="align-middle">Label</th>
-										<th class="align-middle">Address</th>
+										<th class="align-middle">Alamat</th>
 										<th class="align-middle text-center" style="min-width: 140px !important;"><i class="fas fa-cogs"></i></th>
 									</tr>
 								</thead>
@@ -71,7 +71,7 @@
 			<div class="col-sm-12 col-md-4">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Add Wallet</h3>
+						<h3 class="card-title">Tambah Wallet</h3>
 
 						<div class="card-tools">
 							<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -102,11 +102,11 @@
 								<small>
 									<strong>Notes:</strong><br />
 									<ul class="p-3">
-										<li>One coin type one wallet address only</li>
+										<li>Satu jenis koin hanya satu alamat dompet</li>
 										<li>BNB.BEP20 are Binance that run on Binance Smart Chain Network. It different from BNB.BEP2 that run on Binance Chain Network</li>
-										<li>Make sure the wallet address you are input are valid</li>
+										<li>Pastikan alamat dompet yang Anda masukan valid</li>
 										<li>Also Make sure the wallet address are support for receive with the coin type. If not the withdrawal coin transaction will be burn / permanent lost</li>
-										<li><?= APP_NAME; ?> did not responsible for all your mistake input for invalid address or wrong target address</li>
+										<li><?= APP_NAME; ?> tidak bertanggung jawab atas semua kesalahan input Anda untuk alamat yang tidak valid atau alamat target yang salah</li>
 									</ul>
 								</small>
 							</div>

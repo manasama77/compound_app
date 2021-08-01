@@ -5,7 +5,7 @@
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title><?= APP_NAME; ?> | Activation Success</title>
+	<title><?= APP_NAME; ?> | Aktivasi Berhasil</title>
 
 	<!-- Google Font: Source Sans Pro -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -24,9 +24,9 @@
 			<div class="col-sm-12 col-md-4 offset-md-4 mt-5">
 				<div class="alert alert-success" role="alert">
 					<h4 class="alert-heading">Well done!</h4>
-					<p>Reset Password Success, you can Log In right now with your new password!</p>
+					<p>Reset Password Berhasil, Anda dapat Masuk sekarang dengan kata sandi baru Anda!</p>
 					<hr>
-					<p class="mb-0">Be sure never sharing your account to another person with any reason. We can't help if something happen to your account!</p>
+					<p class="mb-0">Pastikan tidak pernah membagikan akun Anda kepada orang lain dengan alasan apa pun. Kami tidak dapat membantu jika terjadi sesuatu pada akun Anda!</p>
 					<hr>
 					<a href="<?= site_url('login'); ?>" class="btn btn-success btn-block">Continue Log In</a>
 				</div>

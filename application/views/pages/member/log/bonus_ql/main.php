@@ -33,12 +33,12 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
-										<th class="align-top" style="min-width: 120px;">Date Time</th>
+										<th class="align-top" style="min-width: 120px;">Tanggal Waktu</th>
 										<th class="align-top" style="min-width: 120px;">Member</th>
-										<th class="align-top">Package</th>
+										<th class="align-top">Paket</th>
 										<th class="align-top" style="min-width: 120px;">Type</th>
-										<th class="align-top text-right" style="min-width: 100px;">Amount</th>
-										<th class="align-top" style="min-width: 350px;">Description</th>
+										<th class="align-top text-right" style="min-width: 100px;">Nilai</th>
+										<th class="align-top" style="min-width: 350px;">Deksripsi</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -71,7 +71,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- You Don't Have Any History Bonus Qualification Leader -</td>
+											<td colspan="8" class="text-center text-danger">- Kamu Belum Memiliki Bonus Kualifikasi Leader -</td>
 										</tr>
 
 									<?php endif; ?>

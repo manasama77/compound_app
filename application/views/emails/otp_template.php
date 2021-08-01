@@ -377,9 +377,9 @@
 							<tr>
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
-										<h3>Please verify your One Time Password (OTP)</h3>
+										<h3>Harap verifikasi Kata Sandi Anda (OTP)</h3>
 										<h2><kbd><?= $otp; ?></kbd></h2>
-										<h3>Never Share this OTP to anyone</h3>
+										<h3>Jangan Pernah Bagikan OTP ini kepada siapa pun</h3>
 									</div>
 								</td>
 							</tr>

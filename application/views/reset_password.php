@@ -29,7 +29,7 @@
 						<?= validation_errors(); ?>
 					</div>
 				<?php } ?>
-				<p class="login-box-msg">Setup your new password</p>
+				<p class="login-box-msg">Siapkan password Baru Anda</p>
 
 				<form action="<?= site_url(); ?>reset_password/<?= $this->uri->segment(2); ?>/<?= $this->uri->segment(3); ?>" method="post">
 					<div class="input-group mb-3">
