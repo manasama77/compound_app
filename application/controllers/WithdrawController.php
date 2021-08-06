@@ -57,7 +57,7 @@ class WithdrawController extends CI_Controller
 		$bonus  = check_float($arr->row()->bonus);
 
 		$data = [
-			'title'      => APP_NAME . ' | Withdraw',
+			'title'      => APP_NAME . ' | Penarikan',
 			'content'    => 'withdraw/main',
 			'vitamin_js' => 'withdraw/main_js',
 			'profit'     => $profit,
@@ -80,18 +80,18 @@ class WithdrawController extends CI_Controller
 		$id_wallet = $this->input->post('wallet_address');
 
 		$code = 500;
-		$msg  = "Can't Connect to Database, please try again!";
+		$msg  = "Tidak dapat terhubung dengan Database, silahkan coba kembali!";
 
 		if ($source == "profit") {
 			if ($amount > $profit) {
-				$msg  = "Insufficient Profit Balance";
+				$msg  = "Saldo Profit Tidak Mencukupi";
 			} else {
 				$code = 200;
 				$msg  = "Success";
 			}
 		} elseif ($source == "bonus") {
 			if ($amount > $bonus) {
-				$msg  = "Insufficient Bonus Balance";
+				$msg  = "Saldo Bonus Tidak Mencukupi";
 			} else {
 				$code = 200;
 				$msg  = "Success";
@@ -102,7 +102,7 @@ class WithdrawController extends CI_Controller
 			$arr_wallet = $this->get_arr_wallet($id_wallet);
 			if ($arr_wallet === false) {
 				$code = 501;
-				echo json_encode(['code' => $code, 'message' => "Wallet not found or has been updated, try again!"]);
+				echo json_encode(['code' => $code, 'message' => "Wallet tidak ditemukan atau data telah terupdate, silahkan coba kembali!"]);
 				exit;
 			}
 
@@ -132,11 +132,11 @@ class WithdrawController extends CI_Controller
 
 		$arr_wallet = $this->get_arr_wallet($id_wallet);
 		if ($arr_wallet === false) {
-			return show_error("Wallet not found or has been updated, try again!", 404, "An Error was Encountered");
+			return show_error("Wallet tidak ditemukan atau data telah terupdate, silahkan coba kembali!", 404, "Terjadi Kesalahan");
 		}
 
 		$data = [
-			'title'          => APP_NAME . ' | Withdraw OTP',
+			'title'          => APP_NAME . ' | OTP Penarikan',
 			'content'        => 'withdraw/otp',
 			'vitamin_js'     => 'withdraw/otp_js',
 			'source'         => $source,
@@ -359,7 +359,7 @@ class WithdrawController extends CI_Controller
 
 		if ($get_coin_balance['error'] != "ok") {
 			$this->db->trans_rollback();
-			return show_error('Failed to get Balances on Coinpayment. Please try again!', 500, "An Error Was Encountered");
+			return show_error('Gagal terhubung dengan server CoinPayments.net, silahkan coba kembali!', 500, "Telah terjadi kesalahan");
 		}
 
 		$x        = strtoupper($coin_type);
@@ -369,11 +369,11 @@ class WithdrawController extends CI_Controller
 			$this->_send_alert_balance($coin_type, $amount);
 			$this->db->trans_commit();
 
-			$msg = 'System cannot process your withdraw request, because Insufficient System Balance.<br>Please notify admin about this issue to <a href="mailto:' . EMAIL_ADMIN_2 . '" target="_blank"><mark>' . EMAIL_ADMIN_2 . '</mark></a> or wait maximum 24 hour later for admin to fix this issue.';
-			return show_error($msg, 500, "An Error Was Encountered");
+			$msg = 'Sistem tidak dapat memproses penarikan Anda, dikarenakan nominal banyaknya antrian penarikan saat ini.<br>Silahkan beritahu admin mengenai kedala ini di email <a href="mailto:' . EMAIL_ADMIN_2 . '" target="_blank"><mark>' . EMAIL_ADMIN_2 . '</mark></a> atau tunggu maksimal 24 jam sesudahnya untuk admin memproses kedala tersebut.';
+			return show_error($msg, 500, "Telah terjadi kesalahan");
 		}
 
-		$note = "Withdraw from $source worth $amount USDT for coin " . strtoupper($coin_type) . " to wallet address $wallet_address (" . strtoupper($wallet_label) . ")";
+		$note = "Penarikan dari $source senilai $amount USDT ke Coin " . strtoupper($coin_type) . " ke Wallet Address $wallet_address (" . strtoupper($wallet_label) . ")";
 
 		/* 
 		NOTES
@@ -394,9 +394,9 @@ class WithdrawController extends CI_Controller
 			$this->db->trans_rollback();
 			$msg = $withdraw_process['error'];
 			if ($withdraw_process['error'] == "That amount is larger than your balance!") {
-				$msg = 'System cannot process your withdraw request, because Insufficient System Balance.<br>Please notify admin about this issue to <a href="mailto:' . EMAIL_ADMIN . '" target="_blank"><mark>' . EMAIL_ADMIN . '</mark></a> or wait maximum 24 hour later for admin to fix this issue.';
+				$msg = 'Sistem tidak dapat memproses penarikan Anda, dikarenakan nominal banyaknya antrian penarikan saat ini.<br>Silahkan beritahu admin mengenai kedala ini di email <a href="mailto:' . EMAIL_ADMIN_2 . '" target="_blank"><mark>' . EMAIL_ADMIN_2 . '</mark></a> atau tunggu maksimal 24 jam sesudahnya untuk admin memproses kedala tersebut.';
 			}
-			return show_error($msg, 500, "An Error Was Encountered");
+			return show_error($msg, 500, "Telah terjadi kesalahan");
 		}
 
 		$tx_id    = $withdraw_process['result']['id'];
@@ -434,7 +434,7 @@ class WithdrawController extends CI_Controller
 
 		if (!$exec_withdraw) {
 			$this->db->trans_rollback();
-			return show_error('Failed to Store Withdrawal Data on Database. Please try again!', 500, "An Error Was Encountered");
+			return show_error('Gagal untuk menyimpan data penarikan ke Database, silahkan coba kembali!', 500, "Telah terjadi kesalahan");
 		}
 
 		if ($source == "profit") {
@@ -445,7 +445,7 @@ class WithdrawController extends CI_Controller
 
 		if (!$exec_reduce) {
 			$this->db->trans_rollback();
-			return show_error('Failed to Reduce Member Balance on Database. Please try again!', 500, "An Error Was Encountered");
+			return show_error('Gagal untuk mengurasi nominal saldo member, silahkan coba kembali!', 500, "Telah terjadi kesalahan");
 		}
 		$this->db->trans_commit();
 
@@ -454,7 +454,7 @@ class WithdrawController extends CI_Controller
 
 	protected function _send_alert_balance($coin_type, $amount): bool
 	{
-		$subject = APP_NAME . " | Alert Balance " . strtoupper($coin_type);
+		$subject = APP_NAME . " | Peringatan Saldo " . strtoupper($coin_type);
 		$message = "";
 
 		$this->email->set_newline("\r\n");
@@ -523,11 +523,11 @@ class WithdrawController extends CI_Controller
 		$arr = $this->M_core->get('member_withdraw', '*', $where);
 
 		if ($arr->num_rows() == 0) {
-			return show_error("Withdraw Data Not Found", 404, "An Error Was Encountered");
+			return show_error("Data Penarikan Tidak Ditemukan", 404, "Telah terjadi kesalahan");
 		}
 
 		$data = [
-			'title'   => APP_NAME . ' | Withdraw Request Done',
+			'title'   => APP_NAME . ' | Permintaan Penarikan Berhasil',
 			'content' => 'withdraw/success',
 			'arr'     => $arr,
 		];

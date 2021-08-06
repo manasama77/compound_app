@@ -28,7 +28,7 @@ $route['check_current_password'] = 'ProfileController/check_current_password';
 $route['update_password']        = 'ProfileController/update_password';
 $route['reset_password']         = 'ProfileController/reset_password';
 
-$route['trade_manager']                     	= 'TradeManagerController/index';
+$route['trade_manager/index']                   = 'TradeManagerController/index';
 $route['trade_manager/add']                     = 'TradeManagerController/add';
 $route['trade_manager/pick/(:any)']             = 'TradeManagerController/pick/$1';
 $route['trade_manager/checkout/coinpayment'] 	= 'TradeManagerController/checkout_coinpayment';
@@ -36,7 +36,7 @@ $route['trade_manager/checkout/(:any)']   		= 'TradeManagerController/checkout/$
 $route['trade_manager/detail']   				= 'TradeManagerController/detail';
 $route['trade_manager/update_extend']   		= 'TradeManagerController/update_extend';
 
-$route['crypto_asset']     						= 'CryptoAssetController/index';
+$route['crypto_asset/index']     				= 'CryptoAssetController/index';
 $route['crypto_asset/add'] 						= 'CryptoAssetController/add';
 $route['crypto_asset/pick/(:any)']             	= 'CryptoAssetController/pick/$1';
 $route['crypto_asset/checkout/coinpayment'] 	= 'CryptoAssetController/checkout_coinpayment';
@@ -104,12 +104,15 @@ $route['coinpayment/ipn']      = 'CoinPayment/ipn';
 $route['coinpayment/success/(:any)']  = 'CoinPayment/success/$1';
 $route['coinpayment/cancel/(:any)']   = 'CoinPayment/cancel/$1';
 
-$route['scheduler/profit_daily_trade_manager']  = 'TaskSchedulerController/profit_daily_trade_manager'; # done check
-$route['scheduler/profit_daily_crypto_asset']   = 'TaskSchedulerController/profit_daily_crypto_asset'; # done check
-$route['scheduler/withdraw']                    = 'TaskSchedulerController/withdraw'; # done check
-$route['scheduler/reward']                      = 'TaskSchedulerController/reward';
-$route['scheduler/check_trade_manager_expired'] = 'TaskSchedulerController/check_trade_manager_expired';
-$route['scheduler/check_crypto_asset_expired'] 	= 'TaskSchedulerController/check_crypto_asset_expired';
-$route['scheduler/coinpayment_tx_info_tm'] 	    = 'TaskSchedulerController/coinpayment_tx_info_tm'; # done check
+$route['scheduler/coinpayment_tx_info_tm'] 	         = 'TaskSchedulerController/coinpayment_tx_info_tm'; # DONE
+$route['scheduler/withdraw']                         = 'TaskSchedulerController/withdraw'; # DONE
+$route['scheduler/update_konfigurasi_trade_manager'] = 'TaskSchedulerController/update_konfigurasi_trade_manager'; # DONE
+$route['scheduler/update_konfigurasi_crypto_asset']  = 'TaskSchedulerController/update_konfigurasi_crypto_asset'; # DONE
+$route['scheduler/check_trade_manager_expired']      = 'TaskSchedulerController/check_trade_manager_expired'; # DONE
+$route['scheduler/check_crypto_asset_expired'] 	     = 'TaskSchedulerController/check_crypto_asset_expired'; # DONE
+$route['scheduler/profit_daily_trade_manager']       = 'TaskSchedulerController/profit_daily_trade_manager'; # DONE
+$route['scheduler/profit_daily_crypto_asset']        = 'TaskSchedulerController/profit_daily_crypto_asset'; # DONE
+$route['scheduler/reward']                           = 'TaskSchedulerController/reward'; # 
+$route['scheduler/disabled_member']                  = 'TaskSchedulerController/disabled_member'; # 
 
 $route['test'] = 'TestController/index';

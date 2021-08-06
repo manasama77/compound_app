@@ -34,14 +34,14 @@
 					<div class="card-body">
 						<form action="<?= site_url('downline/show'); ?>" method="GET">
 							<div class="form-group">
-								<label for="depth">Depth</label>
+								<label for="depth">Kedalaman</label>
 								<select class="form-control" id="depth" name="depth" required>
 									<?php for ($x = 1; $x <= $max_depth; $x++) { ?>
-										<option value="<?= $x; ?>" <?= ($x == $id_member_depth) ? 'selected' : ''; ?>>Generation <?= $x; ?></option>
+										<option value="<?= $x; ?>" <?= ($x == $id_member_depth) ? 'selected' : ''; ?>>Generasi <?= $x; ?></option>
 									<?php } ?>
 								</select>
 							</div>
-							<button type="submit" class="btn btn-primary btn-block">Show</button>
+							<button type="submit" class="btn btn-primary btn-block">Tampilkan</button>
 						</form>
 					</div>
 				</div>

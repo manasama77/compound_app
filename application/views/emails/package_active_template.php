@@ -377,8 +377,8 @@
 							<tr>
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
-										<h3>Paket <?= $arr_data->row()->item_name; ?> Aktif</h3>
-										<h4>Detail Invoice <?= $arr_data->row()->item_name; ?></h4>
+										<h3>Paket <?= $arr_data->row()->package_name; ?> Aktif</h3>
+										<h4>Detail Invoice <?= $arr_data->row()->package_name; ?></h4>
 										<table border="1" cellpadding="10" style="width: 400px;">
 											<tr>
 												<th style="text-align: left; color: #000; width: 100px;">Metode Pembayaran</th>
@@ -390,27 +390,27 @@
 											</tr>
 											<tr>
 												<th style="text-align: left; color: #000;">Jumlah Investasi</th>
-												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->amount_usd); ?> USDT</th>
+												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->amount_1); ?> <small>USDT</small></th>
 											</tr>
 											<tr>
 												<th style="text-align: left; color: #000;">Total Transfer</th>
-												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->amount_coin); ?> <?= $arr_data->row()->currency2; ?></th>
+												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->amount_2); ?> <?= $arr_data->row()->currency2; ?></th>
 											</tr>
 											<tr>
 												<th style="text-align: left; color: #000;">Paket</th>
-												<th style="text-align: left; color: #000;"><?= $arr_data->row()->item_name; ?></th>
+												<th style="text-align: left; color: #000;"><?= $arr_data->row()->package_name; ?></th>
 											</tr>
 											<tr>
 												<th style="text-align: left; color: #000;">Profit Harian Member</th>
-												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->profit_self_per_day); ?></th>
+												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->share_self_value); ?><small>USDT</small></th>
 											</tr>
 											<tr>
-												<th style="text-align: left; color: #000;">pembeli</th>
-												<th style="text-align: left; color: #000;"><?= $arr_data->row()->buyer_name; ?> (<?= $arr_data->row()->buyer_email; ?>)</th>
+												<th style="text-align: left; color: #000;">Pembeli</th>
+												<th style="text-align: left; color: #000;"><?= $arr_data->row()->member_fullname; ?> (<?= $arr_data->row()->member_email; ?>)</th>
 											</tr>
 											<tr>
 												<th style="text-align: left; color: #000;">Aktif Sampai</th>
-												<th style="text-align: left; color: #000;"><?= $arr_data->row()->expired_at; ?> 00:00:00 AM</th>
+												<th style="text-align: left; color: #000;"><?= $arr_data->row()->expired_package; ?> 00:00:00 AM</th>
 											</tr>
 										</table>
 									</div>
@@ -418,8 +418,7 @@
 							</tr>
 						</table>
 					</td>
-				</tr><!-- end tr -->
-				<!-- 1 Column Text + Button : END -->
+				</tr>
 			</table>
 
 		</div>

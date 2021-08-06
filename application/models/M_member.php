@@ -4,13 +4,17 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class M_member extends CI_Model
 {
-
+	protected $date;
+	protected $datetime;
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->library('Nested_set', null, 'Nested_set');
 		$this->Nested_set->setControlParams('tree', 'lft', 'rgt', 'id_member', 'id_upline', 'email');
+
+		$this->date = date('Y-m-d');
+		$this->datetime = date('Y-m-d H:i:s');
 	}
 
 
@@ -177,55 +181,132 @@ class M_member extends CI_Model
 		return $pp;
 	}
 
-	public function get_data_member_reward($id_member = null, $lft = null, $rgt = null, $depth = null, $total_omset = null, $limit = null, $id_exclude = null)
+	public function get_data_member_reward()
 	{
-		$this->db->select([
-			'member.id',
-			'member.fullname',
-			'member.email',
-			'tree.lft',
-			'tree.rgt',
-			'tree.depth',
-			'balance.self_omset',
-			'balance.downline_omset',
-			'balance.total_omset',
-		]);
-		$this->db->from('et_member AS member');
-		$this->db->join('et_member_reward AS reward', 'reward.id_member = member.id', 'left');
-		$this->db->join('et_tree AS tree', 'tree.id_member = member.id', 'left');
-		$this->db->join('et_member_balance AS balance', 'balance.id_member = member.id', 'left');
-		$this->db->where('member.deleted_at', null);
-		$this->db->where('member.is_active', 'yes');
+		return $this->db
+			->select([
+				'member.id',
+				'member.fullname',
+				'member.email',
+				'tree.lft',
+				'tree.rgt',
+				'tree.depth',
+				'balance.self_omset',
+				'balance.downline_omset',
+				'balance.total_omset',
+				'reward.reward_1',
+				'reward.reward_2',
+				'reward.reward_3',
+				'reward.reward_4',
+				'reward.reward_5',
+			])
+			->from('tree AS tree')
+			->join('member AS member', 'member.id = tree.id_member', 'left')
+			->join('member_balance AS balance', 'balance.id_member = member.id', 'left')
+			->join('member_reward AS reward', 'reward.id_member = member.id', 'left')
+			->where('member.deleted_at', null)
+			->where('member.is_active', 'yes')
+			->where('balance.downline_omset >', LIMIT_REWARD_1)
+			->order_by('balance.total_omset', 'desc')
+			->get();
+	}
 
-		if ($id_member != null) {
-			$this->db->where('member.id', $id_member);
+	public function disabled_member()
+	{
+		$que = $this->db
+			->select([
+				'member.id',
+				'member.email',
+			])
+			->from('member as member')
+			->join('member_balance as member_balance', 'member_balance.id_member = member.id', 'left')
+			->where('member.deleted_at', null)
+			->where('member.is_active', 'yes')
+			->where('member_balance.count_trade_manager', 0)
+			->where('member_balance.count_crypto_asset', 0)
+			->where('member_balance.bonus', 0)
+			->where('member_balance.profit', 0)
+			->where("DATE(member.created_at + INTERVAL 7 DAY) = '$this->date'", null, false)
+			->get();
+
+		if ($que->num_rows() == 0) {
+			echo "Tidak ada Data <br/>" . PHP_EOL;
+			return FALSE;
 		} else {
-			if ($lft != null && $rgt != null) {
-				$this->db->where('tree.lft >', $lft);
-				$this->db->where('tree.rgt <', $rgt);
+			$this->db->trans_begin();
+			foreach ($que->result() as $key) {
+				$id    = $key->id;
+				$email = $key->email;
 
-				if ($depth != null) {
-					$this->db->where('tree.depth', $depth);
+				$data = [
+					'is_active' => 'no',
+					'deleted_at' => $this->datetime,
+				];
+				$where = ['id' => $id];
+
+				$exec = $this->db->update('member', $data, $where);
+
+				if (!$exec) {
+					echo $email . " error" . PHP_EOL;
+					$this->db->trans_rollback();
+					return FALSE;
 				}
+
+				echo $email . " DISABLED <br/>";
 			}
+			$this->db->trans_commit();
+			return TRUE;
 		}
+	}
 
-		if ($total_omset != null) {
-			$this->db->where('balance.total_omset >=', $total_omset);
-		}
+	public function get_member_main_line($lft = null, $rgt = null, $depth = null)
+	{
+		return $this->db
+			->select([
+				'member.id',
+				'member.fullname',
+				'member.email',
+				'balance.self_omset',
+				'balance.downline_omset',
+				'balance.total_omset',
+			])
+			->from('tree AS tree')
+			->join('member AS member', 'member.id = tree.id_member', 'left')
+			->join('member_balance AS balance', 'balance.id_member = member.id', 'left')
+			->where('tree.lft >', $lft)
+			->where('tree.rgt <', $rgt)
+			->where('tree.depth', $depth)
+			->where('member.deleted_at', null)
+			->where('member.is_active', 'yes')
+			->where('balance.total_omset >', 0)
+			->order_by('balance.total_omset', 'desc')
+			->limit(1)
+			->get();
+	}
 
-		if ($limit != null) {
-			$this->db->limit($limit);
-		}
-
-		if ($id_exclude != null) {
-			$this->db->where('tree.id_member !=', $id_exclude);
-		}
-
-		$this->db->order_by('balance.total_omset', 'desc');
-		$query = $this->db->get();
-
-		return $query;
+	public function get_member_other_line($lft = null, $rgt = null, $depth = null, $id_exclude = null)
+	{
+		return $this->db
+			->select([
+				'member.id',
+				'member.fullname',
+				'member.email',
+				'balance.self_omset',
+				'balance.downline_omset',
+				'balance.total_omset',
+			])
+			->from('tree AS tree')
+			->join('member AS member', 'member.id = tree.id_member', 'left')
+			->join('member_balance AS balance', 'balance.id_member = member.id', 'left')
+			->where('tree.lft >', $lft)
+			->where('tree.rgt <', $rgt)
+			->where('tree.depth', $depth)
+			->where('tree.id_member !=', $id_exclude)
+			->where('member.deleted_at', null)
+			->where('member.is_active', 'yes')
+			->where('balance.total_omset >', 0)
+			->order_by('balance.total_omset', 'desc')
+			->get();
 	}
 }
                         

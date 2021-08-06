@@ -33,21 +33,21 @@
 					<div class="card-body">
 						<form action="<?= site_url('downline/show'); ?>" method="GET">
 							<div class="form-group">
-								<label for="depth">Depth</label>
+								<label for="depth">Kedalaman</label>
 								<select class="form-control" id="depth" name="depth" required>
 									<?php if ($max_depth == 0) {
-										echo '<option value="" selected disabled>You don\'t have downline</option>';
+										echo '<option value="" selected disabled>Anda tidak memiliki Downline</option>';
 									} else {
 										for ($x = 1; $x <= $max_depth; $x++) {
 									?>
-											<option value="<?= $x; ?>">Generation <?= $x; ?></option>
+											<option value="<?= $x; ?>">Generasi <?= $x; ?></option>
 									<?php
 										}
 									}
 									?>
 								</select>
 							</div>
-							<button type="submit" class="btn btn-primary btn-block">Show</button>
+							<button type="submit" class="btn btn-primary btn-block">Tampilkan</button>
 						</form>
 					</div>
 				</div>

@@ -72,16 +72,19 @@ class LogCryptoAssetController extends CI_Controller
 			'invoice'   => $invoice,
 			'id_member' => $this->id_member
 		];
-		$arr_profit          = $this->M_core->get('log_profit_crypto_asset', '*', $where, 'created_at', 'desc');
+		$arr_profit = $this->M_core->get('log_profit_crypto_asset', '*', $where, 'created_at', 'desc');
 		foreach ($arr_profit->result() as $key) {
 			$dt = new DateTime($key->created_at);
 			$data_profit_history[$dt->format('Y-m-d')] = [];
 		}
 		foreach ($arr_profit->result() as $key) {
+			$amount      = check_float($key->amount);
+			$persentase  = check_float($key->persentase);
+			$profit      = check_float($key->profit);
 			$state       = $key->state;
 			$description = $key->description;
 			$created_at  = new DateTime($key->created_at);
-			$nested      = compact('state', 'description', 'created_at');
+			$nested      = compact('amount', 'persentase', 'profit', 'state', 'description', 'created_at');
 			array_push($data_profit_history[$created_at->format('Y-m-d')], $nested);
 		}
 

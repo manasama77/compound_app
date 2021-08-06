@@ -65,42 +65,48 @@ class DashboardController extends CI_Controller
 		$data_package = [];
 		if ($arr_package->num_rows() > 0) {
 			foreach ($arr_package->result() as $key) {
-				$item_name           = $key->item_name;
-				$amount_usd          = check_float($key->amount_usd);
-				$profit_self_per_day = check_float($key->profit_self_per_day);
-				$expired_at          = $key->expired_at;
-				$state               = $key->state;
+				$package_name     = $key->package_name;
+				$amount_1         = check_float($key->amount_1);
+				$share_self_value = check_float($key->share_self_value);
+				$expired_package  = $key->expired_package;
+				$state            = $key->state;
 
 				$now_obj     = new DateTime('now');
-				$expired_obj = new DateTime($expired_at);
+				$expired_obj = new DateTime($expired_package);
 				$diff        = $now_obj->diff($expired_obj);
 
 				if ($diff->format('%r') == "-") {
-					$duration = $diff->format('+%a day expired');
+					$duration = $diff->format('+%a hari tidak aktif');
 				} else {
-					$duration = $diff->format('%r%a day remain');
+					$duration = $diff->format('%r%a hari lagi');
 				}
 
 				if ($state == "waiting payment") {
 					$badge_color = 'info';
+					$text        = "Menunggu Pembayaran";
 				} elseif ($state == "pending") {
 					$badge_color = 'secondary';
+					$text        = "Pembayaran Sedang Diproses";
 				} elseif ($state == "active") {
 					$badge_color = 'success';
+					$text        = "Aktif";
 				} elseif ($state == "inactive") {
 					$badge_color = 'dark';
+					$text        = "Tidak Aktif";
 				} elseif ($state == "cancel") {
 					$badge_color = 'warning';
+					$text        = "Transaksi Dibatalkan";
 				} elseif ($state == "expired") {
 					$badge_color = 'danger';
+					$text        = "Pembayaran Melewati Batas Waktu";
 				}
 
-				$status_badge = '<span class="badge badge-' . $badge_color . '">' . STRTOUPPER($state) . '</span>';
+				$status_badge = '<span class="badge badge-' . $badge_color . '">' . ucwords($text) . '</span>';
 
 				$nested = [
-					'package'        => $item_name,
-					'amount'         => $amount_usd,
-					'profit_per_day' => $profit_self_per_day,
+					'package'        => $package_name,
+					'amount'         => $amount_1,
+					'profit_per_day' => $share_self_value,
 					'duration'       => $duration,
 					'status'         => $status_badge,
 				];

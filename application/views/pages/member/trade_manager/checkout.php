@@ -26,10 +26,10 @@
 						<div class="card-tools">
 							<div class="btn-group">
 								<a href="<?= site_url('trade_manager/add'); ?>" class="btn btn-secondary btn-sm">
-									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke List Paket Trade Manager
+									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke List Join Paket
 								</a>
-								<a href="<?= site_url('trade_manager'); ?>" class="btn btn-dark btn-sm">
-									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke Trade Manager Kamu
+								<a href="<?= site_url('trade_manager/index'); ?>" class="btn btn-dark btn-sm">
+									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke Paket Kamu
 								</a>
 							</div>
 						</div>
@@ -123,8 +123,8 @@
 							<div class="row mt-5">
 								<div class="col-sm-12 col-md-3">
 									<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
-										<a class="nav-link active" id="v-pills-q1-tab" data-toggle="pill" href="#v-pills-q1" role="tab">What to do Next?</a>
-										<a class="nav-link" id="v-pills-q2-tab" data-toggle="pill" href="#v-pills-q2" role="tab">What if I accidentally don't send enough?</a>
+										<a class="nav-link active" id="v-pills-q1-tab" data-toggle="pill" href="#v-pills-q1" role="tab">Apa yang harus dilakukan selanjutnya?</a>
+										<a class="nav-link" id="v-pills-q2-tab" data-toggle="pill" href="#v-pills-q2" role="tab">Bagaimana jika nominal yang saya transfer kurang?</a>
 									</div>
 								</div>
 								<div class="col-sm-12 col-md-9">
@@ -132,19 +132,19 @@
 										<div class="tab-pane fade show active" id="v-pills-q1" role="tabpanel">
 											<ol>
 												<li>
-													Please send <mark><?= $arr->row()->amount_2; ?> <?= $arr->row()->currency2; ?></mark> to address <mark><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></mark>. <span class="text-danger">(Make sure to send enough to cover any coin transaction fees!)</span> You will need to initiate the payment using your software or online wallet and copy/paste the address and payment amount into it. We will email you when all funds have been received. If you send funds that don't confirm by the timeout or don't send enough coins you will receive an automatic email to claim your funds within 8 hours. If you don't receive the email contact us with the information below and CoinPayments.net will send you a refund:
+													Silahkan lakukan pembayaran Coin <mark><?= $arr->row()->amount_2; ?> <?= $arr->row()->currency2; ?></mark> Ke Wallet Address <mark><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></mark>. <span class="text-danger">(Pastikan Nominal Pembayaran telah menutup biaya transfer / transaksi Coin!)</span> Kamu dapat melakukan pembayaran melalui Wallet Pribadi Kamu atau dari Wallet Exchanger. Selanjutnya Copy & Paste Wallet Address Tujuan dan Total Transfer di Wallet atau Exchanger. Kita akan mengirimkan Email kepada kamu ketika semua dana telah diterima dan diverifikasi. Jika kamu mengirimkan dana yang tidak terkonfirmasi sampai batas waktu atau tidak mengirimkan cukup coin, kamu akan otomatis menerima Email untuk mengklaim dana kamu dalam 8 Jam. Jika kamu tidak menerima email, silahkan hubungi team <a href="https://www.coinpayments.net/supwiz" target="_blank">CoinPayments.Net</a> dengan menginformasikan data seperti dibawah ini:
 													<ul class="mb-3">
-														<li>The transaction ID: <mark><code class="text-dark"><?= $arr->row()->txn_id; ?></code></mark></li>
-														<li>A payment address to send the funds to <?= $arr->row()->receiver_wallet_address; ?></li>
+														<li>ID Transaksi: <mark><code class="text-dark"><?= $arr->row()->txn_id; ?></code></mark></li>
+														<li>Wallet Address untuk mengirimkan Dana: <?= $arr->row()->receiver_wallet_address; ?></li>
 													</ul>
 												</li>
 												<li>
-													After sending payment, review the status of your transaction <a href="<?= $arr->row()->status_url; ?>" target="_blank">on this page</a>. Once the payment is confirmed several times in the block chain, the payment will be completed and the merchant will be notified. The confirmation process usually takes 10-45 minutes but varies based on the coin's target block time and number of block confirms required. The status page is available for the next 30 days.
+													Setelah mentransfer pembayaran, review status pembayaran kamu <a href="<?= $arr->row()->status_url; ?>" target="_blank">dihalaman ini</a>. Setelah pembayaran dikonfirmasi di Blockchain, pembayaran telah selesai kita akan memberitahu Sistem CryptoPerty untuk mengaktifkan paket kamu. Proses konfirmasi biasanya memakan waktu 10~45 Menit tetapi bervariasi tergantung jenis coin yang digunakan atau jenis Block dan Jumlah Validator yang akan memvalidasi. Halaman Status Pembayaran di CoinPayments hanya tersedia untuk 30 Hari kedepan saja.
 												</li>
 											</ol>
 										</div>
 										<div class="tab-pane fade" id="v-pills-q2" role="tabpanel">
-											If you don't send enough, that is OK. Just send the remainder and we will combine them for you. You can also send from multiple wallets/accounts.
+											Jika Nominal yang dikirimkan kurang, tenang. Kamu cukup kirimkan sisanya dan sistem otomatis akan menggabungkannya untuk kamu. Kamu juga dapat mengirimkan dari beberapa Wallet atau Akun di Exchanger selama belum melewati batas waktu transfer.
 										</div>
 									</div>
 								</div>

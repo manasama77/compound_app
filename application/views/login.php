@@ -52,11 +52,6 @@
 							<?= $this->session->flashdata('password_state_message'); ?>
 						</div>
 					</div>
-					<div class="row mb-3">
-						<div class="col-12">
-							<div class="h-captcha text-center" data-sitekey="<?= H_SITE_KEY; ?>"></div>
-						</div>
-					</div>
 					<div class="row">
 						<div class="col-8">
 							<div class="icheck-primary">
@@ -69,7 +64,7 @@
 						<!-- /.col -->
 						<div class="col-4">
 							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
-							<button type="submit" class="btn btn-primary btn-block g-recaptcha">Masuk</button>
+							<button type="submit" class="btn btn-primary btn-block">Masuk</button>
 						</div>
 						<!-- /.col -->
 					</div>
@@ -92,8 +87,6 @@
 	<!-- AdminLTE App -->
 	<script src="<?= base_url(); ?>public/plugin/adminlte/dist/js/adminlte.min.js"></script>
 
-	<script src="https://www.google.com/recaptcha/api.js?render=<?= RECAPTCHAV3_KEY; ?>"></script>
-
 
 	<script src="<?= base_url(); ?>public/js/sweetalert2.min.js"></script>
 
@@ -110,17 +103,6 @@
 				}
 			});
 		});
-
-		function onClick(e) {
-			e.preventDefault();
-			grecaptcha.ready(function() {
-				grecaptcha.execute('reCAPTCHA_site_key', {
-					action: 'submit'
-				}).then(function(token) {
-					// Add your logic to submit to your backend server here.
-				});
-			});
-		}
 	</script>
 </body>
 

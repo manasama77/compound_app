@@ -2,68 +2,65 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0"><?= $arr->row()->name; ?></h1>
-			</div><!-- /.col -->
+				<h1 class="m-0"><?= $arr[0]['name']; ?></h1>
+			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Trade Manager</a></li>
-					<li class="breadcrumb-item active">Tambah Trade Manager</li>
+					<li class="breadcrumb-item"><a href="<?= site_url('crypto_asset/add'); ?>">List Paket Crypto Asset</a></li>
+					<li class="breadcrumb-item active">Pilih Paket Crypto Asset</li>
 				</ol>
-			</div><!-- /.col -->
-		</div><!-- /.row -->
-	</div><!-- /.container-fluid -->
+			</div>
+		</div>
+	</div>
 </div>
 
 <section class="content">
 	<div class="container-fluid">
 
-		<!-- Main row -->
 		<div class="row">
 
 			<div class="col-md-12">
 
 				<form id="form_submit" class="form-horizontal" action="<?= site_url('crypto_asset/checkout/coinpayment'); ?>" method="post">
 
-					<!-- PRODUCT LIST -->
 					<div class="card">
 						<div class="card-header">
-							<h3 class="card-title">Paket Detail</h3>
+							<h3 class="card-title">Informasi Detail Paket</h3>
 
 							<div class="card-tools">
-								<a href="<?= site_url('crypto_asset/add'); ?>" class="btn btn-dark btn-sm">
-									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke Paket
+								<a href="<?= site_url('crypto_asset/add'); ?>" class="btn btn-dark btn-sm elevation-2">
+									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke Join Paket
 								</a>
 							</div>
 						</div>
-						<!-- /.card-header -->
 						<div class="card-body p-0">
 							<div class="row">
 								<div class="col-md-5">
 									<p class="card-text">
 									<ul>
 										<li>
-											Total Investasi: <span id="total_investment"><?= check_float($arr->row()->amount); ?></span> USDT
+											Nilai Investasi: <span id="total_investment"><?= $arr[0]['amount']; ?></span> <small>USDT</small>
 										</li>
 										<li>
-											Profit per Bulan: <?= check_float($arr->row()->profit_per_month_percent); ?>%
+											Profit Per Bulan: <?= $arr[0]['profit_per_month_percent']; ?>% (<?= $arr[0]['profit_per_month_value']; ?> <small>USDT</small>)
 										</li>
 										<li>
-											Profit per Hari: <span id="profit_per_day_x"><?= check_float($arr->row()->profit_per_day_value); ?></span> USDT
+											Profit Per Hari: <span id="profit_per_day_x"><?= $arr[0]['profit_per_day_percentage']; ?>% (<?= $arr[0]['profit_per_day_value']; ?> <small>USDT</small>)
 										</li>
 										<li>
-											Durasi Kontrak: <?= $arr->row()->contract_duration; ?> Hari
+											Masa Aktif: <?= $arr[0]['contract_duration']; ?> <small>Hari</small>
 										</li>
 										<li>
-											Profit Share Rules:
+											Rasio Profit Sharing:
 											<ul>
 												<li>
-													Self: <?= check_float($arr->row()->share_self_percentage); ?>% (<span id="self_share"><?= check_float($arr->row()->share_self_value); ?></span> USDT)
+													Member: <?= $arr[0]['share_self_percentage']; ?>% (<span id="self_share"><?= $arr[0]['share_self_value']; ?></span> <small>USDT</small>)
 												</li>
 												<li>
-													Upline: <?= check_float($arr->row()->share_upline_percentage); ?>% (<span id="upline_share"><?= check_float($arr->row()->share_upline_value); ?></span> USDT)
+													Upline: <?= check_float($arr[0]['share_upline_percentage']); ?>% (<span id="upline_share"><?= $arr[0]['share_upline_value']; ?></span> <small>USDT</small>)
 												</li>
 												<li>
-													Company: <?= check_float($arr->row()->share_company_percentage); ?>% (<span id="company_share"><?= check_float($arr->row()->share_company_value); ?></span> USDT) </li>
+													Perusahaan: <?= $arr[0]['share_company_percentage']; ?>% (<span id="company_share"><?= $arr[0]['share_company_value']; ?></span> <small>USDT</small>) </li>
 											</ul>
 										</li>
 									</ul>
@@ -71,44 +68,60 @@
 								</div>
 								<div class="col-md-7 p-4">
 									<div class="form-group row">
-										<label for="id_wallet_admin" class="col-form-label col-md-4">Total Investment<sup class="text-danger">*</sup></label>
+										<label for="id_wallet_admin" class="col-form-label col-md-4">Nilai Investasi<sup class="text-danger">*</sup></label>
 										<div class="col-md-7">
 											<div class="input-group">
-												<input type="text" class="form-control" id="total_transfer" name="total_transfer" value="<?= $arr->row()->amount; ?>" required readonly>
+												<?php
+												$readonly = "";
+												$min      = MIN_CROWN;
+												$type     = "number";
+
+												if (str_replace(UYAH, "", base64_decode($id_package_crypto_asset)) != "6") {
+													$readonly = "readonly";
+													$min      = "1";
+													$type     = "text";
+												}
+												?>
+												<input type="<?= $type; ?>" class="form-control" id="total_transfer" name="total_transfer" value="<?= str_replace(',', '', $arr[0]['amount']); ?>" required <?= $readonly; ?> min="<?= $min; ?>">
 												<div class="input-group-append">
-													<span class="input-group-text">USDT</span>
+													<span class="input-group-text bg-primary">USDT</span>
 												</div>
 											</div>
+											<?php if (str_replace(UYAH, "", base64_decode($id_package_crypto_asset)) == "6") { ?>
+												<small class="form-text text-muted">Minimum Total Investment <?= MIN_CROWN; ?> USDT</small>
+											<?php } ?>
 										</div>
 									</div>
 									<div class="form-group row">
-										<label for="coin_type" class="col-form-label col-md-4">Coin Type</label>
-										<div class="col-md-7">
+										<label for="coin_type" class="col-form-label col-md-4">Koin Pembayaran</label>
+										<div class="col-sm-12 col-md-7">
 											<select class="form-control" id="coin_type" name="coin_type" required>
 												<option value="USDT.ERC20">Tether USD - ERC20 (USDT.ERC20)</option>
-												<!-- <option value="USDT.BEP20">Tether USD - BSC Chain (USDT.BEP20)</option> -->
 												<option value="LTCT">Lite Coin Test (LTCT)</option>
 											</select>
 										</div>
+										<div class="col-12">
+											<div class="alert alert-info mt-3">
+												<strong>Pastikan pada saat melakukan transfer.<br />Jenis coin & Network (jaringan) coin yang digunakan sama</strong><br />Jika terjadi kesalahan pada saat pengiriman dikarenakan kesalahan jenis coin atau jaringan coin, <?= APP_NAME; ?> tidak bertanggung jawab atas kehilangan coin tersebut.
+											</div>
+										</div>
+
 									</div>
 								</div>
 							</div>
 						</div>
-						<!-- /.card-body -->
 						<div class="card-footer text-center">
-							<input type="hidden" class="form-control" id="id_package" name="id_package" value="<?= $id_package; ?>">
+							<input type="hidden" class="form-control" id="id_package_crypto_asset" name="id_package_crypto_asset" value="<?= $id_package_crypto_asset; ?>">
+							<input type="hidden" class="form-control" id="id_konfigurasi_crypto_asset" name="id_konfigurasi_crypto_asset" value="<?= $id_konfigurasi_crypto_asset; ?>">
 							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
-							<button id="submit" type="submit" class="btn btn-primary btn-block btn-flat">Checkout</button>
+							<button id="submit" type="submit" class="btn btn-primary btn-block btn-flat elevation-2">
+								<i class="fas fa-check"></i> CHECKOUT
+							</button>
 						</div>
-						<!-- /.card-footer -->
 					</div>
-					<!-- /.card -->
 				</form>
 
 			</div>
-			<!-- /.col -->
 		</div>
-		<!-- /.row -->
 	</div>
-	<!--/. container-fluid -->
 </section>

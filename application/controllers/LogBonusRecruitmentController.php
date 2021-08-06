@@ -28,7 +28,7 @@ class LogBonusRecruitmentController extends CI_Controller
 	{
 		$arr = $this->M_log_bonus_recruitment->get_log($this->id_member);
 		$data = [
-			'title'      => APP_NAME . ' | Log Bonus Recruitment',
+			'title'      => APP_NAME . ' | Catatan Bonus Sponsor',
 			'content'    => 'log/bonus_recruitment/main',
 			'vitamin_js' => 'log/bonus_recruitment/main_js',
 			'arr'        => $arr,

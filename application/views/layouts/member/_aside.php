@@ -11,13 +11,13 @@
 				<img src="<?= $this->session->userdata(SESI . 'profile_picture'); ?>" class="img-circle elevation-2" alt="Member Image">
 			</div>
 			<div class="info">
-				<span class="d-block text-white"><small><?= $this->session->userdata(SESI . 'fullname'); ?></small></span>
+				<span class="d-block text-white"><?= $this->session->userdata(SESI . 'fullname'); ?></span>
 				<div class="btn-group">
 					<a href="<?= site_url('profile'); ?>" class="btn btn-info btn-sm btn-flat text-white">
-						<i class="fas fa-user"></i> Profile
+						<i class="fas fa-user"></i> Profil
 					</a>
 					<a href="<?= site_url('logout'); ?>" class="btn btn-danger btn-sm btn-flat text-white">
-						<i class="fas fa-sign-out-alt"></i> Sign Out
+						<i class="fas fa-sign-out-alt"></i> Keluar
 					</a>
 				</div>
 			</div>
@@ -27,15 +27,15 @@
 		<nav class="mt-2">
 			<ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-compact nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
 				<li class="nav-item">
-					<a href="<?= site_url('dashboard'); ?>" class="nav-link">
+					<a href="<?= site_url('dashboard'); ?>" class="nav-link <?= ($this->uri->segment(1) == "dashboard") ? "active" : ""; ?>">
 						<i class="nav-icon fas fa-tachometer-alt"></i>
 						<p>
 							Dashboard
 						</p>
 					</a>
 				</li>
-				<li class="nav-item">
-					<a href="#" class="nav-link">
+				<li class="nav-item <?= ($this->uri->segment(1) == "trade_manager") ? "menu-is-opening menu-open" : ""; ?>">
+					<a href="#" class="nav-link <?= ($this->uri->segment(1) == "trade_manager") ? "active" : ""; ?>">
 						<i class="nav-icon fas fa-coins"></i>
 						<p>
 							Trade Manager
@@ -45,21 +45,21 @@
 					</a>
 					<ul class="nav nav-treeview">
 						<li class="nav-item">
-							<a href="<?= site_url('trade_manager'); ?>" class="nav-link">
+							<a href="<?= site_url('trade_manager/index'); ?>" class="nav-link <?= ($this->uri->segment(1) == "trade_manager" && $this->uri->segment(2) == "index") ? "active" : ""; ?>">
 								<i class="fas fa-robot nav-icon"></i>
-								<p>Trade Manager Kamu</p>
+								<p>Paket Kamu</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('trade_manager/add'); ?>" class="nav-link">
+							<a href="<?= site_url('trade_manager/add'); ?>" class="nav-link <?= ($this->uri->segment(1) == "trade_manager" && in_array($this->uri->segment(2), ['add', 'pick'])) ? "active" : ""; ?>">
 								<i class="fas fa-plus nav-icon"></i>
-								<p>List Paket Trade Manager</p>
+								<p>Join Paket</p>
 							</a>
 						</li>
 					</ul>
 				</li>
-				<li class="nav-item">
-					<a href="#" class="nav-link">
+				<li class="nav-item <?= ($this->uri->segment(1) == "crypto_asset") ? "menu-is-opening menu-open" : ""; ?>">
+					<a href="#" class="nav-link <?= ($this->uri->segment(1) == "crypto_asset") ? "active" : ""; ?>">
 						<i class="nav-icon fas fa-house-user"></i>
 						<p>
 							Crypto Asset
@@ -69,116 +69,116 @@
 					</a>
 					<ul class="nav nav-treeview">
 						<li class="nav-item">
-							<a href="<?= site_url('crypto_asset'); ?>" class="nav-link">
+							<a href="<?= site_url('crypto_asset/index'); ?>" class="nav-link <?= ($this->uri->segment(1) == "crypto_asset" && $this->uri->segment(2) == "index") ? "active" : ""; ?>">
 								<i class="fas fa-list nav-icon"></i>
-								<p>List Crypto Asset</p>
+								<p>Paket Kamu</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('crypto_asset/add'); ?>" class="nav-link">
+							<a href="<?= site_url('crypto_asset/add'); ?>" class="nav-link <?= ($this->uri->segment(1) == "crypto_asset" && in_array($this->uri->segment(2), ['add', 'pick'])) ? "active" : ""; ?>">
 								<i class="fas fa-plus nav-icon"></i>
-								<p>Add Crypto Asset</p>
+								<p>Join Paket</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('crypto_asset/claim'); ?>" class="nav-link">
+							<a href="#" onclick="comingSoon();" class="nav-link class=" nav-link <?= ($this->uri->segment(1) == "crypto_asset" && in_array($this->uri->segment(2), ['claim'])) ? "active" : ""; ?>">
 								<i class="fas fa-gift nav-icon"></i>
-								<p>Claim Reward</p>
+								<p>Terima Hadiah Asset</p>
 							</a>
 						</li>
 					</ul>
 				</li>
 				<li class="nav-item">
-					<a href="<?= site_url('downline'); ?>" class="nav-link">
+					<a href="<?= site_url('downline'); ?>" class="nav-link <?= ($this->uri->segment(1) == "downline") ? "active" : ""; ?>">
 						<i class="nav-icon fas fa-users"></i>
 						<p>
-							Downline Management
+							Downline
 						</p>
 					</a>
 				</li>
 				<li class="nav-item">
-					<a href="<?= site_url('wallet'); ?>" class="nav-link">
+					<a href="<?= site_url('wallet'); ?>" class="nav-link <?= ($this->uri->segment(1) == "wallet") ? "active" : ""; ?>">
 						<i class="nav-icon fas fa-wallet"></i>
 						<p>
-							Wallet Management
+							Wallet
 						</p>
 					</a>
 				</li>
 				<li class="nav-item">
-					<a href="<?= site_url('withdraw'); ?>" class="nav-link">
-						<i class="nav-icon fas fa-wallet"></i>
+					<a href="<?= site_url('withdraw'); ?>" class="nav-link <?= ($this->uri->segment(1) == "withdraw") ? "active" : ""; ?>">
+						<i class="nav-icon fas fa-hand-holding-usd"></i>
 						<p>
-							Withdraw
+							Penarikan
 						</p>
 					</a>
 				</li>
 				<li class="nav-item">
-					<a href="<?= site_url('rewards'); ?>" class="nav-link">
+					<a href="<?= site_url('rewards'); ?>" class="nav-link <?= ($this->uri->segment(1) == "rewards") ? "active" : ""; ?>">
 						<i class="fas fa-tasks nav-icon"></i>
 						<p>
-							Rewards
+							Hadiah
 						</p>
 					</a>
 				</li>
-				<li class="nav-item">
-					<a href="#" class="nav-link">
+				<li class="nav-item <?= ($this->uri->segment(1) == "log") ? "menu-is-opening menu-open" : ""; ?>">
+					<a href="#" class="nav-link <?= ($this->uri->segment(1) == "log") ? "active" : ""; ?>">
 						<i class="nav-icon fas fa-scroll"></i>
 						<p>
-							Logs
+							Catatan
 							<i class="fas fa-angle-left right"></i>
 						</p>
 					</a>
 					<ul class="nav nav-treeview">
 						<li class="nav-item">
-							<a href="<?= site_url('log/trade_manager'); ?>" class="nav-link">
+							<a href="<?= site_url('log/trade_manager'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "trade_manager") ? "active" : ""; ?>">
 								<i class="fas fa-file nav-icon"></i>
 								<p>Trade Manager</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('log/profit_trade_manager'); ?>" class="nav-link">
+							<a href="<?= site_url('log/profit_trade_manager'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "profit_trade_manager") ? "active" : ""; ?>">
 								<i class="fas fa-file nav-icon"></i>
 								<p>Profit Trade Manager</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('log/crypto_asset'); ?>" class="nav-link">
+							<a href="<?= site_url('log/crypto_asset'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "crypto_asset") ? "active" : ""; ?>">
 								<i class="fas fa-file nav-icon"></i>
 								<p>Crypto Asset</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('log/profit_crypto_asset'); ?>" class="nav-link">
+							<a href="<?= site_url('log/profit_crypto_asset'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "profit_crypto_asset") ? "active" : ""; ?>">
 								<i class="fas fa-file nav-icon"></i>
 								<p>Profit Crypto Asset</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('log/recruitment'); ?>" class="nav-link">
+							<a href="<?= site_url('log/recruitment'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "recruitment") ? "active" : ""; ?>">
 								<i class="fas fa-sun nav-icon"></i>
-								<p>Recruitment</p>
+								<p>Rekrutmen</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('log/withdraw'); ?>" class="nav-link">
+							<a href="<?= site_url('log/withdraw'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "withdraw") ? "active" : ""; ?>">
 								<i class="fas fa-wallet nav-icon"></i>
-								<p>Withdraw</p>
+								<p>Penarikan</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('log/bonus_recruitment'); ?>" class="nav-link">
+							<a href="<?= site_url('log/bonus_recruitment'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "bonus_recruitment") ? "active" : ""; ?>">
 								<i class="fas fa-wallet nav-icon"></i>
-								<p>Bonus Recruitment</p>
+								<p>Bonus Sponsor</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('log/bonus_ql'); ?>" class="nav-link">
+							<a href="<?= site_url('log/bonus_ql'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "bonus_ql") ? "active" : ""; ?>">
 								<i class="fas fa-wallet nav-icon"></i>
-								<p>Bonus Qualification Leader</p>
+								<p>Bonus Kualifikasi Leader</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('log/bonus_royalty'); ?>" class="nav-link">
+							<a href="<?= site_url('log/bonus_royalty'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "bonus_royalty") ? "active" : ""; ?>">
 								<i class="fas fa-wallet nav-icon"></i>
 								<p>Bonus Royalty</p>
 							</a>

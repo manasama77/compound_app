@@ -28,7 +28,7 @@ class LogBonusRoyaltyController extends CI_Controller
 	{
 		$arr = $this->M_log_bonus_royalty->get_log($this->id_member);
 		$data = [
-			'title'      => APP_NAME . ' | Log Bonus Royalty',
+			'title'      => APP_NAME . ' | Catan Bonus Royalti',
 			'content'    => 'log/bonus_royalty/main',
 			'vitamin_js' => 'log/bonus_royalty/main_js',
 			'arr'        => $arr,

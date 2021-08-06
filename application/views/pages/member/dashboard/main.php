@@ -6,7 +6,7 @@
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Home</a></li>
+					<li class="breadcrumb-item"><a href="#">Beranda</a></li>
 					<li class="breadcrumb-item active">Dashboard</li>
 				</ol>
 			</div>
@@ -24,7 +24,7 @@
 					</span>
 
 					<div class="info-box-content">
-						<span class="info-box-text">Total omzet</span>
+						<span class="info-box-text">Total Omzet</span>
 						<span class="info-box-number">
 							<?= $data_card['data_balance']['downline_omset']; ?>
 							<small>USDT</small>
@@ -39,7 +39,7 @@
 					</span>
 
 					<div class="info-box-content">
-						<span class="info-box-text">Members</span>
+						<span class="info-box-text">Downline</span>
 						<span class="info-box-number"><?= $data_card['count_all_downline']; ?></span>
 					</div>
 				</div>
@@ -54,7 +54,7 @@
 					</span>
 
 					<div class="info-box-content">
-						<span class="info-box-text">Trade Managers</span>
+						<span class="info-box-text">Trade Manager</span>
 						<span class="info-box-number">
 							<?= $data_card['data_balance']['total_invest_trade_manager']; ?>
 							<small>USDT</small>
@@ -69,7 +69,7 @@
 					</span>
 
 					<div class="info-box-content">
-						<span class="info-box-text">Crypto Assets</span>
+						<span class="info-box-text">Crypto Asset</span>
 						<span class="info-box-number">
 							<?= $data_card['data_balance']['total_invest_crypto_asset']; ?>
 							<small>USDT</small>
@@ -117,7 +117,7 @@
 				<div class="col-12">
 					<div class="card">
 						<div class="card-header">
-							<h3 class="card-title">Recruitment Link</h3>
+							<h3 class="card-title">Referral Link</h3>
 
 							<div class="card-tools">
 								<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -220,7 +220,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- You Don't Have Any Friend On Your Circle -</td>
+											<td colspan="8" class="text-center text-danger">- Kamu belum memiliki Downline -</td>
 										</tr>
 
 									<?php endif; ?>
@@ -231,7 +231,7 @@
 					</div>
 					<div class="card-footer text-center">
 						<?php if ($data_card['count_all_downline'] > 10) : ?>
-							<a href="<?= site_url('member'); ?>" class="uppercase">View More...</a>
+							<a href="<?= site_url('member'); ?>" class="uppercase">Selanjutnya...</a>
 						<?php endif; ?>
 					</div>
 				</div>
@@ -256,7 +256,7 @@
 					<table id="table_downline" class="table table-sm">
 						<thead>
 							<tr>
-								<th class="align-middle">paket</th>
+								<th class="align-middle">Paket</th>
 								<th class="align-middle">Nilai</th>
 								<th class="align-middle">Profit /Hari</th>
 								<th class="align-middle">Durasi</th>
@@ -286,14 +286,14 @@
 						</thead>
 						<tbody id="v_downline">
 							<tr>
-								<td colspan="7" class="text-center align-middle">-No Downline Data-</td>
+								<td colspan="7" class="text-center align-middle">-Tidak ada data Downline-</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
 			</div>
 		</div>
 	</div>

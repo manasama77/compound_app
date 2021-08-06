@@ -2,12 +2,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">Log Bonus Qualification Leader</h1>
+				<h1 class="m-0">Catatan Bonus Kualifikasi Leader</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
 					<li class="breadcrumb-item"><a href="#">Log</a></li>
-					<li class="breadcrumb-item active">Bonus Qualification Leader</li>
+					<li class="breadcrumb-item active">Catatan Bonus Kualifikasi Leader</li>
 				</ol>
 			</div>
 		</div>
@@ -20,7 +20,7 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Log Bonus Qualification Leader</h3>
+						<h3 class="card-title">Catatan Bonus Kualifikasi Leader</h3>
 
 						<div class="card-tools">
 							<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -36,9 +36,9 @@
 										<th class="align-top" style="min-width: 120px;">Tanggal Waktu</th>
 										<th class="align-top" style="min-width: 120px;">Member</th>
 										<th class="align-top">Paket</th>
-										<th class="align-top" style="min-width: 120px;">Type</th>
+										<th class="align-top" style="min-width: 120px;">Tipe</th>
 										<th class="align-top text-right" style="min-width: 100px;">Nilai</th>
-										<th class="align-top" style="min-width: 350px;">Deksripsi</th>
+										<th class="align-top" style="min-width: 350px;">Deskripsi</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -71,7 +71,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- Kamu Belum Memiliki Bonus Kualifikasi Leader -</td>
+											<td colspan="8" class="text-center text-danger">- Kamu Belum Memiliki Catatan Bonus Kualifikasi Leader -</td>
 										</tr>
 
 									<?php endif; ?>

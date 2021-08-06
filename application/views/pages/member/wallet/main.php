@@ -20,6 +20,53 @@
 
 		<div class="row">
 
+			<div class="col-sm-12 col-md-4">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Tambah Wallet</h3>
+
+						<div class="card-tools">
+							<button type="button" class="btn btn-tool" data-card-widget="collapse">
+								<i class="fas fa-minus"></i>
+							</button>
+						</div>
+					</div>
+					<div class="card-body">
+						<form id="form_add">
+							<div class="form-group">
+								<label for="coin_type">Jenis Coin</label>
+								<select class="form-control" id="coin_type" name="coin_type" required>
+									<option value="BNB.BSC">Binance BNB.BEP20 - BSC</option>
+									<option value="TRX">TRON</option>
+									<option value="LTCT">Litecoin Testnet</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="wallet_label">Wallet Label</label>
+								<input type="text" class="form-control" id="wallet_label" name="wallet_label" required>
+							</div>
+							<div class="form-group">
+								<label for="wallet_address">Wallet Address</label>
+								<input type="text" class="form-control" id="wallet_address" name="wallet_address" required>
+							</div>
+
+							<div class="alert alert-warning p-1">
+								<strong>Catatan:</strong><br />
+								<ul class="p-3">
+									<li>Satu Jenis Coin hanya dapat didaftarkan satu Wallet Address</li>
+									<li>Binance BNB.BEP20 adalah Jenis Coin Binance yang berjalan di jaringan Binance Smart Chain (BSC). Jenis Coin ini berbeda dengan Binance BNB.BEP2 yang berjalan di jaringan Binance Chain (BC)</li>
+									<li>Pastikan Wallet Address yang Anda masukan Valid dan tidak salah dalam memasukan alamat</li>
+									<li>Pastikan juga Wallet Address dapat menerima jenis coin yang sama dan berada di jaringan yang sama. Jika tidak, pada saat proses Penarikan Coin yang dikirimkan akan terbakar dijaringan / kehilangan permanent</li>
+									<li><?= APP_NAME; ?> tidak bertanggung jawab atas semua kesalahan input Anda baik dari Wallet Address yang tidak Valid atau salah kepemilikan Wallet Address</li>
+								</ul>
+							</div>
+							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
+							<button type="submit" class="btn btn-primary btn-block">Simpan</button>
+						</form>
+					</div>
+				</div>
+			</div>
+
 			<div class="col-sm-12 col-md-8">
 				<div class="card">
 					<div class="card-header">
@@ -64,55 +111,6 @@
 								</tbody>
 							</table>
 						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-sm-12 col-md-4">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">Tambah Wallet</h3>
-
-						<div class="card-tools">
-							<button type="button" class="btn btn-tool" data-card-widget="collapse">
-								<i class="fas fa-minus"></i>
-							</button>
-						</div>
-					</div>
-					<div class="card-body">
-						<form id="form_add">
-							<div class="form-group">
-								<label for="coin_type">Coin Type</label>
-								<select class="form-control" id="coin_type" name="coin_type" required>
-									<option value="BNB.BSC">BNB.BEP20 - BSC</option>
-									<option value="TRX">TRON</option>
-									<option value="LTCT">Litecoin Testnet</option>
-								</select>
-							</div>
-							<div class="form-group">
-								<label for="wallet_label">Wallet Label</label>
-								<input type="text" class="form-control" id="wallet_label" name="wallet_label" required>
-							</div>
-							<div class="form-group">
-								<label for="wallet_address">Wallet Address</label>
-								<input type="text" class="form-control" id="wallet_address" name="wallet_address" required>
-							</div>
-
-							<div class="alert alert-warning p-1">
-								<small>
-									<strong>Notes:</strong><br />
-									<ul class="p-3">
-										<li>Satu jenis koin hanya satu alamat dompet</li>
-										<li>BNB.BEP20 are Binance that run on Binance Smart Chain Network. It different from BNB.BEP2 that run on Binance Chain Network</li>
-										<li>Pastikan alamat dompet yang Anda masukan valid</li>
-										<li>Also Make sure the wallet address are support for receive with the coin type. If not the withdrawal coin transaction will be burn / permanent lost</li>
-										<li><?= APP_NAME; ?> tidak bertanggung jawab atas semua kesalahan input Anda untuk alamat yang tidak valid atau alamat target yang salah</li>
-									</ul>
-								</small>
-							</div>
-							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
-							<button type="submit" class="btn btn-primary btn-block">Submit</button>
-						</form>
 					</div>
 				</div>
 			</div>

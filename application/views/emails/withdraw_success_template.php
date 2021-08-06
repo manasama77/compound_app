@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
 	<meta name="x-apple-disable-message-reformatting"> <!-- Disable auto-scale in iOS 10 Mail entirely -->
-	<title>Withdraw Berhasil</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+	<title>Penarikan Berhasil</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 
@@ -377,7 +377,7 @@
 							<tr>
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
-										<h3>Withdraw Berhasil</h3>
+										<h3>Penarikan Berhasil</h3>
 										<table border="1" cellpadding="10" style="width: 500px;">
 											<tr>
 												<th style="text-align: left; color: #000; width: 100px;">Invoice</th>
@@ -409,8 +409,7 @@
 							</tr>
 						</table>
 					</td>
-				</tr><!-- end tr -->
-				<!-- 1 Column Text + Button : END -->
+				</tr>
 			</table>
 
 		</div>

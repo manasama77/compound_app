@@ -172,4 +172,16 @@ if (isset($vitamin_js)) {
 			timerProgressBar: true,
 		});
 	}
+
+	function comingSoon() {
+		Swal.fire({
+			position: 'top-end',
+			icon: 'warning',
+			text: 'Coming Soon',
+			showConfirmButton: false,
+			toast: true,
+			timer: 3000,
+			timerProgressBar: true,
+		});
+	}
 </script>

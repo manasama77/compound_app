@@ -47,7 +47,7 @@
 				</form>
 
 				<p class="mb-1 mt-3">
-					<a href="<?= site_url('login'); ?>">I remember my password</a>
+					<a href="<?= site_url('login'); ?>">Saya sudah ingat Password saya</a>
 				</p>
 			</div>
 			<!-- /.card-body -->
@@ -107,13 +107,13 @@
 				Swal.fire({
 					icon: 'error',
 					title: 'Oops...',
-					text: 'Send Email Forgot Password Failed, Connection Issue. Please check email address or try again',
+					text: 'Proses Kirim Email Reset Password Gagal, dikarenakan masalah koneksi. Silahkan coba kembali',
 				});
 			} else if (e.code == 200) {
 				Swal.fire({
 					icon: 'success',
-					title: 'Send Email Forgot Password Success',
-					text: 'Please check your email to reset your password',
+					title: 'Proses Kirim Email Reset Password Berhasil',
+					text: 'Silahkan cek email kamu untuk melakukan proses Reset Password',
 				});
 			}
 		});

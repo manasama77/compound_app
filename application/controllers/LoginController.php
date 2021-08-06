@@ -106,15 +106,13 @@ class LoginController extends CI_Controller
 				SESI . 'email' => $email,
 			]);
 
-			if (ENVIRONMENT == "production") {
-				$check = $this->_send_otp($id, $email);
+			$check = $this->_send_otp($id, $email);
 
-				if ($check === true) {
-				}
+			if ($check === true) {
+				redirect('otp');
 			}
-			redirect('otp');
 
-			return show_error('Sistem gagal mengiri email, silahkan coba kembali', 500, 'Terjadi Kesalahan...');
+			return show_error('Sistem gagal mengirimkan email OTP, silahkan coba kembali', 500, 'Terjadi Kesalahan...');
 		}
 	}
 
@@ -374,10 +372,10 @@ class LoginController extends CI_Controller
 		$this->form_validation->set_rules('fullname', 'Fullname', 'required');
 		$this->form_validation->set_rules('phone_number', 'Phone Number', 'required');
 		$this->form_validation->set_rules('id_card_number', 'ID Card Number', 'required|is_unique[member.id_card_number]', [
-			'is_unique' => 'This %s already exists.'
+			'is_unique' => 'KTP %s Telah Terdaftar.'
 		]);
 		$this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[member.email]', [
-			'is_unique' => 'This %s already exists.'
+			'is_unique' => 'Email %s Telah Terdaftar.'
 		]);
 		$this->form_validation->set_rules('password', 'Password', 'required');
 		$this->form_validation->set_rules('verify_password', 'Verify Password', 'required|matches[password]');
@@ -428,7 +426,6 @@ class LoginController extends CI_Controller
 				'country_code'         => null,
 				'profile_picture'      => null,
 				'otp'                  => null,
-				'otp'                  => null,
 				'is_active'            => 'no',
 				'activation_code'      => null,
 				'forgot_password_code' => null,
@@ -445,7 +442,7 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
+				return show_error('Tidak Terhubung Dengan Database, Silahkan cek koneksi kamu!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$where     = ['email' => $email];
@@ -472,14 +469,14 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
+				return show_error('Tidak Terhubung Dengan Database, Silahkan cek koneksi kamu!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$add_tree_downline = $this->_add_tree_downline($id_member, $email, $id);
 
 			if ($this->Nested_set->checkIsValidNode($add_tree_downline) == FALSE) {
 				$this->db->trans_rollback();
-				echo json_encode(['code' => '500', 'msg' => 'Cannot Connect to Database, please check your connection!']);
+				echo json_encode(['code' => '500', 'msg' => 'Tidak Terhubung Dengan Database, Silahkan cek koneksi kamu!']);
 				exit;
 			}
 
@@ -505,14 +502,14 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
+				return show_error('Tidak Terhubung Dengan Database, Silahkan cek koneksi kamu!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$check = $this->_send_email_activation($id_member, $email);
 
 			if ($check == "no") {
 				$this->db->trans_rollback();
-				return show_error('Cannot Send Email, Please check your <mark>Email Address</mark>', 500, 'Terjadi Kesalahan...');
+				return show_error('Gagal Mengirimkan Aktivasi Email, Silahkan Pastikan Email <mark>Email Address</mark> Benar', 500, 'Terjadi Kesalahan...');
 			}
 
 			$this->db->trans_commit();

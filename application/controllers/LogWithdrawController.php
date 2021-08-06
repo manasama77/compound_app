@@ -20,7 +20,6 @@ class LogWithdrawController extends CI_Controller
 
 		$this->load->library('L_member', null, 'template');
 		$this->load->helper('floating_helper');
-
 		$this->load->model('M_withdraw');
 	}
 
@@ -30,7 +29,7 @@ class LogWithdrawController extends CI_Controller
 		$where = ['deleted_at' => null];
 		$arr = $this->M_core->get('member_withdraw', '*', $where, 'updated_at', 'desc');
 		$data = [
-			'title'      => APP_NAME . ' | Log Withdraw',
+			'title'      => APP_NAME . ' | Catatan Penarikan',
 			'content'    => 'log/withdraw/main',
 			'vitamin_js' => 'log/withdraw/main_js',
 			'arr'        => $arr,

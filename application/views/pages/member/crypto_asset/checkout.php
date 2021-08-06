@@ -2,12 +2,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">Trade Manager - Checkout</h1>
+				<h1 class="m-0">Crypto Asset - Checkout</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Trade Manager</a></li>
-					<li class="breadcrumb-item active">Add Trade Manager</li>
+					<li class="breadcrumb-item"><a href="<?= site_url('crypto_asset'); ?>">Crypto Asset</a></li>
+					<li class="breadcrumb-item active">Checkout Crypto Asset</li>
 				</ol>
 			</div>
 		</div>
@@ -24,15 +24,20 @@
 						<h3 class="card-title">Informasi Pembayaran</h3>
 
 						<div class="card-tools">
-							<a href="<?= site_url('crypto_asset/add'); ?>" class="btn btn-dark btn-sm">
-								<i class="fas fa-chevron-left fa-fw"></i> Kembali ke Paket
-							</a>
+							<div class="btn-group">
+								<a href="<?= site_url('crypto_asset/add'); ?>" class="btn btn-secondary btn-sm">
+									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke List Join Paket
+								</a>
+								<a href="<?= site_url('crypto_asset/index'); ?>" class="btn btn-dark btn-sm">
+									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke Paket Kamu
+								</a>
+							</div>
 						</div>
 					</div>
 					<div class="card-body">
 						<?php if ($state != "active") { ?>
 							<div class="alert alert-warning" role="alert">
-								Sistem akan otomatis memeriksa status pembayaran setiap 30 Detik...
+								Sistem otomatis melakukan check pembayaran setiap 30 detik...
 							</div>
 						<?php } ?>
 						<?php if ($state == "waiting payment") { ?>
@@ -42,53 +47,82 @@
 							<table class="table">
 								<tbody>
 									<tr>
-										<td>Status</td>
+										<td style="width: 200px;">Invoice</td>
+										<td>:</td>
+										<td class="text-left">
+											<span id="state_badge"><?= $arr->row()->invoice; ?></span>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 200px;">Paket Crypto Asset</td>
+										<td>:</td>
+										<td class="text-left">
+											<span id="state_badge"><?= $arr->row()->package_name; ?> <small>(<?= $arr->row()->package_code; ?>)</small></span>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 200px;">Status Pembayaran</td>
 										<td>:</td>
 										<td class="text-left">
 											<span id="state_badge"><?= $state_badge; ?></span>
 										</td>
 									</tr>
 									<tr>
-										<td>Nominal Transfer</td>
+										<td>Total Transfer</td>
 										<td>:</td>
-										<td class="text-left"><?= $arr->row()->amount_coin; ?> <?= $arr->row()->currency2; ?></td>
-									</tr>
-									<tr>
-										<td>Kirim Ke Alamat</td>
-										<td>:</td>
-										<td class="text-left"><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></td>
-									</tr>
-									<tr>
-										<td>Jumlah Yang di terima</td>
-										<td>:</td>
-										<td class="text-left">
-											<span id="receivedf"></span> <span id="coin"></span>
+										<td class="text-left font-weight-bold">
+											<div class="input-group">
+												<input type="text" class="form-control text-dark" id="amount_2" value="<?= $arr->row()->amount_2; ?>" readonly />
+												<div class="input-group-append">
+													<span class="input-group-text bg-dark" id="basic-addon2"><?= $arr->row()->currency2; ?></span>
+													<button type="button" class="btn btn-dark" id="copy" onclick="CopyUrl('amount_2');">
+														<i class="fas fa-clipboard fa-fw"></i> Copy
+													</button>
+												</div>
+											</div>
 										</td>
 									</tr>
 									<tr>
-										<td>Waktu Tersisa untuk Transfer</td>
+										<td>Wallet Address Tujuan</td>
+										<td>:</td>
+										<td class="text-left font-weight-bold">
+											<div class="input-group">
+												<input type="text" class="form-control text-dark" id="receiver_wallet_address" value="<?= $arr->row()->receiver_wallet_address; ?>" readonly />
+												<div class="input-group-append">
+													<button type="button" class="btn btn-dark" id="copy" onclick="CopyUrl('receiver_wallet_address');">
+														<i class="fas fa-clipboard fa-fw"></i> Copy
+													</button>
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>Total Diterima</td>
 										<td>:</td>
 										<td class="text-left">
+											<span id="receivedf"></span> <span id="coin"><?= $arr->row()->receive_amount; ?> <small><?= $arr->row()->currency2; ?></small></span>
+										</td>
+									</tr>
+									<tr>
+										<td>Batas Waktu Transfer</td>
+										<td>:</td>
+										<td class="text-left font-weight-bold">
 											<span id="time_left"></span>
 										</td>
 									</tr>
 									<tr>
-										<td>ID pembayaran</td>
+										<td>ID Pembayaran</td>
 										<td>:</td>
 										<td class="text-left"><code class="text-dark"><?= $arr->row()->txn_id; ?></code></td>
 									</tr>
 									<tr>
-										<td>Coinpayment Checkout Page</td>
-										<td>:</td>
-										<td class="text-left">
-											<a href="<?= $arr->row()->checkout_url; ?>" target="_blank"><?= $arr->row()->checkout_url; ?></a>
-										</td>
-									</tr>
-									<tr>
-										<td>Coinpayment Status Page</td>
-										<td>:</td>
-										<td class="text-left">
-											<a href="<?= $arr->row()->status_url; ?>" target="_blank"><?= $arr->row()->status_url; ?></a>
+										<td colspan="3" class="text-center">
+											<a href="<?= $arr->row()->checkout_url; ?>" target="_blank" class="btn btn-app bg-indigo elevation-1">
+												<i class="fas fa-link"></i> Coinpayment Checkout
+											</a>
+											<a href="<?= $arr->row()->status_url; ?>" target="_blank" class="btn btn-app bg-indigo elevation-1">
+												<i class="fas fa-link"></i> Coinpayment Status
+											</a>
 										</td>
 									</tr>
 								</tbody>
@@ -99,8 +133,8 @@
 							<div class="row mt-5">
 								<div class="col-sm-12 col-md-3">
 									<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
-										<a class="nav-link active" id="v-pills-q1-tab" data-toggle="pill" href="#v-pills-q1" role="tab">What to do Next?</a>
-										<a class="nav-link" id="v-pills-q2-tab" data-toggle="pill" href="#v-pills-q2" role="tab">What if I accidentally don't send enough?</a>
+										<a class="nav-link active" id="v-pills-q1-tab" data-toggle="pill" href="#v-pills-q1" role="tab">Apa yang harus dilakukan selanjutnya?</a>
+										<a class="nav-link" id="v-pills-q2-tab" data-toggle="pill" href="#v-pills-q2" role="tab">Bagaimana jika nominal yang saya transfer kurang?</a>
 									</div>
 								</div>
 								<div class="col-sm-12 col-md-9">
@@ -108,32 +142,27 @@
 										<div class="tab-pane fade show active" id="v-pills-q1" role="tabpanel">
 											<ol>
 												<li>
-													Tolong Kirim <mark><?= $arr->row()->amount_coin; ?> <?= $arr->row()->currency2; ?></mark> Ke Alamat <mark><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></mark>. <span class="text-danger">(Make sure to send enough to cover any coin transaction fees!)</span> You will need to initiate the payment using your software or online wallet and copy/paste the address and payment amount into it. We will email you when all funds have been received. If you send funds that don't confirm by the timeout or don't send enough coins you will receive an automatic email to claim your funds within 8 hours. If you don't receive the email contact us with the information below and CoinPayments.net will send you a refund:
+													Silahkan lakukan pembayaran Coin <mark><?= $arr->row()->amount_2; ?> <?= $arr->row()->currency2; ?></mark> Ke Wallet Address <mark><code class="text-dark"><?= $arr->row()->receiver_wallet_address; ?></code></mark>. <span class="text-danger">(Pastikan Nominal Pembayaran telah menutup biaya transfer / transaksi Coin!)</span> Kamu dapat melakukan pembayaran melalui Wallet Pribadi Kamu atau dari Wallet Exchanger. Selanjutnya Copy & Paste Wallet Address Tujuan dan Total Transfer di Wallet atau Exchanger. Kita akan mengirimkan Email kepada kamu ketika semua dana telah diterima dan diverifikasi. Jika kamu mengirimkan dana yang tidak terkonfirmasi sampai batas waktu atau tidak mengirimkan cukup coin, kamu akan otomatis menerima Email untuk mengklaim dana kamu dalam 8 Jam. Jika kamu tidak menerima email, silahkan hubungi team <a href="https://www.coinpayments.net/supwiz" target="_blank">CoinPayments.Net</a> dengan menginformasikan data seperti dibawah ini:
 													<ul class="mb-3">
-														<li>The transaction ID: <mark><code class="text-dark"><?= $arr->row()->txn_id; ?></code></mark></li>
-														<li>A payment address to send the funds to <?= $arr->row()->receiver_wallet_address; ?></li>
+														<li>ID Transaksi: <mark><code class="text-dark"><?= $arr->row()->txn_id; ?></code></mark></li>
+														<li>Wallet Address untuk mengirimkan Dana: <?= $arr->row()->receiver_wallet_address; ?></li>
 													</ul>
 												</li>
 												<li>
-													Setelah mengirim pembayaran, tinjau status transaksi Anda <a href="<?= $arr->row()->status_url; ?>" target="_blank">on this page</a>. Once the payment is confirmed several times in the block chain, the payment will be completed and the merchant will be notified. The confirmation process usually takes 10-45 minutes but varies based on the coin's target block time and number of block confirms required. The status page is available for the next 30 days.
+													Setelah mentransfer pembayaran, review status pembayaran kamu <a href="<?= $arr->row()->status_url; ?>" target="_blank">dihalaman ini</a>. Setelah pembayaran dikonfirmasi di Blockchain, pembayaran telah selesai kita akan memberitahu Sistem CryptoPerty untuk mengaktifkan paket kamu. Proses konfirmasi biasanya memakan waktu 10~45 Menit tetapi bervariasi tergantung jenis coin yang digunakan atau jenis Block dan Jumlah Validator yang akan memvalidasi. Halaman Status Pembayaran di CoinPayments hanya tersedia untuk 30 Hari kedepan saja.
 												</li>
 											</ol>
 										</div>
 										<div class="tab-pane fade" id="v-pills-q2" role="tabpanel">
-											If you don't send enough, that is OK. Just send the remainder and we will combine them for you. You can also send from multiple wallets/accounts.
+											Jika Nominal yang dikirimkan kurang, tenang. Kamu cukup kirimkan sisanya dan sistem otomatis akan menggabungkannya untuk kamu. Kamu juga dapat mengirimkan dari beberapa Wallet atau Akun di Exchanger selama belum melewati batas waktu transfer.
 										</div>
 									</div>
 								</div>
 							</div>
 						<?php } ?>
-
 					</div>
 				</div>
-
 			</div>
-			<!-- /.col -->
 		</div>
-		<!-- /.row -->
 	</div>
-	<!--/. container-fluid -->
 </section>

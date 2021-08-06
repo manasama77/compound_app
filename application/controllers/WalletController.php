@@ -28,7 +28,7 @@ class WalletController extends CI_Controller
 	{
 		$arr = $this->M_core->get('member_wallet', '*', ['id_member' => $this->id_member]);
 		$data = [
-			'title'      => APP_NAME . ' | Wallet Management',
+			'title'      => APP_NAME . ' | Wallet',
 			'content'    => 'wallet/main',
 			'vitamin_js' => 'wallet/main_js',
 			'arr'        => $arr,

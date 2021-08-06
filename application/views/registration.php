@@ -40,17 +40,17 @@
 
 		<div class="card">
 			<div class="card-body register-card-body">
-				<p class="login-box-msg">Pendaftaran membership baru</p>
+				<p class="login-box-msg">Pendaftaran Member Baru</p>
 				<?php if ($arr->num_rows() != 0) { ?>
 					<p class="login-box-msg">Reffered by:<br><?= $fullname; ?> <small>(<?= $email; ?>)</small></p>
 				<?php } ?>
 
 				<?php if ($arr->num_rows() == 0) { ?>
 					<div class="alert alert-warning" role="alert">
-						<h4 class="alert-heading">Link Pendaftaran Salah!</h4>
-						<p>Pastikan URL yang Anda dapatkan dari orang yang tepat.</p>
+						<h4 class="alert-heading">Referral Link Salah!</h4>
+						<p>Pastikan Referral Link yang Anda dapatkan dari member yang telah terdaftar.</p>
 						<hr>
-						<p class="mb-0">Still having an issue ? Why not ask again to your Upline for the link</p>
+						<p class="mb-0">Jika terjadi kendala, coba tanyakan Referral Link dari Calon Upline Kamu...</p>
 					</div>
 				<?php } else { ?>
 
@@ -58,7 +58,7 @@
 						<div class="row">
 							<div class="col-sm-12 col-md-6">
 								<div class="input-group mb-3">
-									<input type="text" class="form-control <?= (form_error('fullname')) ? 'is-invalid' : '' ?>" id="fullname" name="fullname" placeholder="Full Name" value="<?= set_value('fullname'); ?>" minlength="3" required>
+									<input type="text" class="form-control <?= (form_error('fullname')) ? 'is-invalid' : '' ?>" id="fullname" name="fullname" placeholder="Nama Lengkap" value="<?= set_value('fullname'); ?>" minlength="3" required>
 									<div class="input-group-append">
 										<div class="input-group-text">
 											<label for="fullname" class="fas fa-user"></label>
@@ -70,7 +70,7 @@
 								</div>
 
 								<div class="input-group mb-3">
-									<input type="tel" class="form-control <?= (form_error('phone_number')) ? 'is-invalid' : '' ?>" id="phone_number" name="phone_number" placeholder="Phone Number" value="<?= set_value('phone_number'); ?>" minlength="8" required>
+									<input type="tel" class="form-control <?= (form_error('phone_number')) ? 'is-invalid' : '' ?>" id="phone_number" name="phone_number" placeholder="No Telepon" value="<?= set_value('phone_number'); ?>" minlength="8" required>
 									<div class="input-group-append">
 										<div class="input-group-text">
 											<label for="phone_number" class="fas fa-phone"></label>
@@ -82,7 +82,7 @@
 								</div>
 
 								<div class="input-group mb-3">
-									<input type="text" class="form-control <?= (form_error('id_card_number')) ? 'is-invalid' : '' ?>" id="id_card_number" name="id_card_number" placeholder="ID Card Number" value="<?= set_value('id_card_number'); ?>" minlength="5" required>
+									<input type="text" class="form-control <?= (form_error('id_card_number')) ? 'is-invalid' : '' ?>" id="id_card_number" name="id_card_number" placeholder="No KTP" value="<?= set_value('id_card_number'); ?>" minlength="5" required>
 									<div class="input-group-append">
 										<div class="input-group-text">
 											<label for="id_card_number" class="fas fa-id-card"></label>
@@ -119,7 +119,7 @@
 									</div>
 								</div>
 								<div class="input-group mb-3">
-									<input type="password" class="form-control <?= (form_error('verify_password')) ? 'is-invalid' : '' ?>" id="verify_password" name="verify_password" placeholder="Verify Password" minlength="4" autocomplete="new-password" required>
+									<input type="password" class="form-control <?= (form_error('verify_password')) ? 'is-invalid' : '' ?>" id="verify_password" name="verify_password" placeholder="Verifikasi Password" minlength="4" autocomplete="new-password" required>
 									<div class="input-group-append">
 										<div class="input-group-text">
 											<label for="verify_password" class="fas fa-eye eye2"></label>
@@ -133,14 +133,13 @@
 								<div class="icheck-primary">
 									<input type="checkbox" id="agreeTerms" name="terms" value="agree" required>
 									<label for="agreeTerms">
-										I agree to the <a href="javascript:;" onclick="showModalTerm();">Terms</a>
+										Saya Setuju <u><a href="javascript:;" onclick="showModalTerm();">Syarat & Ketentuan</a></u>
 									</label>
 								</div>
-								<div class="h-captcha text-center" data-sitekey="<?= H_SITE_KEY; ?>"></div>
 								<input type="hidden" class="form-control" id="id_upline" name="id_upline" value="" readonly>
 								<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
-								<button type="submit" class="btn btn-primary btn-block mb-3">Register</button>
-								<a href="<?= site_url('login'); ?>" class="text-center">saya sudah punya membership</a>
+								<button type="submit" class="btn btn-primary btn-block mb-3">Daftar</button>
+								<a href="<?= site_url('login'); ?>" class="text-center">Sudah menjadi Member?</a>
 
 							</div>
 						</div>
@@ -181,7 +180,6 @@
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="<?= base_url(); ?>public/plugin/adminlte/dist/js/adminlte.min.js"></script>
-	<script src='https://www.hCaptcha.com/1/api.js' async defer></script>
 </body>
 
 </html>

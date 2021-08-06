@@ -38,7 +38,7 @@
 							<button type="button" class="btn btn-warning btn-sm btn-block" id="resend_button" onclick="resendOTP('<?= $this->session->userdata(SESI . 'email'); ?>');" disabled>
 								Tidak menerima kode OTP ?<br />
 								Coba kirimkan kembali kode OTP<br />
-								(Setelah <span id="time">00:05</span>)
+								(Setelah <span id="time">01:00</span>)
 							</button>
 							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 							<button type="submit" class="btn btn-primary btn-block mt-3" id="submit_btn">Verifikasi</button>

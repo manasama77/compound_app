@@ -25,7 +25,7 @@ class ProfileController extends CI_Controller
 	public function index()
 	{
 		$data = [
-			'title'      => APP_NAME . ' | Profile',
+			'title'      => APP_NAME . ' | Profil',
 			'content'    => 'profile/main',
 			'vitamin_js' => 'profile/main_js',
 			'csrf'       => $this->csrf,
@@ -34,7 +34,8 @@ class ProfileController extends CI_Controller
 		$where = [
 			'email' => $this->session->userdata(SESI . 'email')
 		];
-		$arr = $this->M_core->get('member', '*', $where);
+		$arr          = $this->M_core->get('member', '*', $where);
+		$id_upline    = $arr->row()->id_upline;
 		$country_code = $arr->row()->country_code;
 		$is_founder   = $arr->row()->is_founder;
 		$created_at   = $arr->row()->created_at;
@@ -53,6 +54,11 @@ class ProfileController extends CI_Controller
 		$data['arr']          = $arr;
 		$data['member_since'] = $time_ago;
 		$data['arr_country']  = $arr_country;
+
+		$where_upline = [
+			'id' => $id_upline
+		];
+		$data['arr_upline'] = $this->M_core->get('member', 'fullname, email', $where_upline);
 
 
 		$this->template->render($data);

@@ -33,42 +33,36 @@ class RewardsController extends CI_Controller
 		$rgt      = $arr_tree->row()->rgt;
 		$depth    = $arr_tree->row()->depth;
 
-		$main_line          = $this->M_member->get_data_member_reward(null, $lft, $rgt, $depth + 1, null, 1);
-
 		$id_main_line       = null;
 		$main_fullname      = null;
 		$main_email         = null;
-		$downline_main_line = null;
+		$downline_main_line = "";
 		$omset_main_line    = 0;
+		$omset_other_line   = 0;
 
+		$main_line = $this->M_member->get_member_main_line($lft, $rgt, $depth + 1);
 		if ($main_line->num_rows() > 0) {
-			$id_main_line       = $main_line->row()->id;
-			$main_fullname      = $main_line->row()->fullname;
-			$main_email         = $main_line->row()->email;
-			$downline_main_line = "From Line $main_fullname ($main_email)";
-			$omset_main_line    = check_float($main_line->row()->total_omset);
+			if ($main_line->row()->total_omset > 0) {
+				$id_main_line       = $main_line->row()->id;
+				$main_fullname      = $main_line->row()->fullname;
+				$main_email         = $main_line->row()->email;
+				$downline_main_line = "Dari Downline $main_fullname ($main_email)";
+				$omset_main_line    = check_float($main_line->row()->total_omset);
 
-			if ($main_line->row()->total_omset == 0) {
-				$omset_main_line    = 0;
-				$downline_main_line =  "";
+				$other_line = $this->M_member->get_member_other_line($lft, $rgt, $depth + 1, $id_main_line);
+				if ($other_line->num_rows() > 0) {
+					foreach ($other_line->result() as $key_o) {
+						$total_omset_other = $key_o->total_omset;
+						$omset_other_line += $total_omset_other;
+					}
+				}
+				$omset_other_line = check_float($omset_other_line);
 			}
 		}
 
-		$other_line = $this->M_member->get_data_member_reward(null, $lft, $rgt, $depth + 1, $id_main_line, 1, $id_main_line);
-
-		$omset_other_line = 0;
-
-		if ($other_line->num_rows() > 0) {
-			foreach ($other_line->result() as $key_o) {
-				$total_omset_other = $key_o->total_omset;
-				$omset_other_line += $total_omset_other;
-			}
-		}
-
-		$omset_other_line = check_float($omset_other_line);
 
 		$data = [
-			'title'              => APP_NAME . ' | Rewards',
+			'title'              => APP_NAME . ' | Hadiah',
 			'content'            => 'rewards/main',
 			'vitamin_js'         => 'rewards/main_js',
 			'arr'                => $arr,
