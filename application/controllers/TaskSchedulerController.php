@@ -1499,6 +1499,26 @@ class TaskSchedulerController extends CI_Controller
 	Execute Every Day at Every 00:01 AM
 	====================================
 	*/
+	public function disabled_member()
+	{
+		// if (!$this->input->is_cli_request()) {
+		// 	echo "Hanya dapat diakses via CLI";
+		// 	exit;
+		// }
+		$arr = $this->M_member->disabled_member();
+
+		if ($arr === FALSE) {
+			echo "Disabled Member Gagal";
+		} else {
+			echo "Disabled Member Done";
+		}
+	}
+
+	/*
+	====================================
+	Execute Every Day at Every 00:02 AM
+	====================================
+	*/
 	public function update_konfigurasi_trade_manager()
 	{
 		// if (!$this->input->is_cli_request()) {
@@ -1551,7 +1571,7 @@ class TaskSchedulerController extends CI_Controller
 
 	/*
 	====================================
-	Execute Every Day at Every 00:02 AM
+	Execute Every Day at Every 00:03 AM
 	====================================
 	*/
 	public function update_konfigurasi_crypto_asset()
@@ -1606,7 +1626,7 @@ class TaskSchedulerController extends CI_Controller
 
 	/*
 	====================================
-	Execute Every Day at Every 00:05 AM
+	Execute Every Day at Every 00:04 AM
 	====================================
 	*/
 	public function check_trade_manager_expired()
@@ -1786,7 +1806,7 @@ class TaskSchedulerController extends CI_Controller
 
 	/*
 	====================================
-	Execute Every Day at Every 00:06 AM
+	Execute Every Day at Every 00:05 AM
 	====================================
 	*/
 	public function check_crypto_asset_expired()
@@ -1888,10 +1908,132 @@ class TaskSchedulerController extends CI_Controller
 		return false;
 	}
 
+	/*
+	==============================
+	Execute Every Day at 00:06 AM
+	==============================
+	*/
+	public function reward()
+	{
+		if (!$this->input->is_cli_request()) {
+			echo "Hanya dapat diakses via CLI";
+			exit;
+		}
+
+		$arr = $this->M_member->get_data_member_reward();
+
+		if ($arr->num_rows() > 0) :
+			$this->db->trans_begin();
+
+			foreach ($arr->result() as $key_arr) :
+				$id_member = $key_arr->id; // id_member yang bakal dapat reward
+				$lft       = $key_arr->lft;
+				$rgt       = $key_arr->rgt;
+				$depth     = $key_arr->depth;
+				$reward_1  = $key_arr->reward_1;
+				$reward_2  = $key_arr->reward_2;
+				$reward_3  = $key_arr->reward_3;
+				$reward_4  = $key_arr->reward_4;
+				$reward_5  = $key_arr->reward_5;
+
+				// REWARD CHECK
+				$main_line       = $this->M_member->get_member_main_line($lft, $rgt, $depth + 1);
+				$id_main_line    = $main_line->row()->id;
+				$omset_main_line = $main_line->row()->total_omset;
+
+				$omset_other_line = 0;
+				$other_line = $this->M_member->get_member_other_line($lft, $rgt, $depth + 1, $id_main_line);
+				if ($other_line->num_rows() > 0) {
+					foreach ($other_line->result() as $key_o) {
+						$omset_other_line += $key_o->total_omset;
+					}
+				}
+
+				if ($reward_1 == "no" && $omset_main_line >= LIMIT_REWARD_1 && $omset_other_line >= LIMIT_REWARD_1) {
+					$data = [
+						'reward_1'      => 'yes',
+						'reward_1_date' => $this->date,
+					];
+					$where = ['id_member' => $id_member];
+					$exec = $this->M_core->update('member_reward', $data, $where);
+					if (!$exec) {
+						echo "$id_member Gagal Mendapatkan Reward 1";
+						$this->db->trans_rollback();
+						exit;
+					} else {
+						echo "$id_member Sukses Mendapatkan Reward 1";
+					}
+				} elseif ($reward_2 == "no" && $omset_main_line >= LIMIT_REWARD_2 && $omset_other_line >= LIMIT_REWARD_2) {
+					$data = [
+						'reward_2'      => 'yes',
+						'reward_2_date' => $this->date,
+					];
+					$where = ['id_member' => $id_member];
+					$exec = $this->M_core->update('member_reward', $data, $where);
+					if (!$exec) {
+						echo "$id_member Gagal Mendapatkan Reward 2";
+						$this->db->trans_rollback();
+						exit;
+					} else {
+						echo "$id_member Sukses Mendapatkan Reward 2";
+					}
+				} elseif ($reward_3 == "no" && $omset_main_line >= LIMIT_REWARD_3 && $omset_other_line >= LIMIT_REWARD_3) {
+					$data = [
+						'reward_3'      => 'yes',
+						'reward_3_date' => $this->date,
+					];
+					$where = ['id_member' => $id_member];
+					$exec = $this->M_core->update('member_reward', $data, $where);
+					if (!$exec) {
+						echo "$id_member Gagal Mendapatkan Reward 3";
+						$this->db->trans_rollback();
+						exit;
+					} else {
+						echo "$id_member Sukses Mendapatkan Reward 3";
+					}
+				} elseif ($reward_4 == "no" && $omset_main_line >= LIMIT_REWARD_4 && $omset_other_line >= LIMIT_REWARD_4) {
+					$data = [
+						'reward_4'      => 'yes',
+						'reward_4_date' => $this->date,
+					];
+					$where = ['id_member' => $id_member];
+					$exec = $this->M_core->update('member_reward', $data, $where);
+					if (!$exec) {
+						echo "$id_member Gagal Mendapatkan Reward 4";
+						$this->db->trans_rollback();
+						exit;
+					} else {
+						echo "$id_member Sukses Mendapatkan Reward 4";
+					}
+				} elseif ($reward_5 == "no" && $omset_main_line >= LIMIT_REWARD_5 && $omset_other_line >= LIMIT_REWARD_5) {
+					$data = [
+						'reward_5'      => 'yes',
+						'reward_5_date' => $this->date,
+					];
+					$where = ['id_member' => $id_member];
+					$exec = $this->M_core->update('member_reward', $data, $where);
+					if (!$exec) {
+						echo "$id_member Gagal Mendapatkan Reward 5";
+						$this->db->trans_rollback();
+						exit;
+					} else {
+						echo "$id_member Sukses Mendapatkan Reward 5";
+					}
+				} else {
+					echo "Tidak ada Pembagian Hadiah Hari Ini";
+				}
+
+			endforeach;
+			$this->db->trans_commit();
+		else :
+			echo "Tidak ada Pembagian Hadiah Hari Ini";
+		endif;
+	}
+
 
 	/*
 	==============================
-	Execute Every Day at 01:05 AM
+	Execute Every Day at 00:31 AM
 	==============================
 	*/
 	public function profit_daily_trade_manager()
@@ -2098,7 +2240,7 @@ class TaskSchedulerController extends CI_Controller
 
 	/*
 	==============================
-	Execute Every Day at 01:06 AM
+	Execute Every Day at 00:32 AM
 	==============================
 	*/
 	public function profit_daily_crypto_asset()
@@ -2300,148 +2442,6 @@ class TaskSchedulerController extends CI_Controller
 					$this->db->trans_commit();
 				}
 			}
-		}
-	}
-
-	/*
-	==============================
-	Execute Every Day at 02:05 AM
-	==============================
-	*/
-	public function reward()
-	{
-		if (!$this->input->is_cli_request()) {
-			echo "Hanya dapat diakses via CLI";
-			exit;
-		}
-
-		$arr = $this->M_member->get_data_member_reward();
-
-		if ($arr->num_rows() > 0) :
-			$this->db->trans_begin();
-
-			foreach ($arr->result() as $key_arr) :
-				$id_member = $key_arr->id; // id_member yang bakal dapat reward
-				$lft       = $key_arr->lft;
-				$rgt       = $key_arr->rgt;
-				$depth     = $key_arr->depth;
-				$reward_1  = $key_arr->reward_1;
-				$reward_2  = $key_arr->reward_2;
-				$reward_3  = $key_arr->reward_3;
-				$reward_4  = $key_arr->reward_4;
-				$reward_5  = $key_arr->reward_5;
-
-				// REWARD CHECK
-				$main_line       = $this->M_member->get_member_main_line($lft, $rgt, $depth + 1);
-				$id_main_line    = $main_line->row()->id;
-				$omset_main_line = $main_line->row()->total_omset;
-
-				$omset_other_line = 0;
-				$other_line = $this->M_member->get_member_other_line($lft, $rgt, $depth + 1, $id_main_line);
-				if ($other_line->num_rows() > 0) {
-					foreach ($other_line->result() as $key_o) {
-						$omset_other_line += $key_o->total_omset;
-					}
-				}
-
-				if ($reward_1 == "no" && $omset_main_line >= LIMIT_REWARD_1 && $omset_other_line >= LIMIT_REWARD_1) {
-					$data = [
-						'reward_1'      => 'yes',
-						'reward_1_date' => $this->date,
-					];
-					$where = ['id_member' => $id_member];
-					$exec = $this->M_core->update('member_reward', $data, $where);
-					if (!$exec) {
-						echo "$id_member Gagal Mendapatkan Reward 1";
-						$this->db->trans_rollback();
-						exit;
-					} else {
-						echo "$id_member Sukses Mendapatkan Reward 1";
-					}
-				} elseif ($reward_2 == "no" && $omset_main_line >= LIMIT_REWARD_2 && $omset_other_line >= LIMIT_REWARD_2) {
-					$data = [
-						'reward_2'      => 'yes',
-						'reward_2_date' => $this->date,
-					];
-					$where = ['id_member' => $id_member];
-					$exec = $this->M_core->update('member_reward', $data, $where);
-					if (!$exec) {
-						echo "$id_member Gagal Mendapatkan Reward 2";
-						$this->db->trans_rollback();
-						exit;
-					} else {
-						echo "$id_member Sukses Mendapatkan Reward 2";
-					}
-				} elseif ($reward_3 == "no" && $omset_main_line >= LIMIT_REWARD_3 && $omset_other_line >= LIMIT_REWARD_3) {
-					$data = [
-						'reward_3'      => 'yes',
-						'reward_3_date' => $this->date,
-					];
-					$where = ['id_member' => $id_member];
-					$exec = $this->M_core->update('member_reward', $data, $where);
-					if (!$exec) {
-						echo "$id_member Gagal Mendapatkan Reward 3";
-						$this->db->trans_rollback();
-						exit;
-					} else {
-						echo "$id_member Sukses Mendapatkan Reward 3";
-					}
-				} elseif ($reward_4 == "no" && $omset_main_line >= LIMIT_REWARD_4 && $omset_other_line >= LIMIT_REWARD_4) {
-					$data = [
-						'reward_4'      => 'yes',
-						'reward_4_date' => $this->date,
-					];
-					$where = ['id_member' => $id_member];
-					$exec = $this->M_core->update('member_reward', $data, $where);
-					if (!$exec) {
-						echo "$id_member Gagal Mendapatkan Reward 4";
-						$this->db->trans_rollback();
-						exit;
-					} else {
-						echo "$id_member Sukses Mendapatkan Reward 4";
-					}
-				} elseif ($reward_5 == "no" && $omset_main_line >= LIMIT_REWARD_5 && $omset_other_line >= LIMIT_REWARD_5) {
-					$data = [
-						'reward_5'      => 'yes',
-						'reward_5_date' => $this->date,
-					];
-					$where = ['id_member' => $id_member];
-					$exec = $this->M_core->update('member_reward', $data, $where);
-					if (!$exec) {
-						echo "$id_member Gagal Mendapatkan Reward 5";
-						$this->db->trans_rollback();
-						exit;
-					} else {
-						echo "$id_member Sukses Mendapatkan Reward 5";
-					}
-				} else {
-					echo "Tidak ada Pembagian Hadiah Hari Ini";
-				}
-
-			endforeach;
-			$this->db->trans_commit();
-		else :
-			echo "Tidak ada Pembagian Hadiah Hari Ini";
-		endif;
-	}
-
-	/*
-	====================================
-	Execute Every Day at Every 00:01 AM
-	====================================
-	*/
-	public function disabled_member()
-	{
-		// if (!$this->input->is_cli_request()) {
-		// 	echo "Hanya dapat diakses via CLI";
-		// 	exit;
-		// }
-		$arr = $this->M_member->disabled_member();
-
-		if ($arr === FALSE) {
-			echo "Disabled Member Gagal";
-		} else {
-			echo "Disabled Member Done";
 		}
 	}
 

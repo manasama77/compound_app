@@ -106,13 +106,14 @@ $route['coinpayment/cancel/(:any)']   = 'CoinPayment/cancel/$1';
 
 $route['scheduler/coinpayment_tx_info_tm'] 	         = 'TaskSchedulerController/coinpayment_tx_info_tm'; # DONE
 $route['scheduler/withdraw']                         = 'TaskSchedulerController/withdraw'; # DONE
+
+$route['scheduler/disabled_member']                  = 'TaskSchedulerController/disabled_member'; # DONE
 $route['scheduler/update_konfigurasi_trade_manager'] = 'TaskSchedulerController/update_konfigurasi_trade_manager'; # DONE
 $route['scheduler/update_konfigurasi_crypto_asset']  = 'TaskSchedulerController/update_konfigurasi_crypto_asset'; # DONE
 $route['scheduler/check_trade_manager_expired']      = 'TaskSchedulerController/check_trade_manager_expired'; # DONE
 $route['scheduler/check_crypto_asset_expired'] 	     = 'TaskSchedulerController/check_crypto_asset_expired'; # DONE
+$route['scheduler/reward']                           = 'TaskSchedulerController/reward'; # DONE
 $route['scheduler/profit_daily_trade_manager']       = 'TaskSchedulerController/profit_daily_trade_manager'; # DONE
 $route['scheduler/profit_daily_crypto_asset']        = 'TaskSchedulerController/profit_daily_crypto_asset'; # DONE
-$route['scheduler/reward']                           = 'TaskSchedulerController/reward'; # 
-$route['scheduler/disabled_member']                  = 'TaskSchedulerController/disabled_member'; # 
 
 $route['test'] = 'TestController/index';
