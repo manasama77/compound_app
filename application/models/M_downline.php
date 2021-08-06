@@ -34,7 +34,7 @@ class M_downline extends CI_Model
 			$result = $query->row()->max_depth - $depth;
 		}
 
-		return $result;
+		return (int)$result;
 	}
 }
                         
