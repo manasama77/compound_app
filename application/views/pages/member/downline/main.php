@@ -33,7 +33,7 @@
 					<div class="card-body">
 						<form action="<?= site_url('downline/show'); ?>" method="GET">
 							<div class="form-group">
-								<label for="depth">Kedalaman</label>
+								<label for="depth">Generasi <?= $max_depth; ?></label>
 								<select class="form-control" id="depth" name="depth" required>
 									<?php if ($max_depth == 0) {
 										echo '<option value="" selected disabled>Anda tidak memiliki Downline</option>';
