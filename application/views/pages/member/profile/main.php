@@ -99,16 +99,15 @@
 									</div>
 									<hr />
 									<div class="form-group row">
-										<label for="phone_number" class="col-sm-2 col-form-label">Negara</label>
+										<label for="country_code" class="col-sm-2 col-form-label">Negara</label>
 										<div class="col-sm-10">
-											<input class="form-control" list="country_list" id="country_code" name="country_code" placeholder="Pilih Negara" value="<?= $arr->row()->country_code; ?>">
-											<datalist id="country_list">
+											<select class="form-control select2" id="country_code" name="country_code" data-placeholder="Pilih Negara" required>
 												<?php
 												foreach ($arr_country->result() as $key) {
 													echo '<option value="' . $key->code . '">' . $key->name . '</option>';
 												}
 												?>
-											</datalist>
+											</select>
 										</div>
 									</div>
 									<div class="form-group row">

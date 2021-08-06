@@ -1,5 +1,7 @@
 <script>
 	$(document).ready(function() {
+		$('.select2').select2();
+
 		$('#form_setting').on('submit', function(e) {
 			e.preventDefault();
 
