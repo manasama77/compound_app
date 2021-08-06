@@ -104,7 +104,8 @@
 											<select class="form-control select2" id="country_code" name="country_code" data-placeholder="Pilih Negara" required>
 												<?php
 												foreach ($arr_country->result() as $key) {
-													echo '<option value="' . $key->code . '">' . $key->name . '</option>';
+													$selected = ($key->name == $country_name) ? "selected" : "";
+													echo '<option value="' . $key->code . '" ' . $selected . '>' . $key->name . '</option>';
 												}
 												?>
 											</select>
