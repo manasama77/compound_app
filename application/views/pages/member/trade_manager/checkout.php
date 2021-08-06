@@ -70,7 +70,17 @@
 									<tr>
 										<td>Total Transfer</td>
 										<td>:</td>
-										<td class="text-left font-weight-bold"><?= $arr->row()->amount_2; ?> <small><?= $arr->row()->currency2; ?></small></td>
+										<td class="text-left font-weight-bold">
+											<div class="input-group">
+												<input type="text" class="form-control text-dark" id="amount_2" value="<?= $arr->row()->amount_2; ?>" readonly />
+												<div class="input-group-append">
+													<span class="input-group-text bg-dark" id="basic-addon2"><?= $arr->row()->currency2; ?></span>
+													<button type="button" class="btn btn-dark" id="copy" onclick="CopyUrl('amount_2');">
+														<i class="fas fa-clipboard fa-fw"></i> Copy
+													</button>
+												</div>
+											</div>
+										</td>
 									</tr>
 									<tr>
 										<td>Wallet Address Tujuan</td>
