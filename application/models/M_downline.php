@@ -21,16 +21,16 @@ class M_downline extends CI_Model
 		$rgt     = $query_a->row()->rgt;
 		$depth   = $query_a->row()->depth;
 
-		$this->db->select_max('depth', 'max_depth');
-		$this->db->from('et_member AS member');
-		$this->db->join('et_tree AS tree', 'tree.id_member = member.id', 'left');
+		$this->db->select('MAX(depth) AS max_depth', false);
+		$this->db->from('member AS member');
+		$this->db->join('tree AS tree', 'tree.id_member = member.id', 'left');
 		$this->db->where('tree.lft >', $lft);
 		$this->db->where('tree.rgt <', $rgt);
 		$this->db->where('member.is_active', 'yes');
 		$this->db->where('member.deleted_at', null);
 		$query = $this->db->get();
 
-		if ($query) {
+		if ($query->row()->max_depth > 0) {
 			$result = $query->row()->max_depth - $depth;
 		}
 
