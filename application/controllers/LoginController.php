@@ -381,8 +381,12 @@ class LoginController extends CI_Controller
 		$this->form_validation->set_rules('verify_password', 'Verify Password', 'required|matches[password]');
 
 		if ($this->form_validation->run() == FALSE) {
-			$id   = base64_decode($id);
-			$hash = hash_hmac('sha1', $hash, UYAH);
+			$id     = base64_decode($id);
+			$hash_b = hash_hmac('sha1', $id, UYAH);
+
+			if ($hash != $hash_b) {
+				return show_error("Link Referral Salah", 404);
+			}
 
 			$where = [
 				'id'         => $id,
@@ -390,6 +394,10 @@ class LoginController extends CI_Controller
 				'deleted_at' => null,
 			];
 			$arr = $this->M_core->get('member', 'email, fullname, created_at', $where);
+
+			if ($arr->num_rows() == 0) {
+				return show_error("Link Referral Salah", 404);
+			}
 
 			$data = [
 				'title'        => APP_NAME . ' | Member Registration',
