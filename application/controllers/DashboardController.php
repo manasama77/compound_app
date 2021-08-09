@@ -143,8 +143,6 @@ class DashboardController extends CI_Controller
 
 		// GET MEMBER BALANCE
 		$arr_balance = $this->M_dashboard->get_member_balance($this->id_member);
-		echo '<pre>' . print_r($arr_balance->result(), 1) . '</pre>';
-		exit;
 
 		if ($arr_balance->num_rows() > 0) {
 			$total_invest_trade_manager = check_float($arr_balance->row()->total_invest_trade_manager);
