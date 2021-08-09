@@ -17,7 +17,7 @@ class LoginController extends CI_Controller
 		parent::__construct();
 		$this->load->library('Nested_set', null, 'Nested_set');
 		$this->load->library('L_genuine_mail', null, 'genuine_mail');
-		$this->load->helper(['cookie', 'string', 'Otp_helper', 'Domain_helper', 'Time_helper']);
+		$this->load->helper(['cookie', 'string', 'otp_helper', 'domain_helper', 'time_helper']);
 		$this->load->model('M_log_send_email_member');
 
 		$this->datetime   = date('Y-m-d H:i:s');

@@ -56,6 +56,8 @@ class DashboardController extends CI_Controller
 
 		$id_member = $this->input->get('id_member');
 
+		$limit = ($this->input->get('limit')) ?? 5;
+
 		$where_package = [
 			'id_member'  => $id_member,
 			'deleted_at' => null,
@@ -115,7 +117,7 @@ class DashboardController extends CI_Controller
 			}
 		}
 
-		$data_downline = $this->_latest_downline($id_member);
+		$data_downline = $this->_latest_downline($id_member, $limit);
 
 		echo json_encode([
 			'code'          => 200,
@@ -169,9 +171,9 @@ class DashboardController extends CI_Controller
 		return check_float($count->row()->count_all_downline);
 	}
 
-	public function _latest_downline($id_member)
+	public function _latest_downline($id_member, $limit = 5)
 	{
-		$arr = $this->M_dashboard->get_latest_downline($id_member, null, 5);
+		$arr = $this->M_dashboard->get_latest_downline($id_member, null, $limit);
 		return $arr;
 	}
 

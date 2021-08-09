@@ -1,2 +1,14 @@
-registrasi rubah no ktp number only
-pilih negara
+KYC member
+jika member kyc == false tidak bisa WD
+
+Nama Lengkap *
+No KTP * (validasi KTP ke DUKCAPIL)
+Negara *
+Alamat 
+Kode POS
+Bank
+Rekening (validasi no rekening ke API BANK)
+Upload Foto KTP *
+Upload Sambil Pegang KTP *
+
+setiap ganti profile harus ada OTP

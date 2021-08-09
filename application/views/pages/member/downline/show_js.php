@@ -52,7 +52,8 @@
 			method: 'get',
 			dataType: 'json',
 			data: {
-				id_member: id_member
+				id_member: id_member,
+				limit: 1000
 			},
 			beforeSend: function() {
 				$.blockUI();

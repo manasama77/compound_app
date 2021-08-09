@@ -239,7 +239,6 @@
 		</div>
 	</div>
 </section>
-<!-- /.Main Content -->
 
 <div class="modal fade" id="modal_detail" tabindex="-1" role="dialog">
 	<div class="modal-dialog modal-lg" role="document">
