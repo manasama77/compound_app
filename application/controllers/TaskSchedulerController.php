@@ -1963,7 +1963,9 @@ class TaskSchedulerController extends CI_Controller
 					} else {
 						echo "$id_member Sukses Mendapatkan Reward 1";
 					}
-				} elseif ($reward_2 == "no" && $omset_main_line >= LIMIT_REWARD_2 && $omset_other_line >= LIMIT_REWARD_2) {
+				}
+
+				if ($reward_2 == "no" && $omset_main_line >= LIMIT_REWARD_2 && $omset_other_line >= LIMIT_REWARD_2) {
 					$data = [
 						'reward_2'      => 'yes',
 						'reward_2_date' => $this->date,
@@ -1977,7 +1979,9 @@ class TaskSchedulerController extends CI_Controller
 					} else {
 						echo "$id_member Sukses Mendapatkan Reward 2";
 					}
-				} elseif ($reward_3 == "no" && $omset_main_line >= LIMIT_REWARD_3 && $omset_other_line >= LIMIT_REWARD_3) {
+				}
+
+				if ($reward_3 == "no" && $omset_main_line >= LIMIT_REWARD_3 && $omset_other_line >= LIMIT_REWARD_3) {
 					$data = [
 						'reward_3'      => 'yes',
 						'reward_3_date' => $this->date,
@@ -1991,7 +1995,9 @@ class TaskSchedulerController extends CI_Controller
 					} else {
 						echo "$id_member Sukses Mendapatkan Reward 3";
 					}
-				} elseif ($reward_4 == "no" && $omset_main_line >= LIMIT_REWARD_4 && $omset_other_line >= LIMIT_REWARD_4) {
+				}
+
+				if ($reward_4 == "no" && $omset_main_line >= LIMIT_REWARD_4 && $omset_other_line >= LIMIT_REWARD_4) {
 					$data = [
 						'reward_4'      => 'yes',
 						'reward_4_date' => $this->date,
@@ -2005,7 +2011,9 @@ class TaskSchedulerController extends CI_Controller
 					} else {
 						echo "$id_member Sukses Mendapatkan Reward 4";
 					}
-				} elseif ($reward_5 == "no" && $omset_main_line >= LIMIT_REWARD_5 && $omset_other_line >= LIMIT_REWARD_5) {
+				}
+
+				if ($reward_5 == "no" && $omset_main_line >= LIMIT_REWARD_5 && $omset_other_line >= LIMIT_REWARD_5) {
 					$data = [
 						'reward_5'      => 'yes',
 						'reward_5_date' => $this->date,
