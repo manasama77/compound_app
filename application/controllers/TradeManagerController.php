@@ -152,6 +152,8 @@ class TradeManagerController extends CI_Controller
 
 	public function add()
 	{
+		$this->session->unset_userdata('block');
+
 		$arr = $this->M_trade_manager->get_package();
 
 		$arr_bg_color = [
@@ -249,6 +251,10 @@ class TradeManagerController extends CI_Controller
 
 	public function pick($id_konfigurasi_trade_manager = null)
 	{
+		if ($this->session->userdata('block') === true) {
+			redirect('trade_manager/index');
+		}
+
 		if ($id_konfigurasi_trade_manager == null) {
 			return show_404();
 		}
@@ -598,6 +604,8 @@ class TradeManagerController extends CI_Controller
 		}
 
 		$state_badge = '<span class="badge badge-' . $badge_color . '">' . strtoupper($badge_text) . '</span>';
+
+		$this->session->set_userdata('block', true);
 
 		$data = [
 			'title'       => APP_NAME . ' | Checkout',

@@ -152,6 +152,8 @@ class CryptoAssetController extends CI_Controller
 
 	public function add()
 	{
+		$this->session->unset_userdata('block');
+
 		$arr = $this->M_crypto_asset->get_package();
 
 		$arr_bg_color = [
@@ -249,6 +251,10 @@ class CryptoAssetController extends CI_Controller
 
 	public function pick($id_konfigurasi_crypto_asset = null)
 	{
+		if ($this->session->userdata('block') === true) {
+			redirect('crypto_asset/index');
+		}
+
 		if ($id_konfigurasi_crypto_asset == null) {
 			return show_404();
 		}
@@ -588,6 +594,8 @@ class CryptoAssetController extends CI_Controller
 		}
 
 		$state_badge = '<span class="badge badge-' . $badge_color . '">' . strtoupper($badge_text) . '</span>';
+
+		$this->session->set_userdata('block', true);
 
 		$data = [
 			'title'       => APP_NAME . ' | Checkout',
