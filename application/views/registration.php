@@ -82,7 +82,7 @@
 								</div>
 
 								<div class="input-group mb-3">
-									<input type="text" class="form-control <?= (form_error('id_card_number')) ? 'is-invalid' : '' ?>" id="id_card_number" name="id_card_number" placeholder="No KTP" value="<?= set_value('id_card_number'); ?>" minlength="5" required>
+									<input type="number" class="form-control <?= (form_error('id_card_number')) ? 'is-invalid' : '' ?>" id="id_card_number" name="id_card_number" placeholder="No KTP" value="<?= set_value('id_card_number'); ?>" minlength="5" required>
 									<div class="input-group-append">
 										<div class="input-group-text">
 											<label for="id_card_number" class="fas fa-id-card"></label>
