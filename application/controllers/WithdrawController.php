@@ -38,7 +38,7 @@ class WithdrawController extends CI_Controller
 
 		$this->load->library('L_member', null, 'template');
 		$this->load->library('L_genuine_mail', null, 'genuine_mail');
-		$this->load->helper(['cookie', 'string', 'Otp_helper', 'Domain_helper', 'Time_helper', 'Floating_helper']);
+		$this->load->helper(['cookie', 'string', 'otp_helper', 'domain_helper', 'time_helper', 'floating_helper']);
 		$this->load->model('M_withdraw');
 		$this->load->model('M_dashboard');
 		$this->load->model('M_log_send_email_member');
@@ -51,39 +51,50 @@ class WithdrawController extends CI_Controller
 
 	public function index()
 	{
-		$this->_unset_session();
-		$arr    = $this->M_dashboard->get_member_balance($this->id_member);
-		$profit = check_float($arr->row()->profit);
-		$bonus  = check_float($arr->row()->bonus);
+		$is_kyc = $this->M_core->get('member', 'is_kyc', ['id' => $this->id_member])->row()->is_kyc;
+		$content    = 'withdraw/main';
+		$vitamin_js = 'withdraw/main_js';
+
+		if ($is_kyc != "yes") {
+			$content    = 'kyc_alert';
+			$vitamin_js = null;
+		}
+
+		$arr         = $this->M_dashboard->get_member_balance($this->id_member);
+		$profit_paid = check_float($arr->row()->profit_paid);
+		$bonus       = check_float($arr->row()->bonus);
 
 		$data = [
-			'title'      => APP_NAME . ' | Penarikan',
-			'content'    => 'withdraw/main',
-			'vitamin_js' => 'withdraw/main_js',
-			'profit'     => $profit,
-			'bonus'      => $bonus,
-			'csrf'       => $this->csrf,
+			'title'       => APP_NAME . ' | Penarikan',
+			'content'     => $content,
+			'vitamin_js'  => $vitamin_js,
+			'profit_paid' => $profit_paid,
+			'bonus'       => $bonus,
+			'csrf'        => $this->csrf,
 		];
 		$this->template->render($data);
 	}
 
 	public function auth()
 	{
-		$this->_unset_session();
-		$arr    = $this->M_dashboard->get_member_balance($this->id_member);
-		$profit = $arr->row()->profit;
-		$bonus  = $arr->row()->bonus;
+		$tx_id       = null;
+		$arr         = $this->M_dashboard->get_member_balance($this->id_member);
+		$profit_paid = $arr->row()->profit_paid;
+		$bonus       = $arr->row()->bonus;
 
-		$source    = $this->input->post('source');
-		$amount    = $this->input->post('amount');
-		$coin_type = $this->input->post('coin_type');
-		$id_wallet = $this->input->post('wallet_address');
+		$source         = $this->input->post('source');
+		$amount         = $this->input->post('amount');
+		$coin_type      = $this->input->post('coin_type');
+		$id_wallet      = $this->input->post('id_wallet');
+		$wallet_address = $this->input->post('wallet_address');
+
+		$wallet_label = $this->M_core->get('member_wallet', 'wallet_label', ['id' => $id_wallet])->row()->wallet_label;
 
 		$code = 500;
 		$msg  = "Tidak dapat terhubung dengan Database, silahkan coba kembali!";
 
-		if ($source == "profit") {
-			if ($amount > $profit) {
+		if ($source == "profit_paid") {
+			if ($amount > $profit_paid) {
 				$msg  = "Saldo Profit Tidak Mencukupi";
 			} else {
 				$code = 200;
@@ -99,82 +110,27 @@ class WithdrawController extends CI_Controller
 		}
 
 		if ($code == 200) {
-			$arr_wallet = $this->get_arr_wallet($id_wallet);
+			$arr_wallet = $this->_get_arr_wallet($id_wallet);
 			if ($arr_wallet === false) {
 				$code = 501;
-				echo json_encode(['code' => $code, 'message' => "Wallet tidak ditemukan atau data telah terupdate, silahkan coba kembali!"]);
+				echo json_encode(['code' => $code, 'message' => "Wallet tidak ditemukan atau Wallet telah terhapus, silahkan cek data wallet!"]);
 				exit;
 			}
 
-			$wallet_label   = $arr_wallet->row()->wallet_label;
-			$wallet_address = $arr_wallet->row()->wallet_address;
-			$this->_set_session($source, $amount, $coin_type, $id_wallet, $wallet_label, $wallet_address);
-			$this->_send_otp($this->id_member, $this->email_member);
+			$process = $this->_process($source, $coin_type, $amount, $id_wallet, $wallet_label, $wallet_address);
+
+			$code = $process['code'];
+			$msg = $process['msg'];
+
+			if ($code == 200) {
+				$tx_id = $process['tx_id'];
+			}
 		}
 
-		echo json_encode(['code' => $code, 'message' => $msg]);
+		echo json_encode(['code' => $code, 'message' => $msg, 'tx_id' => $tx_id]);
 	}
 
-	public function otp()
-	{
-		$source         = $this->session->userdata(SESI . 'source');
-		$amount         = $this->session->userdata(SESI . 'amount');
-		$coin_type      = $this->session->userdata(SESI . 'coin_type');
-		$id_wallet      = $this->session->userdata(SESI . 'id_wallet');
-		$wallet_label   = $this->session->userdata(SESI . 'wallet_label');
-		$wallet_address = $this->session->userdata(SESI . 'wallet_address');
-
-		if (!isset($source) && !isset($amount) && !isset($coin_type) && !isset($id_wallet) && !isset($wallet_label) && !isset($wallet_address)) {
-			$this->_unset_session();
-			redirect('withdraw');
-			exit;
-		}
-
-		$arr_wallet = $this->get_arr_wallet($id_wallet);
-		if ($arr_wallet === false) {
-			return show_error("Wallet tidak ditemukan atau data telah terupdate, silahkan coba kembali!", 404, "Terjadi Kesalahan");
-		}
-
-		$data = [
-			'title'          => APP_NAME . ' | OTP Penarikan',
-			'content'        => 'withdraw/otp',
-			'vitamin_js'     => 'withdraw/otp_js',
-			'source'         => $source,
-			'amount'         => $amount,
-			'wallet_label'   => $wallet_label,
-			'wallet_address' => $wallet_address,
-			'csrf'           => $this->csrf,
-		];
-		$this->template->render($data);
-	}
-
-	protected function _set_session($source, $amount, $coin_type, $id_wallet, $wallet_label, $wallet_address)
-	{
-		$data_session = [
-			SESI . 'source'         => $source,
-			SESI . 'amount'         => $amount,
-			SESI . 'coin_type'      => $coin_type,
-			SESI . 'id_wallet'      => $id_wallet,
-			SESI . 'wallet_label'   => $wallet_label,
-			SESI . 'wallet_address' => $wallet_address,
-		];
-		$this->session->set_userdata($data_session);
-	}
-
-	protected function _unset_session()
-	{
-		$data_session = [
-			SESI . 'source',
-			SESI . 'amount',
-			SESI . 'coin_type',
-			SESI . 'id_wallet',
-			SESI . 'wallet_source',
-			SESI . 'wallet_address',
-		];
-		$this->session->unset_userdata($data_session);
-	}
-
-	public function get_arr_wallet($id_wallet)
+	protected function _get_arr_wallet($id_wallet)
 	{
 		$where_wallet = [
 			'id'         => $id_wallet,
@@ -187,43 +143,17 @@ class WithdrawController extends CI_Controller
 			return false;
 		}
 
-		return $arr_wallet;
-	}
-
-	protected function _send_otp($id, $to): bool
-	{
-		$subject = APP_NAME . " | OTP (One Time Password)";
-		$message = "";
-
-		$this->email->set_newline("\r\n");
-		$this->email->from($this->from, $this->from_alias);
-		$this->email->to($to);
-		$this->email->subject($subject);
-
-		$otp = Generate_otp();
-
-		$data['otp'] = $otp;
-		$message = $this->load->view('emails/otp_template', $data, TRUE);
-
-		$this->email->message($message);
-
-		$is_success = ($this->email->send()) ? 'yes' : 'no';
-
-		$this->M_core->update('member', ['otp' => $otp], ['id' => $id]);
-		$this->M_log_send_email_member->write_log($to, $subject, $message, $is_success);
-
-		if ($is_success == "yes") {
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 
 	public function rates()
 	{
-		// header('Content-Type: application/json');
+		header('Content-Type: application/json');
 		$amount    = $this->input->get('amount');
 		$coin_type = $this->input->get('coin_type');
+
+		$potongan_wd_external = $this->M_core->get('app_config', 'potongan_wd_external', null)->row()->potongan_wd_external;
+		$amount = $amount - ($amount * $potongan_wd_external) / 100;
 
 		$req = [
 			'short'    => 0,
@@ -290,7 +220,7 @@ class WithdrawController extends CI_Controller
 
 			echo json_encode([
 				'code'      => $code,
-				'result'    => number_format($result, 8) . " " . strtoupper($coin_type),
+				'result'    => check_float($result, 8) . " " . strtoupper($coin_type),
 				'amount'    => $amount,
 				'rate_usdt' => $rate_usdt,
 				'rate_x'    => $rate_x,
@@ -308,7 +238,7 @@ class WithdrawController extends CI_Controller
 			'coin_type'  => $coin_type,
 			'deleted_at' => null,
 		];
-		$arr = $this->M_core->get('member_wallet', 'wallet_label', $where, 'updated_at', 'desc', 1);
+		$arr = $this->M_core->get('member_wallet', 'id, wallet_label', $where, 'updated_at', 'desc', 1);
 
 		if ($arr->num_rows() == 0) {
 			$code = 404;
@@ -323,43 +253,39 @@ class WithdrawController extends CI_Controller
 
 	public function render_wallet_address()
 	{
-		$wallet_label = $this->input->get('wallet_label');
+		$id_wallet = $this->input->get('id_wallet');
 
 		$where = [
-			'id_member'    => $this->id_member,
-			'wallet_label' => $wallet_label,
-			'deleted_at'   => null,
+			'id'         => $id_wallet,
+			'id_member'  => $this->id_member,
+			'deleted_at' => null,
 		];
 		$arr = $this->M_core->get('member_wallet', '*', $where, 'updated_at', 'desc', 1);
 
 		if ($arr->num_rows() == 0) {
 			$code = 404;
-			$data = [];
+			$wallet_address = "";
 		} else {
 			$code = 200;
-			$data = $arr->result();
+			$wallet_address = $arr->row()->wallet_address;
 		}
 
-		echo json_encode(['code' => $code, 'data' => $data]);
+		echo json_encode(['code' => $code, 'wallet_address' => $wallet_address]);
 	}
 
-	public function process()
+	protected function _process($source, $coin_type, $amount, $id_wallet, $wallet_label, $wallet_address)
 	{
 		$this->db->trans_begin();
-
-		$source         = $this->session->userdata(SESI . 'source');
-		$amount         = $this->session->userdata(SESI . 'amount');
-		$coin_type      = $this->session->userdata(SESI . 'coin_type');
-		$id_wallet      = $this->session->userdata(SESI . 'id_wallet');
-		$wallet_label   = $this->session->userdata(SESI . 'wallet_label');
-		$wallet_address = $this->session->userdata(SESI . 'wallet_address');
 
 		$req = ['all' => 0];
 		$get_coin_balance = $this->_coinpayments_api_call('balances', $req);
 
 		if ($get_coin_balance['error'] != "ok") {
 			$this->db->trans_rollback();
-			return show_error('Gagal terhubung dengan server CoinPayments.net, silahkan coba kembali!', 500, "Telah terjadi kesalahan");
+			return [
+				'code' => 500,
+				'msg'  => 'Gagal terhubung dengan server CoinPayments.net, silahkan coba kembali!'
+			];
 		}
 
 		$x        = strtoupper($coin_type);
@@ -368,20 +294,24 @@ class WithdrawController extends CI_Controller
 		if ($amount > $balancef) {
 			$this->_send_alert_balance($coin_type, $amount);
 			$this->db->trans_commit();
-
-			$msg = 'Sistem tidak dapat memproses penarikan Anda, dikarenakan nominal banyaknya antrian penarikan saat ini.<br>Silahkan beritahu admin mengenai kedala ini di email <a href="mailto:' . EMAIL_ADMIN_2 . '" target="_blank"><mark>' . EMAIL_ADMIN_2 . '</mark></a> atau tunggu maksimal 24 jam sesudahnya untuk admin memproses kedala tersebut.';
-			return show_error($msg, 500, "Telah terjadi kesalahan");
+			$msg = 'Sistem tidak dapat memproses penarikan Anda, dikarenakan banyaknya antrian penarikan saat ini.<br>Silahkan beritahu admin mengenai kedala ini ke alamat email <a href="mailto:' . EMAIL_ADMIN_2 . '" target="_blank"><mark>' . EMAIL_ADMIN_2 . '</mark></a> atau tunggu maksimal 24 jam untuk melakukan proses penarikan.';
+			return [
+				'code' => 500,
+				'msg'  => $msg
+			];
 		}
 
-		$note = "Penarikan dari $source senilai $amount USDT ke Coin " . strtoupper($coin_type) . " ke Wallet Address $wallet_address (" . strtoupper($wallet_label) . ")";
+		$note = "Penarikan $source senilai $amount USDT ke Coin " . strtoupper($coin_type) . " menuju Wallet Address $wallet_address";
 
 		/* 
 		NOTES
 		If add_tx_fee set to 1, add the coin TX fee to the withdrawal amount so the sender pays the TX fee instead of the receiver.
 		*/
+		$potongan_wd_external = $this->M_core->get('app_config', 'potongan_wd_external', null)->row()->potongan_wd_external;
+		$amount_request       = $amount - ($amount * $potongan_wd_external) / 100;
 		$req = [
-			'amount'       => $amount,
-			'add_tx_fee'   => 0,
+			'amount'       => $amount_request,
+			'add_tx_fee'   => 1,
 			'currency'     => $coin_type,
 			'currency2'    => 'USDT',
 			'address'      => $wallet_address,
@@ -394,9 +324,12 @@ class WithdrawController extends CI_Controller
 			$this->db->trans_rollback();
 			$msg = $withdraw_process['error'];
 			if ($withdraw_process['error'] == "That amount is larger than your balance!") {
-				$msg = 'Sistem tidak dapat memproses penarikan Anda, dikarenakan nominal banyaknya antrian penarikan saat ini.<br>Silahkan beritahu admin mengenai kedala ini di email <a href="mailto:' . EMAIL_ADMIN_2 . '" target="_blank"><mark>' . EMAIL_ADMIN_2 . '</mark></a> atau tunggu maksimal 24 jam sesudahnya untuk admin memproses kedala tersebut.';
+				$msg = 'Sistem tidak dapat memproses penarikan Anda, dikarenakan banyaknya antrian penarikan saat ini.<br>Silahkan beritahu admin mengenai kedala ini ke alamat email <a href="mailto:' . EMAIL_ADMIN_2 . '" target="_blank"><mark>' . EMAIL_ADMIN_2 . '</mark></a> atau tunggu maksimal 24 jam untuk melakukan proses penarikan.';
 			}
-			return show_error($msg, 500, "Telah terjadi kesalahan");
+			return [
+				'code' => 500,
+				'msg'  => $msg
+			];
 		}
 
 		$tx_id    = $withdraw_process['result']['id'];
@@ -406,11 +339,7 @@ class WithdrawController extends CI_Controller
 		$invoice     = $arr_invoice['invoice'];
 		$sequence    = $arr_invoice['sequence'];
 
-		$where_fee = [
-			'coin_type' => $coin_type
-		];
-		$arr_fee           = $this->M_core->get('coinpayment_fee', 'fee', $where_fee);
-		$estimation_amount = $amount_2 - $arr_fee->row()->fee;
+		$estimation_amount = $amount_2;
 
 		$data_withdraw = [
 			'invoice'        => $invoice,
@@ -437,7 +366,7 @@ class WithdrawController extends CI_Controller
 			return show_error('Gagal untuk menyimpan data penarikan ke Database, silahkan coba kembali!', 500, "Telah terjadi kesalahan");
 		}
 
-		if ($source == "profit") {
+		if ($source == "profit_paid") {
 			$exec_reduce = $this->M_withdraw->reduce_member_profit($this->id_member, $amount);
 		} elseif ($source == "bonus") {
 			$exec_reduce = $this->M_withdraw->reduce_member_bonus($this->id_member, $amount);
@@ -445,11 +374,17 @@ class WithdrawController extends CI_Controller
 
 		if (!$exec_reduce) {
 			$this->db->trans_rollback();
-			return show_error('Gagal untuk mengurasi nominal saldo member, silahkan coba kembali!', 500, "Telah terjadi kesalahan");
+			return [
+				'code' => 500,
+				'msg'  => "Gagal untuk mengurangi nominal saldo member, silahkan hubungi admin di " . EMAIL_ADMIN_2
+			];
 		}
 		$this->db->trans_commit();
-
-		redirect('withdraw/success/' . $tx_id);
+		return [
+			'code'  => 200,
+			'msg'   => 'Proses Withdraw Berhasil',
+			'tx_id' => $tx_id
+		];
 	}
 
 	protected function _send_alert_balance($coin_type, $amount): bool

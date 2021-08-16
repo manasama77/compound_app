@@ -18,6 +18,7 @@ class TradeManagerController extends CI_Controller
 	protected $id_member;
 	protected $member_email;
 	protected $member_fullname;
+	protected $member_user_id;
 	protected $csrf;
 
 	public function __construct()
@@ -39,6 +40,7 @@ class TradeManagerController extends CI_Controller
 		$this->id_member       = $this->session->userdata(SESI . 'id');
 		$this->member_email    = $this->session->userdata(SESI . 'email');
 		$this->member_fullname = $this->session->userdata(SESI . 'fullname');
+		$this->member_user_id  = $this->session->userdata(SESI . 'user_id');
 
 		$this->from       = EMAIL_ADMIN;
 		$this->from_alias = EMAIL_ALIAS;
@@ -313,6 +315,7 @@ class TradeManagerController extends CI_Controller
 
 		$id_member       = $this->id_member;
 		$member_email    = $this->member_email;
+		$member_user_id  = $this->member_user_id;
 		$member_fullname = $this->member_fullname;
 		$id_package      = str_replace(UYAH, '', base64_decode($this->input->post('id_package_trade_manager')));
 		$id_config       = str_replace(UYAH, '', base64_decode($this->input->post('id_konfigurasi_trade_manager')));
@@ -351,22 +354,6 @@ class TradeManagerController extends CI_Controller
 		$current_date_object = new DateTime($this->date);
 		$expired_package     = $current_date_object->modify('+365 day')->format('Y-m-d');
 
-		$sequence = $this->_get_new_sequence();
-		$new_sequence = '';
-		if ($sequence >= 0) {
-			$new_sequence = "00000" . $sequence;
-		} elseif ($sequence > 10) {
-			$new_sequence = "0000" . $sequence;
-		} elseif ($sequence > 100) {
-			$new_sequence = "000" . $sequence;
-		} elseif ($sequence > 1000) {
-			$new_sequence = "00" . $sequence;
-		} elseif ($sequence > 10000) {
-			$new_sequence = "0" . $sequence;
-		}
-
-		$invoice = "TM-" . date('Ymd') . '-' . $new_sequence;
-
 		$arr_package = $this->M_trade_manager->get_package($id_config);
 
 		if (count($arr_package) == 0) {
@@ -396,6 +383,23 @@ class TradeManagerController extends CI_Controller
 			$share_company_value    = ($profit_per_day_value * $share_company_percentage) / 100;
 		}
 
+		// GENERATE INVOICE START
+		$sequence = $this->_get_new_sequence();
+		$new_sequence = '';
+		if ($sequence >= 0) {
+			$new_sequence = "00000" . $sequence;
+		} elseif ($sequence > 10) {
+			$new_sequence = "0000" . $sequence;
+		} elseif ($sequence > 100) {
+			$new_sequence = "000" . $sequence;
+		} elseif ($sequence > 1000) {
+			$new_sequence = "00" . $sequence;
+		} elseif ($sequence > 10000) {
+			$new_sequence = "0" . $sequence;
+		}
+		$invoice = "TM-" . date('Ymd') . '-' . $new_sequence;
+		// GENERATE INVOICE END
+
 		$data_member_package = [
 			'invoice'                   => $invoice,
 			'sequence'                  => $sequence,
@@ -403,6 +407,7 @@ class TradeManagerController extends CI_Controller
 			'id_member'                 => $id_member,
 			'member_fullname'           => $member_fullname,
 			'member_email'              => $member_email,
+			'member_user_id'            => $member_user_id,
 			'id_package'                => $id_package,
 			'id_konfigurasi'            => $id_config,
 			'package_code'              => $package_code,
@@ -438,10 +443,11 @@ class TradeManagerController extends CI_Controller
 			'deleted_at'                => null,
 		];
 		$exec = $this->M_core->store('member_trade_manager', $data_member_package);
-
 		if (!$exec) {
 			$this->db->trans_rollback();
 			return show_error("Tidak terhubung dengan database", 500, "Terjadi Kesalahan");
+		} else {
+			$this->db->trans_commit();
 		}
 
 		$data_package = [
@@ -503,14 +509,14 @@ class TradeManagerController extends CI_Controller
 				'currency_transfer' => $coin_type,
 				'txn_id'            => $txn_id,
 				'state'             => 'waiting payment',
-				'description'       => "[$this->datetime] Member $member_email Join Paket $package_name. Menunggu Transfer Pembayaran",
+				'description'       => "[$this->datetime] $member_user_id Join Paket $package_name. Menunggu Transfer Pembayaran",
 				'created_at'        => $this->datetime,
 			];
 			$this->M_core->store_uuid('log_member_trade_manager', $data_log);
 		} else {
 			$data_log = [
 				'state'       => 'waiting payment',
-				'description' => "[$this->datetime] Member $member_email Join Paket $package_name. Menunggu Transfer Pembayaran",
+				'description' => "[$this->datetime] $member_user_id Join Paket $package_name. Menunggu Transfer Pembayaran",
 				'updated_at'  => $this->datetime,
 			];
 			$this->M_core->update('log_member_trade_manager', $data_log, $where_log);

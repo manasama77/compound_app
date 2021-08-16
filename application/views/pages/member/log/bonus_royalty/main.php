@@ -2,12 +2,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">Catan Bonus Royalti</h1>
+				<h1 class="m-0">Catatan Bonus Royalti</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Log</a></li>
-					<li class="breadcrumb-item active">Catan Bonus Royalti</li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Beranda</a></li>
+					<li class="breadcrumb-item active">Catatan Bonus Royalti</li>
 				</ol>
 			</div>
 		</div>
@@ -20,7 +20,7 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Catan Bonus Royalti</h3>
+						<h3 class="card-title">Catatan Bonus Royalti</h3>
 
 						<div class="card-tools">
 							<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -33,12 +33,12 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
-										<th class="align-top" style="min-width: 120px;">Tanggal Waktu</th>
-										<th class="align-top" style="min-width: 120px;">Member</th>
+										<th class="text-center align-top" style="min-width: 120px;">Tanggal Waktu</th>
+										<th class="align-top" style="min-width: 120px;">Downline</th>
+										<th class="align-top" style="min-width: 120px;">Upline</th>
 										<th class="align-top" style="min-width: 80px;">Paket</th>
 										<th class="align-top" style="min-width: 120px;">Tipe</th>
-										<th class="align-top text-right" style="min-width: 100px;">Nilai</th>
-										<th class="align-top" style="min-width: 350px;">Deskripsi</th>
+										<th class="align-top text-right" style="min-width: 100px;">Bonus</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -47,11 +47,14 @@
 										<?php foreach ($arr->result() as $key) : ?>
 
 											<tr>
-												<td class="align-top">
+												<td class="text-center align-top">
 													<?= $key->created_at; ?>
 												</td>
 												<td class="align-top">
-													<?= $key->fullname; ?>
+													<?= $key->downline_user_id; ?>
+												</td>
+												<td class="align-top">
+													<?= $key->upline_user_id; ?>
 												</td>
 												<td class="align-top">
 													<?= $key->package; ?>
@@ -60,10 +63,7 @@
 													<?= ucwords($key->type); ?></small>
 												</td>
 												<td class="align-top text-right">
-													<?= check_float($key->package_amount); ?> <small>USDT</small>
-												</td>
-												<td class="align-top">
-													<?= $key->description; ?>
+													<?= check_float($key->package_amount); ?>
 												</td>
 											</tr>
 
@@ -71,7 +71,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">-Kamu Tidak Memiliki Catatan Bonus Royalti-</td>
+											<td colspan="6" class="text-center text-danger">-Kamu Tidak Memiliki Catatan Bonus Royalti-</td>
 										</tr>
 
 									<?php endif; ?>

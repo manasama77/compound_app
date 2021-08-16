@@ -6,7 +6,7 @@
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Log</a></li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Beranda</a></li>
 					<li class="breadcrumb-item active">Catatan Rekrutmen</li>
 				</ol>
 			</div>
@@ -35,13 +35,11 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
-										<th class="align-middle">Foto</th>
-										<th class="align-middle">Nama Lengkap</th>
-										<th class="align-middle">Email</th>
-										<th class="align-middle">Nomor Telepon</th>
+										<th class="text-center align-middle"><i class="fas fa-image"></i></th>
+										<th class="align-middle">Member</th>
 										<th class="text-center align-middle">Generasi</th>
 										<th class="text-center align-middle">Upline</th>
-										<th class="text-center align-middle" style="min-width: 150px; width: 150px;">Tanggal Bergabung</th>
+										<th class="text-center align-middle" style="min-width: 150px; width: 150px;">Tanggal Join</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -50,17 +48,11 @@
 										<?php foreach ($data_downline as $key) : ?>
 
 											<tr>
-												<td class="align-middle no-sort">
+												<td class="text-center align-middle no-sort">
 													<img src="<?= $key['profile_picture_downline']; ?>" alt="Profile Picture" class="img-size-50">
 												</td>
 												<td class="align-middle">
-													<?= $key['fullname_downline']; ?>
-												</td>
-												<td class="align-middle">
-													<?= $key['email_downline']; ?>
-												</td>
-												<td class="align-middle">
-													<?= $key['phone_number_downline']; ?>
+													<?= $key['user_id_downline']; ?>
 												</td>
 												<td class="text-center align-middle">
 													<span class="badge badge-primary">
@@ -68,7 +60,7 @@
 													</span>
 												</td>
 												<td class="align-middle text-center">
-													<?= $key['fullname_upline']; ?> <small>(<?= $key['email_upline']; ?>)</small>
+													<?= $key['user_id_upline']; ?>
 												</td>
 												<td class="align-middle text-center">
 													<?= $key['created_at_downline']; ?>
@@ -79,7 +71,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="7" class="text-center text-danger">- KAMU TIDAK MEMILIKI DOWNLINE-</td>
+											<td colspan="5" class="text-center text-danger">- KAMU TIDAK MEMILIKI DOWNLINE-</td>
 										</tr>
 
 									<?php endif; ?>

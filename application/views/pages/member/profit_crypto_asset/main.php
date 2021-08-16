@@ -6,7 +6,7 @@
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Home</a></li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Beranda</a></li>
 					<li class="breadcrumb-item active">Profit Crypto Asset</li>
 				</ol>
 			</div>
@@ -28,12 +28,14 @@
 							<table class="table table-bordered table-striped" id="table_data">
 								<thead>
 									<tr>
-										<th style="min-width: 100px;">Tanggal</th>
+										<th class="text-center" style="min-width: 100px;">Tanggal</th>
 										<th style="min-width: 100px;">Member</th>
 										<th style="min-width: 100px;">Invoice</th>
 										<th style="min-width: 100px;">Paket</th>
 										<th class="text-right" style="min-width: 100px;">Profit</th>
-										<th style="min-width: 350px;">Deksripsi</th>
+										<th class="text-center">Status</th>
+										<th class="text-center" style="min-width: 100px;">Tanggal Paid</th>
+										<th style="min-width: 100px;">Downline</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -43,11 +45,21 @@
 									?>
 											<tr>
 												<td class="text-center"><?= $key['created_at']; ?></td>
-												<td><?= $key['fullname']; ?><br /><small>(<?= $key['email']; ?>)</small></td>
+												<td><?= $key['user_id']; ?></td>
 												<td><?= $key['invoice']; ?></td>
 												<td><?= $key['package_name']; ?></td>
-												<td class="text-right"><?= $key['profit']; ?> <small>USDT</small></td>
-												<td><?= $key['description']; ?></td>
+												<td class="text-right"><?= $key['profit']; ?></td>
+												<td class="text-center">
+													<?php
+													if ($key['is_unpaid'] == "yes") {
+														echo '<span class="badge badge-warning">UNPAID</span>';
+													} else {
+														echo '<span class="badge badge-success">PAID</span>';
+													}
+													?>
+												</td>
+												<td class="text-center"><?= $key['release_date']; ?></td>
+												<td><?= $key['downline_user_id']; ?></td>
 											</tr>
 									<?php
 										endforeach;

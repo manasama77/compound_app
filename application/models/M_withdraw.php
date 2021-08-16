@@ -38,7 +38,7 @@ class M_withdraw extends CI_Model
 
 	public function reduce_member_profit($id_member, $profit)
 	{
-		return $this->db->set('profit', 'profit - ' . $profit, false)->where('id_member', $id_member)->update('member_balance');
+		return $this->db->set('profit_paid', 'profit_paid - ' . $profit, false)->where('id_member', $id_member)->update('member_balance');
 	}
 
 	public function reduce_member_bonus($id_member, $bonus)

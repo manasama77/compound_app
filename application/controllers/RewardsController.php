@@ -45,8 +45,8 @@ class RewardsController extends CI_Controller
 			if ($main_line->row()->total_omset > 0) {
 				$id_main_line       = $main_line->row()->id;
 				$main_fullname      = $main_line->row()->fullname;
-				$main_email         = $main_line->row()->email;
-				$downline_main_line = "Dari Downline $main_fullname ($main_email)";
+				$main_user_id       = $main_line->row()->user_id;
+				$downline_main_line = "Dari Downline $main_fullname ($main_user_id)";
 				$omset_main_line    = check_float($main_line->row()->total_omset);
 
 				$other_line = $this->M_member->get_member_other_line($lft, $rgt, $depth + 1, $id_main_line);

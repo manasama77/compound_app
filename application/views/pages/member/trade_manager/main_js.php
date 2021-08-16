@@ -47,7 +47,7 @@
 				}
 			],
 			columnDefs: [{
-				targets: [12],
+				targets: [9],
 				orderable: false
 			}]
 		}).buttons().container().appendTo('#table_data_wrapper .col-md-6:eq(0)');
@@ -146,7 +146,7 @@
 				let profit_self_text = `${e.result.share_self_value} <small>USDT per day</small> (${e.result.share_self_percentage}%)`;
 				let profit_upline_text = `${e.result.share_upline_value} <small>USDT per day</small> (${e.result.share_upline_percentage}%)`;
 				let profit_company_text = `${e.result.share_company_value} <small>USDT per day</small> (${e.result.share_company_percentage}%)`;
-				let payment_text = `CoinPayment - ${e.result.txn_id}<br/>Amount Transfer ${e.result.amount_2} <small>${e.result.currency2}</small>`;
+				let payment_text = `CoinPayments TXID <small>${e.result.txn_id}</small><br/>Total Transfer ${e.result.amount_2} <small>${e.result.currency2}</small>`;
 
 				$('#profit_monthly').html(profit_montly_text);
 				$('#profit_daily').html(profit_daily_text);

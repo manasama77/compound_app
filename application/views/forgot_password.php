@@ -24,7 +24,7 @@
 				<a href="index2.html" class="h1"><b><?= APP_NAME; ?></b></a>
 			</div>
 			<div class="card-body">
-				<p class="login-box-msg">Kami Akan Mengirimkan email untuk Reset Password Anda</p>
+				<p class="login-box-msg">Kami Akan Mengirimkan Email Untuk Reset Password Anda</p>
 
 				<form id="form_forgot_password">
 					<div class="input-group mb-3">
@@ -47,7 +47,7 @@
 				</form>
 
 				<p class="mb-1 mt-3">
-					<a href="<?= site_url('login'); ?>">Saya sudah ingat Password saya</a>
+					<a href="<?= site_url('login'); ?>">Saya sudah ingat Password Saya</a>
 				</p>
 			</div>
 			<!-- /.card-body -->

@@ -7,7 +7,7 @@
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Home</a></li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Beranda</a></li>
 					<li class="breadcrumb-item active">Downline</li>
 				</ol>
 			</div>
@@ -34,10 +34,10 @@
 					<div class="card-body">
 						<form action="<?= site_url('downline/show'); ?>" method="GET">
 							<div class="form-group">
-								<label for="depth">Kedalaman</label>
+								<label for="depth">Generasi</label>
 								<select class="form-control" id="depth" name="depth" required>
 									<?php for ($x = 1; $x <= $max_depth; $x++) { ?>
-										<option value="<?= $x; ?>" <?= ($x == $id_member_depth) ? 'selected' : ''; ?>>Generasi <?= $x; ?></option>
+										<option value="<?= $x; ?>" <?= ($x == $depth) ? 'selected' : ''; ?>>Generasi <?= $x; ?></option>
 									<?php } ?>
 								</select>
 							</div>
@@ -67,14 +67,13 @@
 							<table id="table_data" class="table table-sm">
 								<thead>
 									<tr>
-										<th class="align-middle">Foto</th>
+										<th class="text-center align-middle"><i class="fas fa-image"></i></th>
+										<th class="align-middle">User ID</th>
 										<th class="align-middle">Nama Lengkap</th>
-										<th class="align-middle">Email</th>
-										<th class="align-middle">Nomor Telepon</th>
-										<th class="text-center align-middle" style="width: 200px;">Upline</th>
+										<th class="align-middle">Upline</th>
 										<th class="text-center align-middle">Generasi</th>
-										<th class="text-center align-middle">Total Omzet</th>
-										<th class="text-center align-middle">Total Downline</th>
+										<th class="text-right align-middle">Total Omzet</th>
+										<th class="text-right align-middle">Total Downline</th>
 										<th class="text-center align-middle">
 											<i class="fas fa-cog"></i>
 										</th>
@@ -92,27 +91,24 @@
 													<img src="<?= $key['profile_picture']; ?>" alt="Profile Picture" class="img-size-50">
 												</td>
 												<td class="align-middle">
+													<?= $key['user_id']; ?>
+												</td>
+												<td class="align-middle">
 													<?= $key['fullname']; ?>
 												</td>
 												<td class="align-middle">
-													<?= $key['email']; ?>
-												</td>
-												<td class="align-middle">
-													<?= $key['phone_number']; ?>
-												</td>
-												<td class="align-middle text-center">
-													<?= $key['fullname_upline']; ?> <br />(<?= $key['email_upline']; ?>)
+													<?= $key['user_id_upline']; ?>
 												</td>
 												<td class="text-center align-middle">
 													<span class="badge badge-primary">
 														<i class="fas fa-sun"></i> <?= $key['generation']; ?>
 													</span>
 												</td>
-												<td class="text-center align-middle">
-													<?= $key['total_omset']; ?> USDT
+												<td class="text-right align-middle">
+													<?= $key['total_omset']; ?>
 												</td>
-												<td class="text-center align-middle">
-													<?= $key['total_downline']; ?> Member
+												<td class="text-right align-middle">
+													<?= $key['total_downline']; ?>
 												</td>
 												<td class="text-center align-middle">
 													<button type="button" class="btn btn-info btn-xs" onclick="showModalDownline('<?= $key['id']; ?>', '<?= $key['fullname']; ?>')">
@@ -149,7 +145,7 @@
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">Detail Member - <span id="name_downline"></span></h5>
+				<h5 class="modal-title" id="exampleModalLabel">Detail Member <span id="name_downline"></span></h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -157,47 +153,65 @@
 			<div class="modal-body">
 				<h4>Trade Manager</h4>
 				<div class="table-resonsive">
-					<table class="table table-sm">
+					<table id="table_downline" class="table table-sm">
 						<thead>
 							<tr>
 								<th class="align-middle">Paket</th>
-								<th class="align-middle">Nilai</th>
-								<th class="align-middle">Profit /Hari</th>
-								<th class="align-middle">Durasi</th>
-								<th class="align-middle">Status</th>
+								<th class="align-middle text-right">Nilai Investasi</th>
+								<th class="align-middle text-center">Durasi</th>
+								<th class="align-middle text-center">Status</th>
 							</tr>
 						</thead>
 						<tbody id="v_trade_manager">
 							<tr>
-								<td colspan="5" class="text-center align-middle">-Tidak Ada Paket Aktif-</td>
+								<td colspan="4" class="text-center align-middle">-Tidak Ada Paket Aktif-</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
-				<h4 class="mt-3">Downline</h4>
-				<div class="table-responsive">
-					<table class="table table-sm">
+
+				<h4>Crypto Asset</h4>
+				<div class="table-resonsive">
+					<table id="table_downline" class="table table-sm">
 						<thead>
 							<tr>
+								<th class="align-middle">Paket</th>
+								<th class="align-middle text-right">Nilai Investasi</th>
+								<th class="align-middle text-center">Durasi</th>
+								<th class="align-middle text-center">Status</th>
+							</tr>
+						</thead>
+						<tbody id="v_crypto_asset">
+							<tr>
+								<td colspan="4" class="text-center align-middle">-Tidak Ada Paket Aktif-</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<h4 class="mt-3">Downline</h4>
+				<div class="table-responsive">
+					<table id="table_downline" class="table table-sm">
+						<thead>
+							<tr>
+								<th class="align-middle">User ID</th>
 								<th class="align-middle">Nama Lengkap</th>
-								<th class="align-middle">Email</th>
-								<th class="align-middle">Nomor Telepon</th>
 								<th class="align-middle">Upline</th>
-								<th class="align-middle">Generasi</th>
+								<th class="align-middle text-center">Generasi</th>
 								<th class="align-middle text-right">Total Omzet</th>
-								<th class="align-middle text-center">Total Downline</th>
+								<th class="align-middle text-right">Total Downline</th>
 							</tr>
 						</thead>
 						<tbody id="v_downline">
 							<tr>
-								<td colspan="7" class="text-center align-middle">-No Downline Data-</td>
+								<td colspan="6" class="text-center align-middle">-Tidak ada data Downline-</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
 			</div>
 		</div>
 	</div>

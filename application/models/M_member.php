@@ -109,6 +109,7 @@ class M_member extends CI_Model
 		$arr2 = $this->db
 			->select([
 				'et_member.id as id_downline',
+				'et_member.user_id as user_id_downline',
 
 				'et_member.profile_picture as profile_picture_downline',
 				'et_member.fullname as fullname_downline',
@@ -120,6 +121,7 @@ class M_member extends CI_Model
 				'upline.profile_picture as profile_picture_upline',
 				'upline.fullname as fullname_upline',
 				'upline.email as email_upline',
+				'upline.user_id as user_id_upline',
 				'upline.phone_number as phone_number_upline',
 			])
 			->from('tree')
@@ -136,6 +138,7 @@ class M_member extends CI_Model
 		$arr_data = [];
 		foreach ($arr2->result() as $key) {
 			$id_downline              = $key->id_downline;
+			$user_id_downline         = $key->user_id_downline;
 			$profile_picture_downline = $this->_set_pp($key->profile_picture_downline);
 			$fullname_downline        = $key->fullname_downline;
 			$email_downline           = $key->email_downline;
@@ -143,13 +146,15 @@ class M_member extends CI_Model
 			$created_at_downline      = $key->created_at_downline;
 			$generation_downline      = $key->generation_downline - $member_depth;
 
-			$profile_picture_upline = $this->_set_pp($key->profile_picture_upline);
-			$fullname_upline        = $key->fullname_upline;
-			$email_upline           = $key->email_upline;
-			$phone_number_upline    = $key->phone_number_upline;
+			$profile_picture_upline   = $this->_set_pp($key->profile_picture_upline);
+			$fullname_upline          = $key->fullname_upline;
+			$email_upline             = $key->email_upline;
+			$user_id_upline           = $key->user_id_upline;
+			$phone_number_upline      = $key->phone_number_upline;
 
 			$nested = [
-				'id_downline' => $id_downline,
+				'id_downline'              => $id_downline,
+				'user_id_downline'         => $user_id_downline,
 
 				'profile_picture_downline' => $profile_picture_downline,
 				'fullname_downline'        => $fullname_downline,
@@ -158,10 +163,11 @@ class M_member extends CI_Model
 				'created_at_downline'      => $created_at_downline,
 				'generation_downline'      => $generation_downline,
 
-				'profile_picture_upline' => $profile_picture_upline,
-				'fullname_upline'        => $fullname_upline,
-				'email_upline'           => $email_upline,
-				'phone_number_upline'    => $phone_number_upline,
+				'profile_picture_upline'   => $profile_picture_upline,
+				'fullname_upline'          => $fullname_upline,
+				'email_upline'             => $email_upline,
+				'user_id_upline'           => $user_id_upline,
+				'phone_number_upline'      => $phone_number_upline,
 			];
 
 			array_push($arr_data, $nested);
@@ -188,6 +194,7 @@ class M_member extends CI_Model
 				'member.id',
 				'member.fullname',
 				'member.email',
+				'member.user_id',
 				'tree.lft',
 				'tree.rgt',
 				'tree.depth',
@@ -264,6 +271,7 @@ class M_member extends CI_Model
 		return $this->db
 			->select([
 				'member.id',
+				'member.user_id',
 				'member.fullname',
 				'member.email',
 				'balance.self_omset',

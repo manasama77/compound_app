@@ -116,14 +116,14 @@ class M_trade_manager extends CI_Model
 			->get();
 	}
 
-	public function update_member_profit($id_member, $profit)
+	public function update_member_profit_unpaid($id_member, $profit)
 	{
-		return $this->db->set('profit', 'profit + ' . $profit, false)->where('id_member', $id_member)->update('member_balance');
+		return $this->db->set('profit_unpaid', 'profit_unpaid + ' . $profit, false)->where('id_member', $id_member)->update('member_balance');
 	}
 
 	public function update_unknown_profit($profit)
 	{
-		return $this->db->set('amount_profit', 'amount_profit + ' . $profit, false)->where('id', 1)->update('unknown_balance');
+		return $this->db->set('amount_profit_unpaid', 'amount_profit_unpaid + ' . $profit, false)->where('id', 1)->update('unknown_balance');
 	}
 
 	public function update_member_bonus($id_member, $bonus)
@@ -144,6 +144,7 @@ class M_trade_manager extends CI_Model
 				'member_trade_manager.id_member',
 				'member_trade_manager.member_fullname',
 				'member_trade_manager.member_email',
+				'member_trade_manager.member_user_id',
 				'member_trade_manager.id_package',
 				'member_trade_manager.id_konfigurasi',
 				'member_trade_manager.package_code',
@@ -356,7 +357,7 @@ class M_trade_manager extends CI_Model
 		return $this->db
 			->set('total_invest_trade_manager', 'total_invest_trade_manager - ' . $amount, false)
 			->set('count_trade_manager', 'count_trade_manager - 1', false)
-			->set('profit', 'profit + ' . $amount, false)
+			->set('profit_paid', 'profit_paid + ' . $amount, false)
 			->where('id_member', $id_member)
 			->update('member_balance');
 	}

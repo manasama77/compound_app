@@ -20,9 +20,7 @@ class LogRecruitmentController extends CI_Controller
 
 	public function index()
 	{
-		$data_downline = array();
-		$id_member  = $this->session->userdata(SESI . 'id');
-
+		$id_member    = $this->session->userdata(SESI . 'id');
 		$arr_downline = $this->M_member->tree_get_downline($id_member);
 
 		$data = [

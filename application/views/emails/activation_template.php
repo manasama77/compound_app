@@ -113,6 +113,49 @@
 				min-width: 414px !important;
 			}
 		}
+
+		.myButton {
+			background-color: #44c767;
+			border-radius: 28px;
+			border: 1px solid #18ab29;
+			display: inline-block;
+			cursor: pointer;
+			color: #ffffff;
+			font-family: Arial;
+			font-size: 17px;
+			padding: 16px 31px;
+			text-decoration: none;
+			text-shadow: 0px 1px 0px #2f6627;
+		}
+
+		a:link {
+			color: #fff;
+			text-decoration: none;
+		}
+
+		a:hover {
+			color: #fff;
+			text-decoration: none;
+		}
+
+		a:active {
+			color: #fff;
+			text-decoration: none;
+		}
+
+		a:link {
+			color: #fff;
+			text-decoration: none;
+		}
+
+		.myButton:hover {
+			background-color: #5cbf2a;
+		}
+
+		.myButton:active {
+			position: relative;
+			top: 1px;
+		}
 	</style>
 
 	<!-- CSS Reset : END -->
@@ -358,7 +401,7 @@
 								<td class="logo" style="text-align: center;">
 									<h1>
 										<a href="<?= site_url(); ?>">
-											<img src="https://cryptoperty.id/public/img/logo.png" alt="<?= APP_NAME; ?> LOGO" title="<?= APP_NAME; ?>" style="width: 200px;">
+											<img src="https://cryptoperty.id/public/img/logo.png" alt="<?= APP_NAME; ?>" title="<?= APP_NAME; ?>" style="width: 100px;">
 										</a>
 									</h1>
 								</td>
@@ -368,7 +411,7 @@
 				</tr><!-- end tr -->
 				<tr>
 					<td valign="middle" class="hero bg_white" style="padding: 1em 0 1em 0;">
-						<img src="https://cryptoperty.id/public/img/undraw_Checklist__re_2w7v.png" alt="Logo Activation" style="width: 200px; max-width: 200px; height: auto; margin: auto; display: block;">
+						<img src="https://cryptoperty.id/public/img/undraw_Checklist__re_2w7v.png" style="width: 200px; max-width: 200px; height: auto; margin: auto; display: block;">
 					</td>
 				</tr><!-- end tr -->
 				<tr>
@@ -377,8 +420,9 @@
 							<tr>
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
-										<h3>Aktivasi akun anda</h3>
-										<h4><mark><a href="<?= site_url('activate/' . urlencode($email) . '/' . $activation_code); ?>"><?= site_url('activate/' . urlencode($email) . '/' . $activation_code); ?></a></mark></h4>
+										<h3><b>Selamat Bergabung di CryptoPerty</b></h3>
+										<h4>Silahkan konfirmasi alamat email kamu dengan mengunjungi link berikut:</h4>
+										<a href="<?= site_url('activate/' . urlencode($email) . '/' . $activation_code); ?>" class="myButton" style="color: #fff !important; text-decoration: none !important;">AKTIVASI AKUN</a>
 									</div>
 								</td>
 							</tr>

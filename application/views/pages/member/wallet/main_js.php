@@ -27,6 +27,39 @@
 			e.preventDefault();
 			updateData();
 		});
+
+		$('#otp').on('keyup', function(e) {
+			if ($(this).val().length == 6) {
+				$(this).trigger("keydown", [9]);
+				otpAuth().done(function(e) {
+					console.log(e);
+					if (e.code == 500) {
+						Swal.fire({
+							icon: 'error',
+							title: 'OTP Salah...',
+							showConfirmButton: false,
+							toast: true,
+							timer: 3000,
+							timerProgressBar: true,
+						});
+						$('#otp').val('');
+					} else if (e.code == 200) {
+						Swal.fire({
+							icon: 'success',
+							title: 'OTP Valid...',
+							showConfirmButton: false,
+							toast: true,
+							timer: 3000,
+							timerProgressBar: true,
+						});
+
+						$('#otp').attr('disabled', true);
+						$('#btn_otp').attr('disabled', true);
+						$('#btn_submit').attr('disabled', false);
+					}
+				});
+			}
+		});
 	});
 
 	function storeData() {
@@ -36,7 +69,9 @@
 			dataType: 'json',
 			data: $('#form_add').serialize(),
 			beforeSend: function() {
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function(e) {
 			$.unblockUI();
@@ -94,7 +129,9 @@
 			dataType: 'json',
 			data: $('#form_edit').serialize(),
 			beforeSend: function() {
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function(e) {
 			$.unblockUI();
@@ -161,7 +198,9 @@
 				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function(e) {
 			$.unblockUI();
@@ -198,6 +237,43 @@
 				}).then((res) => {
 					window.location.reload();
 				});
+			}
+		});
+	}
+
+	function kirimOTP() {
+		$.ajax({
+			url: '<?= site_url('otp_resend'); ?>',
+			method: 'post',
+			dataType: 'json',
+			beforeSend: function() {
+				$('#otp').attr('disabled', true);
+				$('#btn_submit').attr('disabled', true);
+				$('#btn_otp').attr('disabled', true).block({
+					message: '<i class="fas fa-spinner fa-spin"></i>'
+				});
+			}
+		}).always(function() {
+			//
+		}).fail(function(e) {
+			console.log(e);
+			if (e.responseText != '') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					html: e.responseText,
+				}).then((res) => {
+					window.location.reload();
+				});
+			}
+		}).done(function(e) {
+			console.log(e);
+			if (e.code == 200) {
+				$('#otp').attr('disabled', false);
+				setTimeout(function() {
+					$('#otp').attr('disabled', true);
+					$('#btn_otp').attr('disabled', false).unblock();
+				}, 60000);
 			}
 		});
 	}

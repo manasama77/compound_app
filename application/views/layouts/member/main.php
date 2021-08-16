@@ -27,8 +27,11 @@ if (isset($vitamin_css)) {
 
 		<!-- Content Wrapper. Contains page content -->
 		<div class="content-wrapper">
-			<?php //echo '<pre>' . print_r($this->session->all_userdata(), 1) . '</pre>'; 
-			?>
+			<h5 class="marquee bg-dark py-2" style="display: none; font-size: 14px;">
+				<span class="mx-2">- USDT/RATU : 1</span>
+				<span class="mx-2">- USDT/IDR : 1</span>
+				<span class="mx-2">- TRX/IDR : 1</span>
+			</h5>
 			<?php $this->load->view('pages/member/' . $content); ?>
 		</div>
 		<!-- /.content-wrapper -->
@@ -51,7 +54,7 @@ if (isset($vitamin_css)) {
 					<div class="modal-body">
 						<div class="form-group">
 							<label for="otp">OTP</label>
-							<input type="number" class="form-control" id="otp" name="otp" min="100000" max="999999" required>
+							<input type="text" class="form-control" id="otp" name="otp" minlength="6" maxlength="6" required>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -96,6 +99,7 @@ if (isset($vitamin_css)) {
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/select2/js/select2.full.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
 </body>
 
 </html>
@@ -108,6 +112,115 @@ if (isset($vitamin_js)) {
 ?>
 
 <script>
+	$(document).ready(function() {
+		(function($) {
+			$.fn.textWidth = function() {
+				var calc = '<span style="display:none">' + $(this).text() + '</span>';
+				$('body').append(calc);
+				var width = $('body').find('span:last').width();
+				$('body').find('span:last').remove();
+				return width;
+			};
+
+			$.fn.marquee = function(args) {
+				var that = $(this);
+				var textWidth = that.textWidth(),
+					offset = that.width(),
+					width = offset,
+					css = {
+						'text-indent': that.css('text-indent'),
+						'overflow': that.css('overflow'),
+						'white-space': that.css('white-space')
+					},
+					marqueeCss = {
+						'text-indent': width,
+						'overflow': 'hidden',
+						'white-space': 'nowrap'
+					},
+					args = $.extend(true, {
+						count: -1,
+						speed: 1e1,
+						leftToRight: false
+					}, args),
+					i = 0,
+					stop = textWidth * -1,
+					dfd = $.Deferred();
+
+				function go() {
+					if (!that.length) return dfd.reject();
+					if (width <= stop) {
+						i++;
+						if (i == args.count) {
+							that.css(css);
+							return dfd.resolve();
+						}
+						if (args.leftToRight) {
+							width = textWidth * -1;
+						} else {
+							width = offset;
+						}
+					}
+					that.css('text-indent', width + 'px');
+					if (args.leftToRight) {
+						width++;
+					} else {
+						width--;
+					}
+					setTimeout(go, args.speed);
+				};
+				if (args.leftToRight) {
+					width = textWidth * -1;
+					width++;
+					stop = offset;
+				} else {
+					width--;
+				}
+				that.css(marqueeCss);
+				go();
+				return dfd.promise();
+			};
+		})(jQuery);
+
+		setTimeout(function() {
+			$('.marquee').fadeIn();
+			$('.marquee').marquee();
+		}, 1000);
+	});
+
+
+	Fancybox.bind("[data-fancybox]", {
+		Image: {
+			zoom: false,
+		},
+		Thumbs: true,
+		Toolbar: false,
+		closeButton: 'outside',
+		autoFocus: true
+	});
+
+	$.fn.inputFilter = function(inputFilter) {
+		return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function() {
+			if (inputFilter(this.value)) {
+				this.oldValue = this.value;
+				this.oldSelectionStart = this.selectionStart;
+				this.oldSelectionEnd = this.selectionEnd;
+			} else if (this.hasOwnProperty("oldValue")) {
+				this.value = this.oldValue;
+				this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+			} else {
+				this.value = "";
+			}
+		});
+	};
+
+	$("#otp").inputFilter(function(value) {
+		return /^\d*$/.test(value); // Allow digits only, using a RegExp
+	});
+
+	$('.select2').select2({
+		theme: 'bootstrap4'
+	});
+
 	function otpAuth() {
 		return $.ajax({
 			url: '<?= site_url('otp_auth'); ?>',
@@ -118,7 +231,9 @@ if (isset($vitamin_js)) {
 				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function(e) {
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function() {
 			$.unblockUI();
@@ -141,7 +256,9 @@ if (isset($vitamin_js)) {
 				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>',
 			},
 			beforeSend: function() {
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function() {
 			$.unblockUI();

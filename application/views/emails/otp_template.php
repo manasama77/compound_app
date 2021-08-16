@@ -358,7 +358,7 @@
 								<td class="logo" style="text-align: center;">
 									<h1>
 										<a href="<?= site_url(); ?>">
-											<img src="https://cryptoperty.id/public/img/logo.png" alt="<?= APP_NAME; ?> LOGO" title="<?= APP_NAME; ?>" style="width: 200px;">
+											<img src="https://cryptoperty.id/public/img/logo.png" alt="<?= APP_NAME; ?>" title="<?= APP_NAME; ?>" style="width: 100px;">
 										</a>
 									</h1>
 								</td>
@@ -367,17 +367,17 @@
 					</td>
 				</tr><!-- end tr -->
 				<tr>
-					<td valign="middle" class="hero bg_white" style="padding: 1em 0 1em 0;">
-						<img src="https://cryptoperty.id/public/img/otp.png" alt="Logo OTP" style="width: 200px; max-width: 200px; height: auto; margin: auto; display: block;">
+					<td valign="middle" class="hero bg_white" style="padding: 0em 0 0em 0;">
+						<img src="https://cryptoperty.id/public/img/otp.png" style="width: 200px; max-width: 200px; height: auto; margin: auto; display: block;">
 					</td>
 				</tr><!-- end tr -->
 				<tr>
-					<td valign="middle" class="hero bg_white" style="padding: 2em 0 4em 0;">
+					<td valign="middle" class="hero bg_white" style="padding: 1em 0 1em 0;">
 						<table>
 							<tr>
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
-										<h3>Harap verifikasi Kata Sandi Anda (OTP)</h3>
+										<h3>Kode OTP</h3>
 										<h2><kbd><?= $otp; ?></kbd></h2>
 										<h3>Jangan Pernah Bagikan OTP ini kepada siapa pun</h3>
 									</div>

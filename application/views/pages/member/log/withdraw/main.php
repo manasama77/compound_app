@@ -6,7 +6,7 @@
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Log</a></li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Beranda</a></li>
 					<li class="breadcrumb-item active">Catatan Penarikan</li>
 				</ol>
 			</div>
@@ -37,7 +37,7 @@
 										<th class="align-middle">Invoice</th>
 										<th class="text-right align-middle" style="min-width: 120px;">Dari Coin</th>
 										<th class="text-right align-middle" style="min-width: 120px;">Ke Coin</th>
-										<th class="text-center align-middle">Sumber</th>
+										<th class="text-center align-middle" style="min-width: 70px;">Sumber</th>
 										<th class="align-middle">Wallet</th>
 										<th class="text-center align-middle">Status</th>
 										<th class="align-middle">TXID</th>
@@ -62,7 +62,13 @@
 													<?= check_float($key->amount_2); ?> <small><?= $key->currency_2; ?></small>
 												</td>
 												<td class="text-center align-middle">
-													<?= strtoupper($key->source); ?>
+													<?php
+													if ($key->source == "profit_paid") {
+														echo "PROFIT PAID";
+													} else {
+														echo "BONUS";
+													}
+													?>
 												</td>
 												<td class="align-middle">
 													<small><?= $key->wallet_address; ?></small>

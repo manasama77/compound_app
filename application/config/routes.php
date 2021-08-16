@@ -27,6 +27,9 @@ $route['setting_update']         = 'ProfileController/setting_update';
 $route['check_current_password'] = 'ProfileController/check_current_password';
 $route['update_password']        = 'ProfileController/update_password';
 $route['reset_password']         = 'ProfileController/reset_password';
+$route['kyc']                    = 'ProfileController/kyc';
+$route['cek_ktp']                = 'ProfileController/cek_ktp';
+$route['kyc_auth']               = 'ProfileController/kyc_auth';
 
 $route['trade_manager/index']                   = 'TradeManagerController/index';
 $route['trade_manager/add']                     = 'TradeManagerController/add';
@@ -56,8 +59,6 @@ $route['withdraw_auth'] 					= 'WithdrawController/auth';
 $route['withdraw_rates'] 					= 'WithdrawController/rates';
 $route['withdraw_render_wallet_label'] 		= 'WithdrawController/render_wallet_label';
 $route['withdraw_render_wallet_address'] 	= 'WithdrawController/render_wallet_address';
-$route['withdraw/otp'] 						= 'WithdrawController/otp';
-$route['withdraw/process'] 					= 'WithdrawController/process';
 $route['withdraw/success/(:any)'] 			= 'WithdrawController/success/$1';
 
 $route['rewards'] = 'RewardsController/index';
@@ -105,7 +106,7 @@ $route['coinpayment/success/(:any)']  = 'CoinPayment/success/$1';
 $route['coinpayment/cancel/(:any)']   = 'CoinPayment/cancel/$1';
 
 $route['scheduler/coinpayment_tx_info_tm'] 	         = 'TaskSchedulerController/coinpayment_tx_info_tm'; # DONE
-$route['scheduler/withdraw']                         = 'TaskSchedulerController/withdraw'; # DONE
+$route['scheduler/withdraw']                         = 'TaskSchedulerController/withdraw'; #
 
 $route['scheduler/disabled_member']                  = 'TaskSchedulerController/disabled_member'; # DONE
 $route['scheduler/update_konfigurasi_trade_manager'] = 'TaskSchedulerController/update_konfigurasi_trade_manager'; # DONE
@@ -115,5 +116,7 @@ $route['scheduler/check_crypto_asset_expired'] 	     = 'TaskSchedulerController/
 $route['scheduler/reward']                           = 'TaskSchedulerController/reward'; # DONE
 $route['scheduler/profit_daily_trade_manager']       = 'TaskSchedulerController/profit_daily_trade_manager'; # DONE
 $route['scheduler/profit_daily_crypto_asset']        = 'TaskSchedulerController/profit_daily_crypto_asset'; # DONE
+$route['scheduler/release_unpaid_tm']                = 'TaskSchedulerController/release_unpaid_tm'; #
+$route['scheduler/release_unpaid_ca']                = 'TaskSchedulerController/release_unpaid_ca'; #
 
 $route['test'] = 'TestController/index';

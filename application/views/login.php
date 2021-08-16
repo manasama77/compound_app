@@ -30,7 +30,7 @@
 
 				<form id="form" action="<?= site_url('auth'); ?>" method="post">
 					<div class="input-group mb-3">
-						<input type="email" class="form-control lowercase <?= $this->session->flashdata('email_state'); ?>" id="email" name="email" placeholder="Email" autocomplete="email" value="<?= $this->session->flashdata('email_value'); ?>" required>
+						<input type="email" class="form-control lowercase <?= $this->session->flashdata('email_state'); ?>" id="email" name="email" placeholder="Email" autocomplete="email" value="<?= $this->session->flashdata('email_value'); ?>" minlength="5" maxlength="100" required>
 						<div class="input-group-append">
 							<div class="input-group-text">
 								<span class="fas fa-envelope"></span>
@@ -42,7 +42,7 @@
 
 					</div>
 					<div class="input-group mb-3">
-						<input type="password" class="form-control <?= $this->session->flashdata('password_state'); ?>" id="password" name="password" placeholder="Password" minlength="4" autocomplete="current-password" required>
+						<input type="password" class="form-control <?= $this->session->flashdata('password_state'); ?>" id="password" name="password" placeholder="Password" minlength="4" maxlength="16" autocomplete="current-password" required>
 						<div class="input-group-append">
 							<div class="input-group-text">
 								<span id="eye" class="fas fa-eye"></span>

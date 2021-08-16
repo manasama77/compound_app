@@ -55,6 +55,7 @@ class DownlineController extends CI_Controller
 			'arr'             => $arr,
 			'id_member_depth' => $id_member_depth,
 			'max_depth'       => $max_depth,
+			'depth'           => $this->input->get('depth'),
 		];
 		$this->template->render($data);
 	}

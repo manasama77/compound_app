@@ -6,7 +6,7 @@
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Log</a></li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Beranda</a></li>
 					<li class="breadcrumb-item active">Catatan Bonus Sponsor</li>
 				</ol>
 			</div>
@@ -34,12 +34,11 @@
 								<thead>
 									<tr>
 										<th class="align-top" style="min-width: 120px;">Tanggal Waktu</th>
-										<th class="align-top" style="min-width: 120px;">Member</th>
+										<th class="align-top" style="min-width: 120px;">Downline</th>
 										<th class="align-top" style="min-width: 80px;">Paket</th>
 										<th class="text-right align-top" style="min-width: 80px;">Investasi</th>
 										<th class="align-top" style="min-width: 120px;">Tipe</th>
 										<th class="text-right align-top" style="min-width: 80px;">Bonus</th>
-										<th class="align-top" style="min-width: 350px;">Deskripsi</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -52,7 +51,7 @@
 													<?= $key->created_at; ?>
 												</td>
 												<td class="align-top">
-													<?= $key->fullname; ?> <small>(<?= $key->email; ?>)</small>
+													<?= $key->user_id; ?>
 												</td>
 												<td class="align-top">
 													<?= $key->package; ?>
@@ -64,10 +63,7 @@
 													<?= ucwords($key->type); ?></small>
 												</td>
 												<td class="text-right align-top">
-													<?= check_float($key->bonus_amount); ?> <small>USDT</small>
-												</td>
-												<td class="align-top">
-													<?= $key->description; ?>
+													<?= check_float($key->bonus_amount); ?>
 												</td>
 											</tr>
 
@@ -75,7 +71,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- Kamu Belum Memiliki Catatan Bonus Sponsor -</td>
+											<td colspan="6" class="text-center text-danger">- Kamu Belum Memiliki Catatan Bonus Sponsor -</td>
 										</tr>
 
 									<?php endif; ?>

@@ -31,7 +31,15 @@
 							</tr>
 							<tr>
 								<th>Sumber</th>
-								<th><?= strtoupper($arr->row()->source); ?></th>
+								<th>
+									<?php
+									if ($arr->row()->source == "profit_paid") {
+										echo "PROFIT PAID";
+									} else {
+										echo "BONUS";
+									}
+									?>
+								</th>
 							</tr>
 							<tr>
 								<th>TXID</th>

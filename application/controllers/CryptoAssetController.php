@@ -18,6 +18,7 @@ class CryptoAssetController extends CI_Controller
 	protected $id_member;
 	protected $member_email;
 	protected $member_fullname;
+	protected $member_user_id;
 	protected $csrf;
 
 	public function __construct()
@@ -39,6 +40,7 @@ class CryptoAssetController extends CI_Controller
 		$this->id_member       = $this->session->userdata(SESI . 'id');
 		$this->member_email    = $this->session->userdata(SESI . 'email');
 		$this->member_fullname = $this->session->userdata(SESI . 'fullname');
+		$this->member_user_id  = $this->session->userdata(SESI . 'user_id');
 
 		$this->from       = EMAIL_ADMIN;
 		$this->from_alias = EMAIL_ALIAS;
@@ -313,6 +315,7 @@ class CryptoAssetController extends CI_Controller
 
 		$id_member       = $this->id_member;
 		$member_email    = $this->member_email;
+		$member_user_id  = $this->member_user_id;
 		$member_fullname = $this->member_fullname;
 		$id_package      = str_replace(UYAH, '', base64_decode($this->input->post('id_package_crypto_asset')));
 		$id_config       = str_replace(UYAH, '', base64_decode($this->input->post('id_konfigurasi_crypto_asset')));
@@ -394,6 +397,7 @@ class CryptoAssetController extends CI_Controller
 			'id_member'                 => $id_member,
 			'member_fullname'           => $member_fullname,
 			'member_email'              => $member_email,
+			'member_user_id'            => $member_user_id,
 			'id_package'                => $id_package,
 			'id_konfigurasi'            => $id_config,
 			'package_code'              => $package_code,
@@ -493,14 +497,14 @@ class CryptoAssetController extends CI_Controller
 				'currency_transfer' => $coin_type,
 				'txn_id'            => $txn_id,
 				'state'             => 'waiting payment',
-				'description'       => "[$this->datetime] Member $member_email Join Paket $package_name. Menunggu Transfer Pembayaran",
+				'description'       => "[$this->datetime] $member_user_id Join Paket $package_name. Menunggu Transfer Pembayaran",
 				'created_at'        => $this->datetime,
 			];
 			$this->M_core->store_uuid('log_member_crypto_asset', $data_log);
 		} else {
 			$data_log = [
 				'state'       => 'waiting payment',
-				'description' => "[$this->datetime] Member $member_email Join Paket $package_name. Menunggu Transfer Pembayaran",
+				'description' => "[$this->datetime] $member_user_id Join Paket $package_name. Menunggu Transfer Pembayaran",
 				'updated_at'  => $this->datetime,
 			];
 			$this->M_core->update('log_member_crypto_asset', $data_log, $where_log);

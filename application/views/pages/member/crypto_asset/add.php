@@ -59,7 +59,7 @@
 										<?= strtoupper($key['name']); ?>
 									</h3>
 									<p class="card-text">
-									<ul>
+									<ul style="font-size: 18px;">
 										<li>
 											Nilai Investasi: <?= $key['amount']; ?> <small>USDT</small>
 										</li>

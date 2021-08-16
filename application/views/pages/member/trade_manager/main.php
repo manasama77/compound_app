@@ -7,7 +7,7 @@
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Dashboard</a></li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Beranda</a></li>
 					<li class="breadcrumb-item active">Paket Trade Manager Kamu</li>
 				</ol>
 			</div>
@@ -40,15 +40,12 @@
 								<thead class="bg-dark">
 									<tr>
 										<th class="text-center align-middle" style="min-width: 120px;">Tanggal Registrasi</th>
-										<th class="text-center align-middle">Invoice</th>
 										<th class="align-middle" style="min-width: 80px;">Paket</th>
 										<th class="text-center align-middle">Status</th>
 										<th class="text-right align-middle" style="min-width: 130px;">Nilai Investasi <small>(USDT)</small></th>
 										<th class="text-right align-middle" style="min-width: 100px;">Profit Per Bulan <small>(USDT)</small></th>
 										<th class="text-right align-middle" style="min-width: 100px;">Profit Per Hari <small>(USDT)</small></th>
 										<th class="text-right align-middle" style="min-width: 130px;">Profit Share Member Per Hari <small>(USDT)</small></th>
-										<th class="text-right align-middle" style="min-width: 120px;">Profit Share Upline Per Hari <small>(USDT)</small></th>
-										<th class="text-right align-middle" style="min-width: 160px;">Profit Share Perusahaan Per Hari <small>(USDT)</small></th>
 										<th class="text-center align-middle" style="min-width: 120px;">Tanggal Kedaluwarsa</th>
 										<th class="text-center align-middle" style="min-width: 120px;">
 											Mode Perpanjangan
@@ -68,9 +65,6 @@
 													<?= $key['created_at']; ?>
 												</td>
 												<td class="align-middle">
-													<?= $key['invoice']; ?>
-												</td>
-												<td class="align-middle">
 													<?= $key['package_name']; ?>
 												</td>
 												<td class="text-center align-middle">
@@ -87,12 +81,6 @@
 												</td>
 												<td class="text-right align-middle">
 													<?= $key['share_self_value']; ?>
-												</td>
-												<td class="text-right align-middle">
-													<?= $key['share_upline_value']; ?>
-												</td>
-												<td class="text-right align-middle">
-													<?= $key['share_company_value']; ?>
 												</td>
 												<td class="align-middle text-center">
 													<?php
@@ -158,7 +146,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- Anda Tidak Memiliki Paket, mengapa tidak mencoba menambahkan yang baru? -</td>
+											<td colspan="10" class="text-center text-danger">- Anda Tidak Memiliki Paket, mengapa tidak mencoba menambahkan yang baru? -</td>
 										</tr>
 
 									<?php endif; ?>

@@ -34,11 +34,11 @@
 								<thead>
 									<tr>
 										<th class="align-top" style="min-width: 120px;">Tanggal Waktu</th>
-										<th class="align-top" style="min-width: 120px;">Member</th>
+										<th class="align-top" style="min-width: 120px;">Downline</th>
+										<th class="align-top" style="min-width: 120px;">Upline</th>
 										<th class="align-top">Paket</th>
 										<th class="align-top" style="min-width: 120px;">Tipe</th>
 										<th class="align-top text-right" style="min-width: 100px;">Nilai</th>
-										<th class="align-top" style="min-width: 350px;">Deskripsi</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -51,7 +51,10 @@
 													<?= $key->created_at; ?>
 												</td>
 												<td class="align-top">
-													<?= $key->fullname; ?>
+													<?= $key->downline_user_id; ?>
+												</td>
+												<td class="align-top">
+													<?= $key->upline_user_id; ?>
 												</td>
 												<td class="align-top">
 													<?= $key->package; ?>
@@ -62,16 +65,13 @@
 												<td class="align-top text-right">
 													<?= check_float($key->package_amount); ?>
 												</td>
-												<td class="align-top">
-													<?= $key->description; ?>
-												</td>
 											</tr>
 
 										<?php endforeach; ?>
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- Kamu Belum Memiliki Catatan Bonus Kualifikasi Leader -</td>
+											<td colspan="6" class="text-center text-danger">- Kamu Belum Memiliki Catatan Bonus Kualifikasi Leader -</td>
 										</tr>
 
 									<?php endif; ?>

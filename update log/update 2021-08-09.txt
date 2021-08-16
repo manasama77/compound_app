@@ -12,3 +12,5 @@ Upload Foto KTP *
 Upload Sambil Pegang KTP *
 
 setiap ganti profile harus ada OTP
+
+

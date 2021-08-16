@@ -1,6 +1,7 @@
 <script>
 	$(document).ready(function() {
-		$('.select2').select2();
+
+		$('#id_bank').val('<?= $arr->row()->id_bank; ?>').trigger('change');
 
 		$('#form_setting').on('submit', function(e) {
 			e.preventDefault();
@@ -59,7 +60,7 @@
 					Swal.fire({
 						icon: 'warning',
 						title: 'Oops...',
-						text: 'OTP Wrong',
+						text: 'Kode OTP Salah',
 					});
 				} else if (e.code == 200) {
 					updatePassword();

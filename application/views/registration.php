@@ -82,14 +82,14 @@
 								</div>
 
 								<div class="input-group mb-3">
-									<input type="number" class="form-control <?= (form_error('id_card_number')) ? 'is-invalid' : '' ?>" id="id_card_number" name="id_card_number" placeholder="No KTP" value="<?= set_value('id_card_number'); ?>" minlength="5" required>
+									<input type="text" class="form-control <?= (form_error('user_id')) ? 'is-invalid' : '' ?>" id="user_id" name="user_id" placeholder="User ID" value="<?= set_value('user_id'); ?>" minlength="8" maxlength="8" required>
 									<div class="input-group-append">
 										<div class="input-group-text">
-											<label for="id_card_number" class="fas fa-id-card"></label>
+											<label for="user_id" class="fas fa-user-tie"></label>
 										</div>
 									</div>
 									<div class="invalid-feedback">
-										<?= form_error('id_card_number'); ?>
+										<?= form_error('user_id'); ?>
 									</div>
 								</div>
 
@@ -108,7 +108,7 @@
 									</div>
 								</div>
 								<div class="input-group mb-3">
-									<input type="password" class="form-control <?= (form_error('password')) ? 'is-invalid' : '' ?>" id="password" name="password" placeholder="Password" minlength="4" autocomplete="new-password" required>
+									<input type="password" class="form-control <?= (form_error('password')) ? 'is-invalid' : '' ?>" id="password" name="password" placeholder="Password" minlength="4" maxlength="16" autocomplete="new-password" required>
 									<div class="input-group-append">
 										<div class="input-group-text">
 											<label for="password" class="fas fa-eye eye1"></label>
@@ -119,7 +119,7 @@
 									</div>
 								</div>
 								<div class="input-group mb-3">
-									<input type="password" class="form-control <?= (form_error('verify_password')) ? 'is-invalid' : '' ?>" id="verify_password" name="verify_password" placeholder="Verifikasi Password" minlength="4" autocomplete="new-password" required>
+									<input type="password" class="form-control <?= (form_error('verify_password')) ? 'is-invalid' : '' ?>" id="verify_password" name="verify_password" placeholder="Verifikasi Password" minlength="4" maxlength="16" autocomplete="new-password" required>
 									<div class="input-group-append">
 										<div class="input-group-text">
 											<label for="verify_password" class="fas fa-eye eye2"></label>
@@ -186,6 +186,18 @@
 
 <script>
 	$(document).ready(function() {
+		$('#phone_number').on('keypress', function(e) {
+			if (!/[0-9]/.test(String.fromCharCode(e.which))) {
+				return false;
+			}
+		});
+
+		$('#user_id').on('keypress', function(e) {
+			if (!/[0-9a-z]/.test(String.fromCharCode(e.which))) {
+				return false;
+			}
+		});
+
 		$('#form_add').on('submit', function(e) {
 			let hcaptchaVal = $('[name=h-captcha-response]').val();
 			if (hcaptchaVal === "") {

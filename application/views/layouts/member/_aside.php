@@ -30,7 +30,7 @@
 					<a href="<?= site_url('dashboard'); ?>" class="nav-link <?= ($this->uri->segment(1) == "dashboard") ? "active" : ""; ?>">
 						<i class="nav-icon fas fa-tachometer-alt"></i>
 						<p>
-							Dashboard
+							Beranda
 						</p>
 					</a>
 				</li>
@@ -109,6 +109,22 @@
 						<i class="nav-icon fas fa-hand-holding-usd"></i>
 						<p>
 							Penarikan
+						</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link <?= ($this->uri->segment(1) == "swap") ? "active" : ""; ?>" onclick="comingSoon();">
+						<i class="nav-icon fas fa-exchange-alt"></i>
+						<p>
+							Swap
+						</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link <?= ($this->uri->segment(1) == "transfer") ? "active" : ""; ?>" onclick="comingSoon();">
+						<i class="nav-icon fas fa-paper-plane"></i>
+						<p>
+							Transfer
 						</p>
 					</a>
 				</li>

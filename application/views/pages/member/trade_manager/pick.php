@@ -37,7 +37,7 @@
 							<div class="row">
 								<div class="col-md-5">
 									<p class="card-text">
-									<ul>
+									<ul style="font-size: 16px;">
 										<li>
 											Nilai Investasi: <span id="total_investment"><?= $arr[0]['amount']; ?></span> <small>USDT</small>
 										</li>

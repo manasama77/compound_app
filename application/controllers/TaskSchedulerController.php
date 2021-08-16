@@ -27,6 +27,7 @@ class TaskSchedulerController extends CI_Controller
 		$this->load->model('M_member');
 		$this->load->model('M_withdraw');
 		$this->load->model('M_log_send_email_member');
+		$this->load->model('M_task_scheduler');
 
 		$this->Nested_set->setControlParams('tree', 'lft', 'rgt', 'id_member', 'id_upline', 'email');
 
@@ -51,11 +52,12 @@ class TaskSchedulerController extends CI_Controller
 	*/
 	public function coinpayment_tx_info_tm()
 	{
-		// if (!$this->input->is_cli_request()) {
-		// 	echo "Hanya dapat diakses via CLI";
-		// 	exit;
-		// }
-		// header('Content-Type: application/json');
+		if (!$this->input->is_cli_request()) {
+			echo "Hanya dapat diakses via CLI";
+			exit;
+		}
+
+		header('Content-Type: application/json');
 
 		$this->db->trans_begin();
 
@@ -70,18 +72,18 @@ class TaskSchedulerController extends CI_Controller
 
 		foreach ($arr_list->result() as $key) :
 
-			$invoice                   = $key->invoice;
-			$id_member                 = $key->id_member;
-			$member_fullname           = $key->member_fullname;
-			$member_email              = $key->member_email;
-			$id_package                = $key->id_package;
-			$id_konfigurasi            = $key->id_konfigurasi;
-			$package_name              = $key->package_name;
-			$txn_id                    = $key->txn_id;
-			$amount_1                  = $key->amount_1;
-			$amount_2                  = $key->amount_2;
-			$currency2                 = $key->currency2;
-			$state                     = $key->state;
+			$invoice         = $key->invoice;
+			$id_member       = $key->id_member;
+			$member_email    = $key->member_email;
+			$member_user_id  = $key->member_user_id;
+			$id_package      = $key->id_package;
+			$id_konfigurasi  = $key->id_konfigurasi;
+			$package_name    = $key->package_name;
+			$txn_id          = $key->txn_id;
+			$amount_1        = $key->amount_1;
+			$amount_2        = $key->amount_2;
+			$currency2       = $key->currency2;
+			$state           = $key->state;
 
 			$req['txid'] = $txn_id;
 			$req['full'] = 1; // if set 1 will display checkout information
@@ -132,7 +134,7 @@ class TaskSchedulerController extends CI_Controller
 				];
 				$arr_count = $this->M_core->get('log_member_trade_manager', 'id', $where_count, null, null, 1);
 
-				$description = "[$this->datetime] Member $member_email Paket $package_name Dibatalkan, Pembayaran Melewati Batas Waktu";
+				$description = "[$this->datetime] $member_user_id Paket $package_name Dibatalkan, Pembayaran Melewati Batas Waktu";
 				if ($arr_count->num_rows() == 0) {
 					$data_log = [
 						'id_member'         => $id_member,
@@ -209,7 +211,7 @@ class TaskSchedulerController extends CI_Controller
 				];
 				$arr_count = $this->M_core->get('log_member_trade_manager', 'id', $where_count, null, null, 1);
 
-				$description = "[$this->datetime] Member $member_email Paket $package_name Menunggu Pembayaran";
+				$description = "[$this->datetime] $member_user_id Paket $package_name Menunggu Pembayaran";
 				if ($arr_count->num_rows() == 0) {
 					$data_log = [
 						'id_member'         => $id_member,
@@ -286,7 +288,7 @@ class TaskSchedulerController extends CI_Controller
 				];
 				$arr_count = $this->M_core->get('log_member_trade_manager', 'id', $where_count, null, null, 1);
 
-				$description = "[$this->datetime] Member $member_email Paket $package_name Pembayaran Sedang di Proses";
+				$description = "[$this->datetime] $member_user_id Paket $package_name Pembayaran Sedang diproses";
 				if ($arr_count->num_rows() == 0) {
 					$data_log = [
 						'id_member'         => $id_member,
@@ -336,27 +338,65 @@ class TaskSchedulerController extends CI_Controller
 					$arr_member = $this->M_core->get('member', 'id_upline', ['id' => $id_member]);
 					$id_upline  = $arr_member->row()->id_upline;
 
-					$arr_upline = $this->M_core->get('member', 'email, fullname, deleted_at', ['id' => $id_upline]);
+					$arr_upline = $this->M_core->get('member', 'user_id, email, fullname, deleted_at', ['id' => $id_upline]);
 					// PERSIAPAN SEBELUM BAGI-BAGI BONUS END
 
 					$member_is_qualified = 'no';
 					$member_is_royalty   = 'no';
 					if ($arr_upline->num_rows() != 0) {
+						$user_id_upline    = $arr_upline->row()->user_id;
 						$email_upline      = $arr_upline->row()->email;
-						$fullname_upline   = $arr_upline->row()->fullname;
 						$deleted_at_upline = $arr_upline->row()->deleted_at;
 
 						// PART BONUS SPONSOR START
 						$amount_bonus_upline = ($amount_1 * BONUS_SPONSOR) / 100;
-						$this->_distribusi_sponsor($id_upline, $deleted_at_upline, $amount_bonus_upline, $fullname_upline, $email_upline, $member_fullname, $member_email, $id_member, $invoice, $id_package, $package_name, $amount_1, $id_konfigurasi, 'trade manager');
+						$data_sponsor = [
+							'deleted_at_upline'   => $deleted_at_upline,
+							'amount_bonus_upline' => $amount_bonus_upline,
+							'id_upline'           => $id_upline,
+							'user_id_upline'      => $user_id_upline,
+							'email_upline'        => $email_upline,
+							'id_member'           => $id_member,
+							'member_user_id'      => $member_user_id,
+							'invoice'             => $invoice,
+							'id_package'          => $id_package,
+							'package_name'        => $package_name,
+							'amount_1'            => $amount_1,
+							'id_konfigurasi'      => $id_konfigurasi,
+							'type_package'        => 'trade manager',
+						];
+						$this->_distribusi_sponsor($data_sponsor);
 						// PART BONUS SPONSOR END
 
 						// PART QUALIFIKASI LEVEL START
-						$member_is_qualified = $this->_update_qualified($id_member, $member_fullname, $member_email, $id_upline, $amount_1, $invoice, $id_package, $package_name, $id_konfigurasi, 'trade manager');
+						$data_ql = [
+							'id_member'      => $id_member,
+							'member_user_id' => $member_user_id,
+							'id_upline'      => $id_upline,
+							'user_id_upline' => $user_id_upline,
+							'amount_1'       => $amount_1,
+							'invoice'        => $invoice,
+							'id_package'     => $id_package,
+							'package_name'   => $package_name,
+							'id_konfigurasi' => $id_konfigurasi,
+							'type_package'   => 'trade manager',
+						];
+						$member_is_qualified = $this->_update_qualified($data_ql);
 						// PART QUALIFIKASI LEVEL END
 
 						// PART ROYALTY START
-						$member_is_royalty = $this->_update_royalty($id_member, $member_fullname, $member_email, $amount_1, $invoice, $id_package, $id_konfigurasi, $package_name, 'trade manager');
+						$data_royalty = [
+							'id_member'      => $id_member,
+							'member_user_id' => $member_user_id,
+							'member_email'   => $member_email,
+							'amount_1'       => $amount_1,
+							'invoice'        => $invoice,
+							'id_package'     => $id_package,
+							'id_konfigurasi' => $id_konfigurasi,
+							'package_name'   => $package_name,
+							'type_package'   => 'trade manager',
+						];
+						$member_is_royalty = $this->_update_royalty($data_royalty);
 						// PART ROYALTY END
 					}
 
@@ -397,7 +437,7 @@ class TaskSchedulerController extends CI_Controller
 					];
 					$arr_count = $this->M_core->get('log_member_trade_manager', 'id', $where_count, null, null, 1);
 
-					$description = "[$this->datetime] Member $member_email Paket $package_name Aktif";
+					$description = "[$this->datetime] $member_user_id Paket $package_name Aktif";
 					if ($arr_count->num_rows() == 0) {
 						$data_log = [
 							'id_member'         => $id_member,
@@ -438,7 +478,7 @@ class TaskSchedulerController extends CI_Controller
 	{
 		$this->db->trans_begin();
 
-		$arr_list   = $this->M_crypto_asset->get_ca_unpaid();
+		$arr_list = $this->M_crypto_asset->get_ca_unpaid();
 
 		if ($arr_list->num_rows() == 0) {
 			echo json_encode([
@@ -451,8 +491,8 @@ class TaskSchedulerController extends CI_Controller
 
 			$invoice         = $key->invoice;
 			$id_member       = $key->id_member;
-			$member_fullname = $key->member_fullname;
 			$member_email    = $key->member_email;
+			$member_user_id  = $key->member_user_id;
 			$id_package      = $key->id_package;
 			$id_konfigurasi  = $key->id_konfigurasi;
 			$package_name    = $key->package_name;
@@ -483,7 +523,7 @@ class TaskSchedulerController extends CI_Controller
 			if ($status == -1) {
 				// Cancelled / Timed Out
 
-				// UPDATE MEMBER Crypto Asset START
+				// UPDATE MEMBER CRYPTO ASSET START
 				$data = [
 					'state'          => 'cancel',
 					'receive_amount' => $receivedf,
@@ -501,9 +541,9 @@ class TaskSchedulerController extends CI_Controller
 					]);
 					exit;
 				}
-				// UPDATE MEMBER Crypto Asset END
+				// UPDATE MEMBER CRYPTO ASSET END
 
-				// STORE LOG MEMBER Crypto Asset START
+				// STORE LOG MEMBER CRYPTO ASSET START
 				$where_count = [
 					'id_member' => $id_member,
 					'invoice'   => $invoice,
@@ -511,7 +551,7 @@ class TaskSchedulerController extends CI_Controller
 				];
 				$arr_count = $this->M_core->get('log_member_crypto_asset', 'id', $where_count, null, null, 1);
 
-				$description = "[$this->datetime] Member $member_email Paket $package_name Dibatalkan, Pembayaran Melewati Batas Waktu";
+				$description = "[$this->datetime] $member_user_id Paket $package_name Dibatalkan, Pembayaran Melewati Batas Waktu";
 				if ($arr_count->num_rows() == 0) {
 					$data_log = [
 						'id_member'         => $id_member,
@@ -557,11 +597,11 @@ class TaskSchedulerController extends CI_Controller
 						exit;
 					}
 				}
-				// STORE LOG MEMBER Crypto Asset END
+				// STORE LOG MEMBER CRYPTO ASSET END
 			} elseif ($status == 0) {
 				// Waiting for buyer funds
 
-				// UPDATE MEMBER Crypto Asset START
+				// UPDATE MEMBER CRYPTO ASSET START
 				$data = [
 					'state'          => 'waiting payment',
 					'receive_amount' => $receivedf,
@@ -578,9 +618,9 @@ class TaskSchedulerController extends CI_Controller
 					]);
 					exit;
 				}
-				// UPDATE MEMBER Crypto Asset END
+				// UPDATE MEMBER CRYPTO ASSET END
 
-				// STORE LOG MEMBER Crypto Asset START
+				// STORE LOG MEMBER CRYPTO ASSET START
 				$where_count = [
 					'id_member' => $id_member,
 					'invoice'   => $invoice,
@@ -588,7 +628,7 @@ class TaskSchedulerController extends CI_Controller
 				];
 				$arr_count = $this->M_core->get('log_member_crypto_asset', 'id', $where_count, null, null, 1);
 
-				$description = "[$this->datetime] Member $member_email Paket $package_name Menunggu Pembayaran";
+				$description = "[$this->datetime] $member_user_id Paket $package_name Menunggu Pembayaran";
 				if ($arr_count->num_rows() == 0) {
 					$data_log = [
 						'id_member'         => $id_member,
@@ -634,11 +674,11 @@ class TaskSchedulerController extends CI_Controller
 						exit;
 					}
 				}
-				// STORE LOG MEMBER Crypto Asset END
+				// STORE LOG MEMBER CRYPTO ASSET END
 			} elseif ($status == 1) {
 				//  We have confirmed coin reception from the buyer
 
-				// UPDATE MEMBER Crypto Asset START
+				// UPDATE MEMBER CRYPTO ASSET START
 				$data = [
 					'state'          => 'pending',
 					'receive_amount' => $receivedf,
@@ -655,9 +695,9 @@ class TaskSchedulerController extends CI_Controller
 					]);
 					exit;
 				}
-				// UPDATE MEMBER Crypto Asset END
+				// UPDATE MEMBER CRYPTO ASSET END
 
-				// STORE LOG MEMBER Crypto Asset START
+				// STORE LOG MEMBER CRYPTO ASSET START
 				$where_count = [
 					'id_member' => $id_member,
 					'invoice'   => $invoice,
@@ -665,7 +705,7 @@ class TaskSchedulerController extends CI_Controller
 				];
 				$arr_count = $this->M_core->get('log_member_crypto_asset', 'id', $where_count, null, null, 1);
 
-				$description = "[$this->datetime] Member $member_email Paket $package_name Pembayaran Sedang di Proses";
+				$description = "[$this->datetime] $member_user_id Paket $package_name Pembayaran Sedang diproses";
 				if ($arr_count->num_rows() == 0) {
 					$data_log = [
 						'id_member'         => $id_member,
@@ -705,7 +745,7 @@ class TaskSchedulerController extends CI_Controller
 						exit;
 					}
 				}
-				// STORE LOG MEMBER Crypto Asset END
+				// STORE LOG MEMBER CRYPTO ASSET END
 
 			} elseif ($status == 100 || $status == 2) {
 				//  Payment Complete. We have sent your coins to your payment address or 3rd party payment system reports the payment complete
@@ -715,27 +755,66 @@ class TaskSchedulerController extends CI_Controller
 					$arr_member = $this->M_core->get('member', 'id_upline', ['id' => $id_member]);
 					$id_upline  = $arr_member->row()->id_upline;
 
-					$arr_upline = $this->M_core->get('member', 'email, fullname, deleted_at', ['id' => $id_upline]);
+					$arr_upline = $this->M_core->get('member', 'user_id, email, fullname, deleted_at', ['id' => $id_upline]);
 					// PERSIAPAN SEBELUM BAGI-BAGI BONUS END
 
 					$member_is_qualified = 'no';
 					$member_is_royalty   = 'no';
 					if ($arr_upline->num_rows() != 0) {
+						$user_id_upline    = $arr_upline->row()->user_id;
 						$email_upline      = $arr_upline->row()->email;
 						$fullname_upline   = $arr_upline->row()->fullname;
 						$deleted_at_upline = $arr_upline->row()->deleted_at;
 
 						// PART BONUS SPONSOR START
 						$amount_bonus_upline = ($amount_1 * BONUS_SPONSOR) / 100;
-						$this->_distribusi_sponsor($id_upline, $deleted_at_upline, $amount_bonus_upline, $fullname_upline, $email_upline, $member_fullname, $member_email, $id_member, $invoice, $id_package, $package_name, $amount_1, $id_konfigurasi, 'crypto asset');
+						$data_sponsor = [
+							'deleted_at_upline'   => $deleted_at_upline,
+							'amount_bonus_upline' => $amount_bonus_upline,
+							'id_upline'           => $id_upline,
+							'user_id_upline'      => $user_id_upline,
+							'email_upline'        => $email_upline,
+							'id_member'           => $id_member,
+							'member_user_id'      => $member_user_id,
+							'invoice'             => $invoice,
+							'id_package'          => $id_package,
+							'package_name'        => $package_name,
+							'amount_1'            => $amount_1,
+							'id_konfigurasi'      => $id_konfigurasi,
+							'type_package'        => 'crypto asset',
+						];
+						$this->_distribusi_sponsor($data_sponsor);
 						// PART BONUS SPONSOR END
 
 						// PART QUALIFIKASI LEVEL START
-						$member_is_qualified = $this->_update_qualified($id_member, $member_fullname, $member_email, $id_upline, $amount_1, $invoice, $id_package, $package_name, $id_konfigurasi, 'crypto asset');
+						$data_ql = [
+							'id_member'      => $id_member,
+							'member_user_id' => $member_user_id,
+							'id_upline'      => $id_upline,
+							'user_id_upline' => $user_id_upline,
+							'amount_1'       => $amount_1,
+							'invoice'        => $invoice,
+							'id_package'     => $id_package,
+							'package_name'   => $package_name,
+							'id_konfigurasi' => $id_konfigurasi,
+							'type_package'   => 'crypto asset',
+						];
+						$member_is_qualified = $this->_update_qualified($data_ql);
 						// PART QUALIFIKASI LEVEL END
 
 						// PART ROYALTY START
-						$member_is_royalty = $this->_update_royalty($id_member, $member_fullname, $member_email, $amount_1, $invoice, $id_package, $id_konfigurasi, $package_name, 'crypto asset');
+						$data_royalty = [
+							'id_member'      => $id_member,
+							'member_user_id' => $member_user_id,
+							'member_email'   => $member_email,
+							'amount_1'       => $amount_1,
+							'invoice'        => $invoice,
+							'id_package'     => $id_package,
+							'id_konfigurasi' => $id_konfigurasi,
+							'package_name'   => $package_name,
+							'type_package'   => 'crypto asset',
+						];
+						$member_is_royalty = $this->_update_royalty($data_royalty);
 						// PART ROYALTY END
 					}
 
@@ -752,7 +831,7 @@ class TaskSchedulerController extends CI_Controller
 					}
 					// UPDATE TOTAL OMSET END
 
-					// UPDATE MEMBER Crypto Asset START
+					// UPDATE MEMBER CRYPTO ASSET START
 					$data = [
 						'state'          => 'active',
 						'receive_amount' => $receivedf,
@@ -762,13 +841,13 @@ class TaskSchedulerController extends CI_Controller
 					];
 					$where = ['txn_id' => $txn_id];
 					$this->M_core->update('member_crypto_asset', $data, $where);
-					// UPDATE MEMBER Crypto Asset END
+					// UPDATE MEMBER CRYPTO ASSET END
 
 					// UPDATE MEMBER BALANCE START
 					$this->M_crypto_asset->update_member_crypto_asset_asset($id_member, $amount_1);
 					// UPDATE MEMBER BALANCE END
 
-					// STORE LOG MEMBER Crypto Asset START
+					// STORE LOG MEMBER CRYPTO ASSET START
 					$where_count = [
 						'id_member' => $id_member,
 						'invoice'   => $invoice,
@@ -776,7 +855,7 @@ class TaskSchedulerController extends CI_Controller
 					];
 					$arr_count = $this->M_core->get('log_member_crypto_asset', 'id', $where_count, null, null, 1);
 
-					$description = "[$this->datetime] Member $member_email Paket $package_name Aktif";
+					$description = "[$this->datetime] $member_user_id Paket $package_name Aktif";
 					if ($arr_count->num_rows() == 0) {
 						$data_log = [
 							'id_member'         => $id_member,
@@ -794,7 +873,7 @@ class TaskSchedulerController extends CI_Controller
 
 						// SEND EMAIL PACKAGE ACTIVE START
 						if (ENVIRONMENT == "production") {
-							$this->_send_package_active($id_member, $member_email, $invoice, $package_name, 'crypto asset');
+							$this->_send_package_active($id_member, $member_email, $invoice, $package_name, 'crypto_asset');
 						}
 						// SEND EMAIL PACKAGE ACTIVE END
 					} else {
@@ -804,7 +883,7 @@ class TaskSchedulerController extends CI_Controller
 						];
 						$this->M_core->update('log_member_crypto_asset', $data_log, $where_count);
 					}
-					// STORE LOG MEMBER Crypto Asset END
+					// STORE LOG MEMBER CRYPTO ASSET END
 				}
 			}
 		endforeach;
@@ -812,8 +891,22 @@ class TaskSchedulerController extends CI_Controller
 		$this->db->trans_commit();
 	}
 
-	protected function _distribusi_sponsor($id_upline, $deleted_at_upline, $amount_bonus_upline, $fullname_upline, $email_upline, $member_fullname, $member_email, $id_member, $invoice, $id_package, $package_name, $amount_1, $id_konfigurasi, $type_package)
+	protected function _distribusi_sponsor($data)
 	{
+		$deleted_at_upline   = $data['deleted_at_upline'];
+		$amount_bonus_upline = $data['amount_bonus_upline'];
+		$id_upline           = $data['id_upline'];
+		$user_id_upline      = $data['user_id_upline'];
+		$email_upline        = $data['email_upline'];
+		$id_member           = $data['id_member'];
+		$member_user_id      = $data['member_user_id'];
+		$invoice             = $data['invoice'];
+		$id_package          = $data['id_package'];
+		$package_name        = $data['package_name'];
+		$amount_1            = $data['amount_1'];
+		$id_konfigurasi      = $data['id_konfigurasi'];
+		$type_package        = $data['type_package'];
+
 		if ($id_upline != null) {
 			if ($deleted_at_upline == null) {
 				$exec = $this->M_trade_manager->update_member_bonus($id_upline, $amount_bonus_upline);
@@ -828,7 +921,9 @@ class TaskSchedulerController extends CI_Controller
 				}
 
 				$id_upline_log = $id_upline;
-				$desc_log      = "$fullname_upline ($email_upline) Mendapatkan Bonus Sponsor Dari Member $member_fullname ($member_email) Paket $package_name";
+				$desc_log      = "$user_id_upline Mendapatkan Bonus Sponsor sebesar $amount_bonus_upline dari $member_user_id Join Paket $package_name";
+
+				$this->_send_notif_bonus($email_upline, 'sponsor', $desc_log);
 			} else {
 				$exec = $this->M_trade_manager->update_unknown_balance($amount_bonus_upline);
 				if (!$exec) {
@@ -842,7 +937,7 @@ class TaskSchedulerController extends CI_Controller
 				}
 
 				$id_upline_log = null;
-				$desc_log      = "Unknown Balance Mendapatkan Bonus Sponsor Dari Member $member_fullname ($member_email) Paket $package_name";
+				$desc_log      = "Unknown Balance Mendapatkan Bonus Sponsor Dari Member $member_user_id Paket $package_name";
 			}
 
 			// LOG BONUS RECRUITMENT START
@@ -874,9 +969,18 @@ class TaskSchedulerController extends CI_Controller
 		}
 	}
 
-	protected function _update_qualified($id_member, $member_fullname, $member_email, $id_upline, $amount_1, $invoice, $id_package, $package_name, $id_konfigurasi, $type_package)
+	protected function _update_qualified($data)
 	{
-
+		$id_member           = $data['id_member'];
+		$member_user_id      = $data['member_user_id'];
+		$id_upline           = $data['id_upline'];
+		$user_id_upline      = $data['user_id_upline'];
+		$amount_1            = $data['amount_1'];
+		$invoice             = $data['invoice'];
+		$id_package          = $data['id_package'];
+		$package_name        = $data['package_name'];
+		$id_konfigurasi      = $data['id_konfigurasi'];
+		$type_package        = $data['type_package'];
 		$member_is_qualified = "no";
 
 		$arr_ql_sibling_tm = $this->M_trade_manager->get_ql_sibling($id_member, $id_upline);
@@ -895,8 +999,7 @@ class TaskSchedulerController extends CI_Controller
 				$id_package_ql_sibling     = $arr_ql_sibling_ca->row()->id_package;
 				$id_konfigurasi_ql_sibling = $arr_ql_sibling_ca->row()->id_konfigurasi;
 				$item_name_ql_sibling      = $arr_ql_sibling_ca->row()->package_name;
-				$buyer_email_ql_sibling    = $arr_ql_sibling_ca->row()->member_email;
-				$buyer_name_ql_sibling     = $arr_ql_sibling_ca->row()->member_fullname;
+				$buyer_user_id_ql_sibling  = $arr_ql_sibling_ca->row()->member_user_id;
 				$type_package_2            = 'crypto asset';
 
 				$bonus_grand_upline             = ($amount_1 * BONUS_QL) / 100;
@@ -904,26 +1007,22 @@ class TaskSchedulerController extends CI_Controller
 				$new_bonus_grand_upline         = $bonus_grand_upline + $amount_usd_ql_sibling_as_bonus;
 
 				if ($new_bonus_grand_upline > 0) {
-
 					$where_grand_upline = [
 						'id'         => $id_upline,
 						'deleted_at' => null,
 					];
-					$arr_grand_upline       = $this->M_core->get('member', 'id_upline, email, fullname, is_active', $where_grand_upline);
+					$arr_grand_upline       = $this->M_core->get('member', 'id_upline, user_id, email, fullname, is_active', $where_grand_upline);
 					$id_grand_upline        = $arr_grand_upline->row()->id_upline;
+					$user_id_grand_upline   = $arr_grand_upline->row()->user_id;
 					$email_grand_upline     = $arr_grand_upline->row()->email;
-					$fullname_grand_upline  = $arr_grand_upline->row()->fullname;
 					$is_active_grand_upline = $arr_grand_upline->row()->is_active;
 
 					if ($arr_grand_upline->num_rows() > 0) {
-
 						if ($id_grand_upline != null) {
-
 							if ($is_active_grand_upline == "yes") {
 								$exec = $this->M_crypto_asset->update_member_bonus($id_grand_upline, $new_bonus_grand_upline);
 								if (!$exec) {
 									$this->db->trans_rollback();
-
 									echo json_encode([
 										'code'    => 500,
 										'message' => 'Gagal Update Member Bonus Kualifikasi Leader Crypto Asset',
@@ -931,8 +1030,11 @@ class TaskSchedulerController extends CI_Controller
 									exit;
 								}
 
-								$desc_log_member1 = "$fullname_grand_upline ($email_grand_upline) Mendapatkan Bonus Kualifikasi Leader dari $member_fullname ($member_email) Paket $package_name";
-								$desc_log_member2 = "$fullname_grand_upline ($email_grand_upline) Mendapatkan Bonus Kualifikasi Leader dari $buyer_name_ql_sibling ($buyer_email_ql_sibling) Paket $item_name_ql_sibling";
+								$desc_log_member1 = "$user_id_grand_upline Mendapatkan Bonus Kualifikasi Leader $bonus_grand_upline USDT dari $member_user_id ($user_id_upline) Join Paket $package_name ";
+								$desc_log_member2 = "$user_id_grand_upline Mendapatkan Bonus Kualifikasi Leader $amount_usd_ql_sibling_as_bonus USDT dari $buyer_user_id_ql_sibling Dari Paket $item_name_ql_sibling";
+
+								$notif = $desc_log_member1 . " <br/>Dan<br/> " . $desc_log_member2;
+								$this->_send_notif_bonus($email_grand_upline, 'ql', $notif);
 							} else {
 								$exec = $this->M_crypto_asset->update_unknown_balance($new_bonus_grand_upline);
 
@@ -946,8 +1048,8 @@ class TaskSchedulerController extends CI_Controller
 									exit;
 								}
 
-								$desc_log_member1 = "Unknown Balance Mendapatkan Bonus Kualifikasi Leader dari $member_fullname ($member_email) Paket $package_name";
-								$desc_log_member2 = "Unknown Balance Mendapatkan Bonus Kualifikasi Leader dari $buyer_name_ql_sibling ($buyer_email_ql_sibling) Paket $item_name_ql_sibling";
+								$desc_log_member1 = "Unknown Balance Mendapatkan Bonus Kualifikasi Leader $bonus_grand_upline USDT dari $member_user_id Join Paket $package_name";
+								$desc_log_member2 = "Unknown Balance Mendapatkan Bonus Kualifikasi Leader $amount_usd_ql_sibling_as_bonus USDT dari $buyer_user_id_ql_sibling Paket $item_name_ql_sibling";
 							}
 
 							$data_update_member_trade_manager = [
@@ -1026,8 +1128,7 @@ class TaskSchedulerController extends CI_Controller
 			$id_package_ql_sibling     = $arr_ql_sibling_tm->row()->id_package;
 			$id_konfigurasi_ql_sibling = $arr_ql_sibling_tm->row()->id_konfigurasi;
 			$item_name_ql_sibling      = $arr_ql_sibling_tm->row()->package_name;
-			$buyer_email_ql_sibling    = $arr_ql_sibling_tm->row()->member_email;
-			$buyer_name_ql_sibling     = $arr_ql_sibling_tm->row()->member_fullname;
+			$buyer_user_id_ql_sibling  = $arr_ql_sibling_tm->row()->member_user_id;
 			$type_package_2            = 'trade manager';
 
 			$bonus_grand_upline             = ($amount_1 * BONUS_QL) / 100;
@@ -1039,16 +1140,14 @@ class TaskSchedulerController extends CI_Controller
 					'id'         => $id_upline,
 					'deleted_at' => null,
 				];
-				$arr_grand_upline       = $this->M_core->get('member', 'id_upline, email, fullname, is_active', $where_grand_upline);
+				$arr_grand_upline       = $this->M_core->get('member', 'id_upline, user_id, email, fullname, is_active', $where_grand_upline);
 				$id_grand_upline        = $arr_grand_upline->row()->id_upline;
+				$user_id_grand_upline   = $arr_grand_upline->row()->user_id;
 				$email_grand_upline     = $arr_grand_upline->row()->email;
-				$fullname_grand_upline  = $arr_grand_upline->row()->fullname;
 				$is_active_grand_upline = $arr_grand_upline->row()->is_active;
 
 				if ($arr_grand_upline->num_rows() > 0) {
-
 					if ($id_grand_upline != null) {
-
 						if ($is_active_grand_upline == "yes") {
 							$exec = $this->M_trade_manager->update_member_bonus($id_grand_upline, $new_bonus_grand_upline);
 							if (!$exec) {
@@ -1061,13 +1160,15 @@ class TaskSchedulerController extends CI_Controller
 								exit;
 							}
 
-							$desc_log_member1 = "$fullname_grand_upline ($email_grand_upline) Mendapatkan Bonus Kualifikasi Leader dari $member_fullname ($member_email) Paket $package_name";
-							$desc_log_member2 = "$fullname_grand_upline ($email_grand_upline) Mendapatkan Bonus Kualifikasi Leader dari $buyer_name_ql_sibling ($buyer_email_ql_sibling) Paket $item_name_ql_sibling";
+							$desc_log_member1 = "$user_id_grand_upline Mendapatkan Bonus Kualifikasi Leader $bonus_grand_upline USDT dari $member_user_id ($user_id_upline) Join Paket $package_name ";
+							$desc_log_member2 = "$user_id_grand_upline Mendapatkan Bonus Kualifikasi Leader $amount_usd_ql_sibling_as_bonus USDT dari $buyer_user_id_ql_sibling Dari Paket $item_name_ql_sibling";
+
+							$notif = $desc_log_member1 . " <br/>Dan<br/> " . $desc_log_member2;
+							$this->_send_notif_bonus($email_grand_upline, 'ql', $notif);
 						} else {
 							$exec = $this->M_trade_manager->update_unknown_balance($new_bonus_grand_upline);
 							if (!$exec) {
 								$this->db->trans_rollback();
-
 								echo json_encode([
 									'code'    => 500,
 									'message' => 'Gagal Update Unknown Balance Bonus Kualifikasi Leader Trade Manager',
@@ -1075,8 +1176,8 @@ class TaskSchedulerController extends CI_Controller
 								exit;
 							}
 
-							$desc_log_member1 = "Unknown Balance Mendapatkan Bonus Kualifikasi Leader dari $member_fullname ($member_email) Paket $package_name";
-							$desc_log_member2 = "Unknown Balance Mendapatkan Bonus Kualifikasi Leader dari $buyer_name_ql_sibling ($buyer_email_ql_sibling) Paket $item_name_ql_sibling";
+							$desc_log_member1 = "Unknown Balance Mendapatkan Bonus Kualifikasi Leader $bonus_grand_upline USDT dari $member_user_id Join Paket $package_name";
+							$desc_log_member2 = "Unknown Balance Mendapatkan Bonus Kualifikasi Leader $amount_usd_ql_sibling_as_bonus USDT dari $buyer_user_id_ql_sibling Paket $item_name_ql_sibling";
 						}
 
 						$data_update_member_trade_manager  = [
@@ -1155,8 +1256,18 @@ class TaskSchedulerController extends CI_Controller
 		return $member_is_qualified;
 	}
 
-	protected function _update_royalty($id_member, $member_fullname, $member_email, $amount_1, $invoice, $id_package, $id_konfigurasi, $package_name, $type_package)
+	protected function _update_royalty($data)
 	{
+		$id_member      = $data['id_member'];
+		$member_user_id = $data['member_user_id'];
+		$member_email   = $data['member_email'];
+		$amount_1       = $data['amount_1'];
+		$invoice        = $data['invoice'];
+		$id_package     = $data['id_package'];
+		$id_konfigurasi = $data['id_konfigurasi'];
+		$package_name   = $data['package_name'];
+		$type_package   = $data['type_package'];
+
 		$member_is_royalty = "no";
 
 		$arr_self_tree = $this->M_core->get('et_tree', 'lft, rgt, depth', ['id_member' => $id_member]);
@@ -1175,11 +1286,10 @@ class TaskSchedulerController extends CI_Controller
 					'id'         => $id_gen,
 					'deleted_at' => null
 				];
-				$arr_gen = $this->M_core->get('member', 'fullname, email, is_active', $where_gen);
+				$arr_gen = $this->M_core->get('member', 'user_id, fullname, email, is_active', $where_gen);
 
 				if ($arr_gen->num_rows() == 1) {
-					$fullname_gen  = $arr_gen->row()->fullname;
-					$email_gen     = $arr_gen->row()->email;
+					$user_id_gen   = $arr_gen->row()->user_id;
 					$is_active_gen = $arr_gen->row()->is_active;
 
 					$array_group_1 = [1];
@@ -1201,7 +1311,6 @@ class TaskSchedulerController extends CI_Controller
 							$exec = $this->M_trade_manager->update_member_bonus($id_gen, $bonus_royalty);
 							if (!$exec) {
 								$this->db->trans_rollback();
-
 								echo json_encode([
 									'code'    => 500,
 									'message' => 'Gagal Update Member Bonus Royalty',
@@ -1210,12 +1319,13 @@ class TaskSchedulerController extends CI_Controller
 							}
 
 							$id_member_log = $id_gen;
-							$desc_log      = "$fullname_gen ($email_gen) Mendapatkan Bonus Royalty dari Member Generasi $generation $member_fullname ($member_email) Paket $package_name";
+							$desc_log      = "$user_id_gen Mendapatkan Bonus Royalty $bonus_royalty USDT dari Member Generasi $generation $member_user_id Join Paket $package_name";
+
+							$this->_send_notif_bonus($member_email, 'royalty', $desc_log);
 						} else {
 							$exec = $this->M_trade_manager->update_unknown_bonus($bonus_royalty);
 							if (!$exec) {
 								$this->db->trans_rollback();
-
 								echo json_encode([
 									'code'    => 500,
 									'message' => 'Gagal Update Unknown Balance Bonus Royalty',
@@ -1224,7 +1334,7 @@ class TaskSchedulerController extends CI_Controller
 							}
 
 							$id_member_log = null;
-							$desc_log      = "Unknown Balance Mendapatkan Bonus Royalty dari Member Generasi $generation $member_fullname ($member_email) Paket $package_name";
+							$desc_log      = "Unknown Balance Mendapatkan Bonus Royalty $bonus_royalty USDT dari Member Generasi $generation $member_user_id Join Paket $package_name";
 						}
 
 						$data_log = [
@@ -1404,6 +1514,37 @@ class TaskSchedulerController extends CI_Controller
 		return false;
 	}
 
+	protected function _send_notif_bonus($to, $type_bonus, $notif): bool
+	{
+		if ($type_bonus == "sponsor") {
+			$subject = APP_NAME . " | Bonus Sponsor";
+		} elseif ($type_bonus == "ql") {
+			$subject = APP_NAME . " | Bonus Kualifikasi Leader";
+		} elseif ($type_bonus == "royalty") {
+			$subject = APP_NAME . " | Bonus Royalty";
+		}
+
+		$this->email->set_newline("\r\n");
+		$this->email->from($this->from, $this->from_alias);
+		$this->email->to($to);
+		$this->email->subject($subject);
+
+		$data['notif'] = $notif;
+		$message       = $this->load->view('emails/bonus_template', $data, TRUE);
+
+		$this->email->message($message);
+
+		$is_success = ($this->email->send()) ? 'yes' : 'no';
+
+		$this->M_log_send_email_member->write_log($to, $subject, $message, $is_success);
+
+		if ($is_success == "yes") {
+			return true;
+		}
+
+		return false;
+	}
+
 	/*
 	=======================================
 	Execute Every Day at Every 5 Minutes
@@ -1501,10 +1642,11 @@ class TaskSchedulerController extends CI_Controller
 	*/
 	public function disabled_member()
 	{
-		// if (!$this->input->is_cli_request()) {
-		// 	echo "Hanya dapat diakses via CLI";
-		// 	exit;
-		// }
+		if (!$this->input->is_cli_request()) {
+			echo "Hanya dapat diakses via CLI";
+			exit;
+		}
+
 		$arr = $this->M_member->disabled_member();
 
 		if ($arr === FALSE) {
@@ -1521,10 +1663,11 @@ class TaskSchedulerController extends CI_Controller
 	*/
 	public function update_konfigurasi_trade_manager()
 	{
-		// if (!$this->input->is_cli_request()) {
-		// 	echo "Hanya dapat diakses via CLI";
-		// 	exit;
-		// }
+		if (!$this->input->is_cli_request()) {
+			echo "Hanya dapat diakses via CLI";
+			exit;
+		}
+
 		$this->db->trans_begin();
 		$arr = $this->M_trade_manager->get_package(null, $this->date);
 
@@ -1576,11 +1719,13 @@ class TaskSchedulerController extends CI_Controller
 	*/
 	public function update_konfigurasi_crypto_asset()
 	{
-		// if (!$this->input->is_cli_request()) {
-		// 	echo "Hanya dapat diakses via CLI";
-		// 	exit;
-		// }
+		if (!$this->input->is_cli_request()) {
+			echo "Hanya dapat diakses via CLI";
+			exit;
+		}
+
 		$this->db->trans_begin();
+
 		$arr = $this->M_crypto_asset->get_package(null, $this->date);
 
 		if (count($arr) > 0) {
@@ -1635,6 +1780,7 @@ class TaskSchedulerController extends CI_Controller
 			echo "Hanya dapat diakses via CLI";
 			exit;
 		}
+
 		$this->db->trans_begin();
 		$arr = $this->M_trade_manager->get_expired_trade_manager();
 
@@ -1645,6 +1791,7 @@ class TaskSchedulerController extends CI_Controller
 				$id_member       = $key->id_member;
 				$member_fullname = $key->member_fullname;
 				$member_email    = $key->member_email;
+				$member_user_id  = $key->member_user_id;
 				$id_package      = $key->id_package;
 				$id_konfigurasi  = $key->id_konfigurasi;
 				$package_code    = $key->package_code;
@@ -1653,7 +1800,6 @@ class TaskSchedulerController extends CI_Controller
 				$currency1       = $key->currency1;
 				$expired_package = $key->expired_package;
 				$is_extend       = $key->is_extend;
-				$state           = 'expired';
 
 				if ($is_extend == "manual") {
 					// REDUCE MEMBER TRADE MANAGER BALANCE START
@@ -1661,7 +1807,7 @@ class TaskSchedulerController extends CI_Controller
 					// REDUCE MEMBER TRADE MANAGER BALANCE END
 
 					// LOG START
-					$description = "[$this->datetime] Member $member_fullname ($member_email) Invoice $invoice Paket $package_name Telah Kedaluwarsa Pada Tanggal $expired_package. Investasi Awal Sebesar $amount_1 USDT Telah Dipindahkan ke Profit";
+					$description = "[$this->datetime] $member_user_id Invoice $invoice Paket $package_name Telah Kedaluwarsa. Investasi Awal Sebesar $amount_1 USDT Telah Dipindahkan ke Profit";
 					$data_log = [
 						'id_member'         => $id_member,
 						'invoice'           => $invoice,
@@ -1669,7 +1815,7 @@ class TaskSchedulerController extends CI_Controller
 						'amount_transfer'   => $amount_1,
 						'currency_transfer' => 'USDT',
 						'txn_id'            => null,
-						'state'             => $state,
+						'state'             => 'expired',
 						'description'       => $description,
 						'created_at'        => $this->datetime,
 						'updated_at'        => $this->datetime,
@@ -1697,6 +1843,23 @@ class TaskSchedulerController extends CI_Controller
 						'id_member' => $id_member,
 					];
 					$this->M_core->update('member_trade_manager', $obj, $where);
+
+					// LOG START
+					$description = "[$this->datetime] $member_user_id Invoice $invoice Paket $package_name Telah Diperpanjang 365 Hari sampai $new_expired";
+					$data_log = [
+						'id_member'         => $id_member,
+						'invoice'           => $invoice,
+						'amount_invest'     => $amount_1,
+						'amount_transfer'   => 0,
+						'currency_transfer' => 'USDT',
+						'txn_id'            => null,
+						'state'             => 'extend',
+						'description'       => $description,
+						'created_at'        => $this->datetime,
+						'updated_at'        => $this->datetime,
+					];
+					$this->M_core->store_uuid('log_member_trade_manager', $data_log);
+					// LOG END
 
 					// EMAIL PERPANJANGAN START
 					$this->_send_package_extend($member_email, $invoice, $package_name, $new_expired);
@@ -1815,6 +1978,7 @@ class TaskSchedulerController extends CI_Controller
 			echo "Hanya dapat diakses via CLI";
 			exit;
 		}
+
 		$this->db->trans_begin();
 		$arr = $this->M_crypto_asset->get_expired_crypto_asset();
 
@@ -1825,6 +1989,7 @@ class TaskSchedulerController extends CI_Controller
 				$id_member       = $key->id_member;
 				$member_fullname = $key->member_fullname;
 				$member_email    = $key->member_email;
+				$member_user_id  = $key->member_user_id;
 				$id_package      = $key->id_package;
 				$id_konfigurasi  = $key->id_konfigurasi;
 				$package_code    = $key->package_code;
@@ -1844,7 +2009,7 @@ class TaskSchedulerController extends CI_Controller
 				// UPDATE STATE END
 
 				// LOG START
-				$description = "[$this->datetime] Member $member_fullname ($member_email) Paket $package_name Telah Kedaluwarsa Pada $expired_package. Member Kini Dapat Mengajukan Penerimaan Hadiah Asset Rumah.";
+				$description = "[$this->datetime] $member_user_id Paket $package_name Telah Kedaluwarsa. Member Kini Dapat Mengajukan Penerimaan Hadiah Asset Rumah.";
 				$data_log = [
 					'id_member'         => $id_member,
 					'invoice'           => $invoice,
@@ -1935,6 +2100,8 @@ class TaskSchedulerController extends CI_Controller
 				$reward_3  = $key_arr->reward_3;
 				$reward_4  = $key_arr->reward_4;
 				$reward_5  = $key_arr->reward_5;
+				$email     = $key_arr->email;
+				$user_id   = $key_arr->user_id;
 
 				// REWARD CHECK
 				$main_line       = $this->M_member->get_member_main_line($lft, $rgt, $depth + 1);
@@ -1961,6 +2128,8 @@ class TaskSchedulerController extends CI_Controller
 						$this->db->trans_rollback();
 						exit;
 					} else {
+
+						$this->_send_notif_reward($email, "Laptop");
 						echo "$id_member Sukses Mendapatkan Reward 1";
 					}
 				}
@@ -1977,6 +2146,7 @@ class TaskSchedulerController extends CI_Controller
 						$this->db->trans_rollback();
 						exit;
 					} else {
+						$this->_send_notif_reward($email, "Honda PCX");
 						echo "$id_member Sukses Mendapatkan Reward 2";
 					}
 				}
@@ -1993,6 +2163,7 @@ class TaskSchedulerController extends CI_Controller
 						$this->db->trans_rollback();
 						exit;
 					} else {
+						$this->_send_notif_reward($email, "Livina ALl New");
 						echo "$id_member Sukses Mendapatkan Reward 3";
 					}
 				}
@@ -2009,6 +2180,7 @@ class TaskSchedulerController extends CI_Controller
 						$this->db->trans_rollback();
 						exit;
 					} else {
+						$this->_send_notif_reward($email, "Pajero Sport");
 						echo "$id_member Sukses Mendapatkan Reward 4";
 					}
 				}
@@ -2025,6 +2197,7 @@ class TaskSchedulerController extends CI_Controller
 						$this->db->trans_rollback();
 						exit;
 					} else {
+						$this->_send_notif_reward($email, "Rumah Mewah");
 						echo "$id_member Sukses Mendapatkan Reward 5";
 					}
 				} else {
@@ -2036,6 +2209,31 @@ class TaskSchedulerController extends CI_Controller
 		else :
 			echo "Tidak ada Pembagian Hadiah Hari Ini";
 		endif;
+	}
+
+	protected function _send_notif_reward($to, $reward): bool
+	{
+		$subject = APP_NAME . " | Hadiah Target Tercapai";
+		$message = "";
+
+		$this->email->set_newline("\r\n");
+		$this->email->from($this->from, $this->from_alias);
+		$this->email->to($to);
+		$this->email->subject($subject);
+
+		$data['message'] = "Reward " . ucwords($reward) . " telah tercapai";
+		$message = $this->load->view('emails/reward', $data, TRUE);
+		$this->email->message($message);
+
+		$is_success = ($this->email->send()) ? 'yes' : 'no';
+
+		$this->M_log_send_email_member->write_log($to, $subject, $message, $is_success);
+
+		if ($is_success == "yes") {
+			return true;
+		}
+
+		return false;
 	}
 
 
@@ -2068,15 +2266,18 @@ class TaskSchedulerController extends CI_Controller
 	{
 		$this->db->trans_begin();
 
+		$release_obj = new DateTime('now');
+		$release_obj->modify('+30 day');
+		$release_date = $release_obj->format('Y-m-d');
+
 		foreach ($arr as $key) {
 			$invoice                  = $key->invoice;
 			$id_member                = $key->id_member;
-			$id_member                = $key->id_member;
 			$member_fullname          = $key->member_fullname;
 			$member_email             = $key->member_email;
+			$member_user_id           = $key->member_user_id;
 			$id_package               = $key->id_package;
 			$id_konfigurasi           = $key->id_konfigurasi;
-			$package_code             = $key->package_code;
 			$package_name             = $key->package_name;
 			$amount_1                 = $key->amount_1;
 			$share_self_percentage    = $key->share_self_percentage;
@@ -2087,9 +2288,9 @@ class TaskSchedulerController extends CI_Controller
 			$share_company_value      = $key->share_company_value;
 			$share_company_value      = $key->share_company_value;
 			$expired_package          = $key->expired_package;
+			$id_upline                = $this->M_core->get('member', 'id_upline', ['id' => $id_member])->row()->id_upline;
 
-			$id_upline = $this->M_core->get('member', 'id_upline', ['id' => $id_member])->row()->id_upline;
-
+			$user_id_upline  = null;
 			$email_upline    = null;
 			$fullname_upline = null;
 			if ($id_upline != null) {
@@ -2098,9 +2299,10 @@ class TaskSchedulerController extends CI_Controller
 					'is_active'  => 'yes',
 					'deleted_at' => null,
 				];
-				$arr_upline = $this->M_core->get('member', 'email, fullname', $where_upline);
+				$arr_upline = $this->M_core->get('member', 'user_id, email, fullname', $where_upline);
 
 				if ($arr_upline->num_rows() == 1) {
+					$user_id_upline  = $arr_upline->row()->user_id;
 					$email_upline    = $arr_upline->row()->email;
 					$fullname_upline = $arr_upline->row()->fullname;
 				}
@@ -2110,9 +2312,9 @@ class TaskSchedulerController extends CI_Controller
 			$share_upline_value_formated  = check_float($share_upline_value);
 			$share_company_value_formated = check_float($share_company_value);
 
-			$description1  = "$member_fullname ($member_email) Mendapatkan Profit Harian Dari Paket Trade Manager $package_name";
-			$description2 = "$fullname_upline ($email_upline) Mendapatkan Profit Harian Dari Downline $member_fullname ($member_email) Paket Trade Manager $package_name";
-			$description3  = "Unknown Balance Mendapatkan Profit Harian Dari Downline $member_fullname ($member_email) Paket Trade Manager $package_name";
+			$description1 = "$member_user_id Mendapatkan Profit Harian $profit_self_per_day_formated USDT Paket Trade Manager $package_name";
+			$description2 = "$user_id_upline Mendapatkan Profit Harian $share_upline_value_formated USDT Paket Trade Manager $package_name Dari Downline $member_user_id";
+			$description3 = "Unknown Balance Mendapatkan Profit Harian $share_company_value_formated USDT Paket Trade Manager $package_name Dari Downline $member_user_id";
 
 			$current_datetime_obj = new DateTime($this->datetime);
 			$expired_datetime_obj = new DateTime($expired_package);
@@ -2121,7 +2323,7 @@ class TaskSchedulerController extends CI_Controller
 			if ($diff->format('%R') == "+") {
 				// MEMBER GET PROFIT START
 				/* UPDATE MEMBER BALANCE START */
-				$exec1 = $this->M_trade_manager->update_member_profit($id_member, $share_self_value);
+				$exec1 = $this->M_trade_manager->update_member_profit_unpaid($id_member, $share_self_value);
 				/* UPDATE MEMBER BALANCE END */
 
 				/* LOG START */
@@ -2129,9 +2331,11 @@ class TaskSchedulerController extends CI_Controller
 					'id_member'         => $id_member,
 					'member_fullname'   => $member_fullname,
 					'member_email'      => $member_email,
+					'member_user_id'    => $member_user_id,
 					'id_downline'       => null,
 					'downline_fullname' => null,
 					'downline_email'    => null,
+					'downline_user_id'  => null,
 					'invoice'           => $invoice,
 					'id_package'        => $id_package,
 					'id_konfigurasi'    => $id_konfigurasi,
@@ -2140,6 +2344,8 @@ class TaskSchedulerController extends CI_Controller
 					'persentase'        => $share_self_percentage,
 					'profit'            => $share_self_value,
 					'state'             => 'self',
+					'is_unpaid'         => 'yes',
+					'release_date'      => $release_date,
 					'description'       => $description1,
 					'created_at'        => $this->datetime,
 				];
@@ -2157,14 +2363,17 @@ class TaskSchedulerController extends CI_Controller
 				if ($id_upline != null) {
 					$exec2 = $this->M_trade_manager->update_member_profit($id_upline, $share_upline_value);
 
+					// adam
 					/* LOG START */
 					$data1 = [
 						'id_member'         => $id_upline,
 						'member_fullname'   => $fullname_upline,
 						'member_email'      => $email_upline,
+						'member_user_id'    => $user_id_upline,
 						'id_downline'       => $id_member,
 						'downline_fullname' => $member_fullname,
 						'downline_email'    => $member_email,
+						'downline_user_id'  => $member_user_id,
 						'invoice'           => $invoice,
 						'id_package'        => $id_package,
 						'id_konfigurasi'    => $id_konfigurasi,
@@ -2173,6 +2382,8 @@ class TaskSchedulerController extends CI_Controller
 						'persentase'        => $share_upline_percentage,
 						'profit'            => $share_upline_value,
 						'state'             => 'downline',
+						'is_unpaid'         => 'yes',
+						'release_date'      => $release_date,
 						'description'       => $description2,
 						'created_at'        => $this->datetime,
 					];
@@ -2192,9 +2403,11 @@ class TaskSchedulerController extends CI_Controller
 						'id_member'         => null,
 						'member_fullname'   => null,
 						'member_email'      => null,
+						'member_user_id'    => null,
 						'id_downline'       => $id_member,
 						'downline_fullname' => $member_fullname,
 						'downline_email'    => $member_email,
+						'downline_user_id'  => $member_user_id,
 						'invoice'           => $invoice,
 						'id_package'        => $id_package,
 						'id_konfigurasi'    => $id_konfigurasi,
@@ -2203,6 +2416,8 @@ class TaskSchedulerController extends CI_Controller
 						'persentase'        => $share_upline_percentage,
 						'profit'            => $share_upline_value,
 						'state'             => 'downline',
+						'is_unpaid'         => 'yes',
+						'release_date'      => $release_date,
 						'description'       => $description3,
 						'created_at'        => $this->datetime,
 					];
@@ -2219,9 +2434,11 @@ class TaskSchedulerController extends CI_Controller
 					'id_member'         => null,
 					'member_fullname'   => null,
 					'member_email'      => null,
+					'member_user_id'    => null,
 					'id_downline'       => $id_member,
 					'downline_fullname' => $member_fullname,
 					'downline_email'    => $member_email,
+					'downline_user_id'  => $member_user_id,
 					'invoice'           => $invoice,
 					'id_package'        => $id_package,
 					'id_konfigurasi'    => $id_konfigurasi,
@@ -2230,6 +2447,8 @@ class TaskSchedulerController extends CI_Controller
 					'persentase'        => $share_company_percentage,
 					'profit'            => $share_company_value,
 					'state'             => 'company',
+					'is_unpaid'         => 'yes',
+					'release_date'      => $release_date,
 					'description'       => $description3,
 					'created_at'        => $this->datetime,
 				];
@@ -2275,15 +2494,19 @@ class TaskSchedulerController extends CI_Controller
 	{
 		$this->db->trans_begin();
 
+		$release_obj = new DateTime('now');
+		$release_obj->modify('+30 day');
+		$release_date = $release_obj->format('Y-m-d');
+
 		foreach ($arr as $key) {
 			$invoice                  = $key->invoice;
 			$id_member                = $key->id_member;
 			$id_member                = $key->id_member;
 			$member_fullname          = $key->member_fullname;
 			$member_email             = $key->member_email;
+			$member_user_id           = $key->member_user_id;
 			$id_package               = $key->id_package;
 			$id_konfigurasi           = $key->id_konfigurasi;
-			$package_code             = $key->package_code;
 			$package_name             = $key->package_name;
 			$amount_1                 = $key->amount_1;
 			$share_self_percentage    = $key->share_self_percentage;
@@ -2297,6 +2520,7 @@ class TaskSchedulerController extends CI_Controller
 
 			$id_upline = $this->M_core->get('member', 'id_upline', ['id' => $id_member])->row()->id_upline;
 
+			$user_id_upline  = null;
 			$email_upline    = null;
 			$fullname_upline = null;
 			if ($id_upline != null) {
@@ -2305,9 +2529,10 @@ class TaskSchedulerController extends CI_Controller
 					'is_active'  => 'yes',
 					'deleted_at' => null,
 				];
-				$arr_upline = $this->M_core->get('member', 'email, fullname', $where_upline);
+				$arr_upline = $this->M_core->get('member', 'user_id, email, fullname', $where_upline);
 
 				if ($arr_upline->num_rows() == 1) {
+					$user_id_upline  = $arr_upline->row()->user_id;
 					$email_upline    = $arr_upline->row()->email;
 					$fullname_upline = $arr_upline->row()->fullname;
 				}
@@ -2317,9 +2542,9 @@ class TaskSchedulerController extends CI_Controller
 			$share_upline_value_formated  = check_float($share_upline_value);
 			$share_company_value_formated = check_float($share_company_value);
 
-			$description1  = "$member_fullname ($member_email) Mendapatkan Profit Harian Dari Paket Crypto Asset $package_name";
-			$description2 = "$fullname_upline ($email_upline) Mendapatkan Profit Harian Dari Downline $member_fullname ($member_email) Paket Crypto Asset $package_name";
-			$description3  = "Unknown Balance Mendapatkan Profit Harian Dari Downline $member_fullname ($member_email) Paket Crypto Asset $package_name";
+			$description1 = "$member_user_id Mendapatkan Profit Harian $profit_self_per_day_formated USDT Paket Crypto Asset $package_name";
+			$description2 = "$user_id_upline Mendapatkan Profit Harian $share_upline_value_formated USDT Paket Crypto Asset $package_name Dari Downline $member_user_id";
+			$description3 = "Unknown Balance Mendapatkan Profit Harian $share_company_value_formated USDT Paket Crypto Asset $package_name Dari Downline $member_user_id";
 
 			$current_datetime_obj = new DateTime($this->datetime);
 			$expired_datetime_obj = new DateTime($expired_package);
@@ -2336,9 +2561,11 @@ class TaskSchedulerController extends CI_Controller
 					'id_member'         => $id_member,
 					'member_fullname'   => $member_fullname,
 					'member_email'      => $member_email,
+					'member_user_id'    => $member_user_id,
 					'id_downline'       => null,
 					'downline_fullname' => null,
 					'downline_email'    => null,
+					'downline_user_id'  => null,
 					'invoice'           => $invoice,
 					'id_package'        => $id_package,
 					'id_konfigurasi'    => $id_konfigurasi,
@@ -2347,6 +2574,8 @@ class TaskSchedulerController extends CI_Controller
 					'persentase'        => $share_self_percentage,
 					'profit'            => $share_self_value,
 					'state'             => 'self',
+					'is_unpaid'         => 'no',
+					'release_date'      => $this->date,
 					'description'       => $description1,
 					'created_at'        => $this->datetime,
 				];
@@ -2362,16 +2591,18 @@ class TaskSchedulerController extends CI_Controller
 
 				// UPLINE GET PROFIT START
 				if ($id_upline != null) {
-					$exec2 = $this->M_crypto_asset->update_member_profit($id_upline, $share_upline_value);
+					$exec2 = $this->M_crypto_asset->update_member_profit_unpaid($id_upline, $share_upline_value);
 
 					/* LOG START */
 					$data1 = [
 						'id_member'         => $id_upline,
 						'member_fullname'   => $fullname_upline,
 						'member_email'      => $email_upline,
+						'member_user_id'    => $user_id_upline,
 						'id_downline'       => $id_member,
 						'downline_fullname' => $member_fullname,
 						'downline_email'    => $member_email,
+						'downline_user_id'  => $member_user_id,
 						'invoice'           => $invoice,
 						'id_package'        => $id_package,
 						'id_konfigurasi'    => $id_konfigurasi,
@@ -2380,6 +2611,8 @@ class TaskSchedulerController extends CI_Controller
 						'persentase'        => $share_upline_percentage,
 						'profit'            => $share_upline_value,
 						'state'             => 'downline',
+						'is_unpaid'         => 'yes',
+						'release_date'      => $release_date,
 						'description'       => $description2,
 						'created_at'        => $this->datetime,
 					];
@@ -2392,16 +2625,18 @@ class TaskSchedulerController extends CI_Controller
 					}
 					/* EMAIL SEND END */
 				} else {
-					$exec2 = $this->M_crypto_asset->update_unknown_profit($share_upline_value);
+					$exec2 = $this->M_crypto_asset->update_unknown_profit_unpaid($share_upline_value);
 
 					/* LOG start */
 					$data1 = [
 						'id_member'         => null,
 						'member_fullname'   => null,
 						'member_email'      => null,
+						'member_user_id'    => null,
 						'id_downline'       => $id_member,
 						'downline_fullname' => $member_fullname,
 						'downline_email'    => $member_email,
+						'downline_user_id'  => $member_user_id,
 						'invoice'           => $invoice,
 						'id_package'        => $id_package,
 						'id_konfigurasi'    => $id_konfigurasi,
@@ -2410,6 +2645,8 @@ class TaskSchedulerController extends CI_Controller
 						'persentase'        => $share_upline_percentage,
 						'profit'            => $share_upline_value,
 						'state'             => 'downline',
+						'is_unpaid'         => 'yes',
+						'release_date'      => $release_date,
 						'description'       => $description3,
 						'created_at'        => $this->datetime,
 					];
@@ -2419,16 +2656,18 @@ class TaskSchedulerController extends CI_Controller
 				// UPLINE GET PROFIT END
 
 				// COMPANY GET PROFIT START
-				$exec3 = $this->M_crypto_asset->update_unknown_profit($share_company_value);
+				$exec3 = $this->M_crypto_asset->update_unknown_profit_unpaid($share_company_value);
 
 				/* LOG start */
 				$data1 = [
 					'id_member'         => null,
 					'member_fullname'   => null,
 					'member_email'      => null,
+					'member_user_id'    => null,
 					'id_downline'       => $id_member,
 					'downline_fullname' => $member_fullname,
 					'downline_email'    => $member_email,
+					'downline_user_id'  => $member_user_id,
 					'invoice'           => $invoice,
 					'id_package'        => $id_package,
 					'id_konfigurasi'    => $id_konfigurasi,
@@ -2437,6 +2676,8 @@ class TaskSchedulerController extends CI_Controller
 					'persentase'        => $share_company_percentage,
 					'profit'            => $share_company_value,
 					'state'             => 'company',
+					'is_unpaid'         => 'yes',
+					'release_date'      => $release_date,
 					'description'       => $description3,
 					'created_at'        => $this->datetime,
 				];
@@ -2450,6 +2691,43 @@ class TaskSchedulerController extends CI_Controller
 					$this->db->trans_commit();
 				}
 			}
+		}
+	}
+
+	/*
+	==============================
+	Execute Every Day at 00:41 AM
+	==============================
+	*/
+	public function release_unpaid_tm()
+	{
+		if (!$this->input->is_cli_request()) {
+			echo "Hanya Dapat Diakses Via CLI";
+			exit;
+		}
+
+		$arr = $this->M_task_scheduler->release_unpaid_tm();
+
+		if ($arr === false) {
+			echo "";
+		} else {
+			echo "Proses release unpaid tm berhasil";
+		}
+	}
+
+	public function release_unpaid_ca()
+	{
+		// if (!$this->input->is_cli_request()) {
+		// 	echo "Hanya Dapat Diakses Via CLI";
+		// 	exit;
+		// }
+
+		$arr = $this->M_task_scheduler->release_unpaid_ca();
+
+		if ($arr === false) {
+			echo "";
+		} else {
+			echo "Proses release unpaid ca berhasil";
 		}
 	}
 

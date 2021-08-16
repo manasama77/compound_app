@@ -116,14 +116,14 @@ class M_crypto_asset extends CI_Model
 			->get();
 	}
 
-	public function update_member_profit($id_member, $profit)
+	public function update_member_profit_unpaid($id_member, $profit)
 	{
-		return $this->db->set('profit', 'profit + ' . $profit, false)->where('id_member', $id_member)->update('member_balance');
+		return $this->db->set('profit_unpaid', 'profit_unpaid + ' . $profit, false)->where('id_member', $id_member)->update('member_balance');
 	}
 
-	public function update_unknown_profit($profit)
+	public function update_unknown_profit_unpaid($profit)
 	{
-		return $this->db->set('amount_profit', 'amount_profit + ' . $profit, false)->where('id', 1)->update('unknown_balance');
+		return $this->db->set('amount_profit_unpaid', 'amount_profit_unpaid + ' . $profit, false)->where('id', 1)->update('unknown_balance');
 	}
 
 	public function update_member_bonus($id_member, $bonus)
@@ -149,6 +149,7 @@ class M_crypto_asset extends CI_Model
 				'member_crypto_asset.id_member',
 				'member_crypto_asset.member_fullname',
 				'member_crypto_asset.member_email',
+				'member_crypto_asset.member_user_id',
 				'member_crypto_asset.id_package',
 				'member_crypto_asset.id_konfigurasi',
 				'member_crypto_asset.package_code',

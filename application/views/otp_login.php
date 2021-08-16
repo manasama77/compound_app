@@ -27,12 +27,12 @@
 				<form id="form_otp">
 					<div class="card">
 						<div class="card-header">
-							Verifikasi OTP <i>(one time password)</i>
+							Verifikasi OTP <i>(One Time Password)</i>
 						</div>
 						<div class="card-body">
 							<div class="form-group text-center">
 								<label for="otp">OTP</label>
-								<input type="number" class="form-control mb-2" id="otp" name="otp" min="100000" max="999999" placeholder="000000" autofocus required>
+								<input type="text" class="form-control mb-2" id="otp" name="otp" minlength="6" maxlength="6" placeholder="000000" autofocus required>
 								<span class="help-block"><small>Sistem telah mengirimkan kode OTP pada alamat email <kbd><?= $this->session->userdata(SESI . 'email'); ?></kbd></small></span>
 							</div>
 							<button type="button" class="btn btn-warning btn-sm btn-block" id="resend_button" onclick="resendOTP('<?= $this->session->userdata(SESI . 'email'); ?>');" disabled>
@@ -64,6 +64,21 @@
 </html>
 
 <script>
+	$.fn.inputFilter = function(inputFilter) {
+		return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function() {
+			if (inputFilter(this.value)) {
+				this.oldValue = this.value;
+				this.oldSelectionStart = this.selectionStart;
+				this.oldSelectionEnd = this.selectionEnd;
+			} else if (this.hasOwnProperty("oldValue")) {
+				this.value = this.oldValue;
+				this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+			} else {
+				this.value = "";
+			}
+		});
+	};
+
 	let toastrOptions = {
 			"closeButton": false,
 			"debug": false,
@@ -86,6 +101,10 @@
 
 	$(document).ready(function() {
 		startTimer(minutes, display);
+
+		$("#otp").inputFilter(function(value) {
+			return /^\d*$/.test(value); // Allow digits only, using a RegExp
+		});
 
 		$('#form_otp').on('submit', function(e) {
 			e.preventDefault();
@@ -124,7 +143,7 @@
 				toastr.warning('Warning', 'OTP Wrong', toastrOptions);
 				setTimeout(function() {
 					$('#otp').focus();
-				}, 3000);
+				}, 2000);
 			} else if (e.code == 200) {
 				toastr.success('Success', 'OTP Verified', toastrOptions);
 				setTimeout(function() {

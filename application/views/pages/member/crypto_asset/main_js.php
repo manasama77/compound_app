@@ -39,7 +39,7 @@
 					title: "Crypto Asset - <?= $this->session->userdata(SESI . 'fullname'); ?>",
 					filename: "Crypto Asset - <?= $this->session->userdata(SESI . 'fullname'); ?>",
 					exportOptions: {
-						columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+						columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, ],
 						modifier: {
 							page: 'all'
 						},
@@ -47,7 +47,7 @@
 				}
 			],
 			columnDefs: [{
-				targets: [12],
+				targets: [9],
 				orderable: false
 			}]
 		}).buttons().container().appendTo('#table_data_wrapper .col-md-6:eq(0)');
