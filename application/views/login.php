@@ -70,40 +70,42 @@
 					</div>
 				</form>
 
-				<p class="mb-1 mt-3">
+				<div class="mb-1 mt-4">
+					<div class="float-right">
+						<a href="<?= LINK_PENDAFTARAN; ?>">Pendaftaran</a>
+					</div>
 					<a href="<?= site_url('forgot_password'); ?>">Lupa Password ?</a>
-				</p>
+				</div>
+				<!-- /.card-body -->
 			</div>
-			<!-- /.card-body -->
+			<!-- /.card -->
 		</div>
-		<!-- /.card -->
-	</div>
-	<!-- /.login-box -->
+		<!-- /.login-box -->
 
-	<!-- jQuery -->
-	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/jquery/jquery.min.js"></script>
-	<!-- Bootstrap 4 -->
-	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<!-- AdminLTE App -->
-	<script src="<?= base_url(); ?>public/plugin/adminlte/dist/js/adminlte.min.js"></script>
+		<!-- jQuery -->
+		<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/jquery/jquery.min.js"></script>
+		<!-- Bootstrap 4 -->
+		<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+		<!-- AdminLTE App -->
+		<script src="<?= base_url(); ?>public/plugin/adminlte/dist/js/adminlte.min.js"></script>
 
 
-	<script src="<?= base_url(); ?>public/js/sweetalert2.min.js"></script>
+		<script src="<?= base_url(); ?>public/js/sweetalert2.min.js"></script>
 
-	<script>
-		$(document).ready(function() {
-			$('#eye').on('click', function() {
-				let pass = document.getElementById("password");
-				if (pass.type === "password") {
-					$('#eye').removeClass("fa-eye").addClass("fa-eye-slash");
-					pass.type = "text";
-				} else {
-					$('#eye').removeClass("fa-eye-slash").addClass("fa-eye");
-					pass.type = "password";
-				}
+		<script>
+			$(document).ready(function() {
+				$('#eye').on('click', function() {
+					let pass = document.getElementById("password");
+					if (pass.type === "password") {
+						$('#eye').removeClass("fa-eye").addClass("fa-eye-slash");
+						pass.type = "text";
+					} else {
+						$('#eye').removeClass("fa-eye-slash").addClass("fa-eye");
+						pass.type = "password";
+					}
+				});
 			});
-		});
-	</script>
+		</script>
 </body>
 
 </html>
