@@ -50,7 +50,7 @@
 							</div>
 							<div class="form-group">
 								<label for="id_card_number">No KTP</label>
-								<input type="text" class="form-control" id="id_card_number" name="id_card_number" minlength="16" maxlength="20" placeholder="No KTP" value="<?= set_value('id_card_number'); ?>" required>
+								<input type="text" class="form-control" id="id_card_number" name="id_card_number" minlength="16" maxlength="20" placeholder="No KTP" value="<?= set_value('id_card_number'); ?>" inputmode="numeric" required>
 							</div>
 							<div class="form-group">
 								<label for="country_code">Negara</label>
