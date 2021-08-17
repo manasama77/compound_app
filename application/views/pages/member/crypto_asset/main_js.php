@@ -62,7 +62,9 @@
 				invoice: invoice,
 			},
 			beforeSend: function() {
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function(e) {
 			$.unblockUI();
