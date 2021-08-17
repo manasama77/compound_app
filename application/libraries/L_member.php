@@ -10,7 +10,7 @@ class L_member
 	{
 		$this->ci = &get_instance();
 		$this->ci->load->model('M_core', 'mcore');
-		$this->ci->load->helper(['cookie', 'string']);
+		$this->ci->load->helper(['cookie', 'string', 'floating_helper', 'indodax_rate_helper']);
 	}
 
 	public function render($data)
@@ -100,6 +100,9 @@ class L_member
 			];
 			$data['aside_count_trade_manager'] = $this->ci->M_core->count('member_trade_manager', $where_trade_manager);
 			$data['aside_count_crypto_asset']  = $this->ci->M_core->count('member_crypto_asset', $where_trade_manager);
+			$data['x_app']                     = $this->ci->M_core->get('app_config', '*', ['id' => 1]);
+			$data['x_usdt_idr']                = indodax_rate('usdtidr');
+			$data['x_trx_idr']                 = indodax_rate('trxidr');
 			$this->ci->load->view('layouts/member/main', $data, FALSE);
 		} else {
 			show_404();

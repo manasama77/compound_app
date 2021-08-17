@@ -87,8 +87,7 @@ class WithdrawController extends CI_Controller
 		$coin_type      = $this->input->post('coin_type');
 		$id_wallet      = $this->input->post('id_wallet');
 		$wallet_address = $this->input->post('wallet_address');
-
-		$wallet_label = $this->M_core->get('member_wallet', 'wallet_label', ['id' => $id_wallet])->row()->wallet_label;
+		$wallet_label   = $this->M_core->get('member_wallet', 'wallet_label', ['id' => $id_wallet])->row()->wallet_label;
 
 		$code = 500;
 		$msg  = "Tidak dapat terhubung dengan Database, silahkan coba kembali!";
@@ -215,7 +214,7 @@ class WithdrawController extends CI_Controller
 			}
 
 			if ($rate_x != 0) {
-				$result = (($amount * $rate_usdt) / $rate_x) - $tx_fee;
+				$result = (($amount * $rate_usdt) / $rate_x);
 			}
 
 			echo json_encode([

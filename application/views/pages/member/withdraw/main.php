@@ -113,7 +113,7 @@
 							<div class="alert alert-warning p-1 elevation-1">
 								<strong>Catatan:</strong><br />
 								<ul class="p-3">
-									<!-- <li>Binance BNB.BEP20 adalah Jenis Coin Binance yang berjalan di jaringan Binance Smart Chain (BSC). Jenis Coin ini berbeda dengan Binance BNB.BEP2 yang berjalan di jaringan Binance Chain (BC)</li> -->
+									<li>Setiap melakukan transaksi penarikan akan dikenakan pemotongan biaya sebesar <?= check_float($x_app->row()->potongan_wd_external); ?>%</li>
 									<li>Pastikan Wallet Address yang Anda masukan Valid dan tidak salah dalam memasukan alamat</li>
 									<li>Pastikan juga Wallet Address dapat menerima jenis coin yang sama dan berada di jaringan yang sama. Jika tidak, pada saat proses Penarikan Coin yang dikirimkan akan terbakar dijaringan / kehilangan permanent</li>
 									<li><?= APP_NAME; ?> tidak bertanggung jawab atas semua kesalahan input Anda baik dari Wallet Address yang tidak Valid atau salah kepemilikan Wallet Address</li>

@@ -28,9 +28,10 @@ if (isset($vitamin_css)) {
 		<!-- Content Wrapper. Contains page content -->
 		<div class="content-wrapper">
 			<h5 class="marquee bg-dark py-2" style="display: none; font-size: 14px;">
-				<span class="mx-2">- USDT/RATU : 1</span>
-				<span class="mx-2">- USDT/IDR : 1</span>
-				<span class="mx-2">- TRX/IDR : 1</span>
+				<span class="mx-2">- USDT/RATU : <?= check_float($x_app->row()->rate_usdt_ratu); ?></span>
+				<span class="mx-2">- USDT/IDR : <?= check_float($x_usdt_idr); ?></span>
+				<span class="mx-2">- TRX/IDR : <?= check_float($x_trx_idr); ?></span>
+				<span class="mx-2 small"><i>Last Update: <?= date('Y-m-d H:i:s'); ?></i></span>
 			</h5>
 			<?php $this->load->view('pages/member/' . $content); ?>
 		</div>
