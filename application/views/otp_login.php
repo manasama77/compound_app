@@ -129,7 +129,9 @@
 				$('#otp').attr('disabled', true);
 				$("#resend_button").attr('disabled', true);
 				$('#submit_btn').attr('disabled', true);
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function() {
 			$.unblockUI();
@@ -166,7 +168,9 @@
 			},
 			beforeSend: function() {
 				$("#resend_button").attr('disabled', true);
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function() {
 			$.unblockUI();
