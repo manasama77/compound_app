@@ -9,6 +9,9 @@
 	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/plugins/fontawesome-free/css/all.min.css">
 	<!-- overlayScrollbars -->
 	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/plugins/overlayScrollbars/css/os-theme-round-dark.css">
+	<!-- Pace -->
+	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/plugins/pace-progress/themes/black/pace-theme-minimal.css">
 	<!-- Theme style -->
 	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/dist/css/adminlte.min.css">
 	<!-- DataTables -->

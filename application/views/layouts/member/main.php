@@ -9,7 +9,7 @@ if (isset($vitamin_css)) {
 }
 ?>
 
-<body class="control-sidebar-slide-open layout-fixed sidebar-mini-sm text-sm" style="height: auto;">
+<body class="control-sidebar-slide-open layout-fixed sidebar-mini-sm text-sm" style="height: auto;" data-scrollbarAutoHide="true">
 	<div class="wrapper">
 
 		<!-- Preloader -->
@@ -99,7 +99,10 @@ if (isset($vitamin_css)) {
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/fastclick/fastclick.js"></script>
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/select2/js/select2.full.min.js"></script>
+	<!-- Pace -->
+	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/pace-progress/pace.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
 </body>
 
@@ -114,6 +117,19 @@ if (isset($vitamin_js)) {
 
 <script>
 	$(document).ready(function() {
+		$(function() {
+			FastClick.attach(document.body);
+			$("body").overlayScrollbars({
+				className: "os-theme-round-dark",
+				resize: "both",
+				sizeAutoCapable: true,
+				paddingAbsolute: true,
+				scrollbars: {
+					clickScrolling: true
+				}
+			});
+		});
+
 		(function($) {
 			$.fn.textWidth = function() {
 				var calc = '<span style="display:none">' + $(this).text() + '</span>';
