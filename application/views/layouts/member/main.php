@@ -118,15 +118,6 @@ if (isset($vitamin_js)) {
 <script>
 	$(function() {
 		FastClick.attach(document.body);
-		// $("body").overlayScrollbars({
-		// 	className: "os-theme-dark",
-		// 	resize: "both",
-		// 	sizeAutoCapable: true,
-		// 	paddingAbsolute: true,
-		// 	scrollbars: {
-		// 		clickScrolling: true
-		// 	}
-		// });
 	});
 
 	$(document).ready(function() {
