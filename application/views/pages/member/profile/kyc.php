@@ -54,7 +54,7 @@
 							</div>
 							<div class="form-group">
 								<label for="country_code">Negara</label>
-								<select class="form-control select2" id="country_code" name="country_code" data-placeholder="Pilih Negara" required>
+								<select class="form-control select2" id="country_code" name="country_code" data-placeholder="Pilih Negara" inputmode="search" required>
 									<option value=""></option>
 									<?php foreach ($arr_negara->result() as $item) : ?>
 										<option value="<?= $item->code; ?>"><?= $item->name; ?></option>
@@ -70,14 +70,14 @@
 							</div>
 							<div class="form-group">
 								<label for="postal_code">Kode POS</label>
-								<input type="text" class="form-control" id="postal_code" name="postal_code" minlength="5" maxlength="5" placeholder="Kode POS" value="<?= set_value('postal_code'); ?>" required>
+								<input type="text" class="form-control" id="postal_code" name="postal_code" minlength="5" maxlength="5" placeholder="Kode POS" value="<?= set_value('postal_code'); ?>" inputmode="numeric" required>
 								<div class="help-block mt-1">
 									<span class="text-muted"><small>Sesuai KTP</small></span>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="id_bank">Bank</label>
-								<select class="form-control select2" id="id_bank" name="id_bank" data-placeholder="Pilih Bank" required>
+								<select class="form-control select2" id="id_bank" name="id_bank" data-placeholder="Pilih Bank" inputmode="search" required>
 									<option value=""></option>
 									<?php foreach ($arr_bank->result() as $item) : ?>
 										<option <?php (set_value('id_bank') == $item->id) ? "selected" : ""; ?> value="<?= $item->id; ?>"><?= $item->name; ?></option>
@@ -86,7 +86,7 @@
 							</div>
 							<div class="form-group">
 								<label for="no_rekening">No Rekening</label>
-								<input type="text" class="form-control" id="no_rekening" name="no_rekening" minlength="10" maxlength="20" placeholder="No Rekening" value="<?= set_value('no_rekening'); ?>" required>
+								<input type="text" class="form-control" id="no_rekening" name="no_rekening" minlength="10" maxlength="20" placeholder="No Rekening" value="<?= set_value('no_rekening'); ?>" inputmode="numeric" required>
 							</div>
 							<div class="form-group">
 								<label for="foto_ktp">Foto KTP</label>
