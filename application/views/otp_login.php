@@ -32,7 +32,7 @@
 						<div class="card-body">
 							<div class="form-group text-center">
 								<label for="otp">OTP</label>
-								<input type="text" class="form-control mb-2" id="otp" name="otp" minlength="6" maxlength="6" placeholder="000000" autofocus required>
+								<input type="text" class="form-control mb-2" id="otp" name="otp" minlength="6" maxlength="6" placeholder="000000" inputmode="numeric" autofocus required>
 								<span class="help-block"><small>Sistem telah mengirimkan kode OTP pada alamat email <kbd><?= $this->session->userdata(SESI . 'email'); ?></kbd></small></span>
 							</div>
 							<button type="button" class="btn btn-warning btn-sm btn-block" id="resend_button" onclick="resendOTP('<?= $this->session->userdata(SESI . 'email'); ?>');" disabled>
