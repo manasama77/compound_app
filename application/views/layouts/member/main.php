@@ -118,7 +118,7 @@ if (isset($vitamin_js)) {
 <script>
 	$(function() {
 		FastClick.attach(document.body);
-		$("body").overlayScrollbars({
+		$("body, modal").overlayScrollbars({
 			className: "os-theme-dark",
 			resize: "both",
 			sizeAutoCapable: true,
