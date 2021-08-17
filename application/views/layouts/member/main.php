@@ -60,7 +60,7 @@ if (isset($vitamin_css)) {
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button id="submit_otp" type="submit" class="btn btn-primary">Submit</button>
 					</div>
 				</div>
 			</div>
@@ -239,11 +239,15 @@ if (isset($vitamin_js)) {
 				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function(e) {
+				$('#otp').attr('readonly', true);
+				$('#submit_otp').attr('disabled', true);
 				$.blockUI({
 					message: `<i class="fas fa-spinner fa-spin"></i>`
 				});
 			}
 		}).always(function() {
+			$('#otp').attr('readonly', false);
+			$('#submit_otp').attr('disabled', false);
 			$.unblockUI();
 		}).fail(function(e) {
 			Swal.fire({
