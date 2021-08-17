@@ -116,20 +116,20 @@ if (isset($vitamin_js)) {
 ?>
 
 <script>
-	$(document).ready(function() {
-		$(function() {
-			FastClick.attach(document.body);
-			$("body").overlayScrollbars({
-				className: "os-theme-round-dark",
-				resize: "both",
-				sizeAutoCapable: true,
-				paddingAbsolute: true,
-				scrollbars: {
-					clickScrolling: true
-				}
-			});
+	$(function() {
+		FastClick.attach(document.body);
+		$("body").overlayScrollbars({
+			className: "os-theme-dark",
+			resize: "both",
+			sizeAutoCapable: true,
+			paddingAbsolute: true,
+			scrollbars: {
+				clickScrolling: true
+			}
 		});
+	});
 
+	$(document).ready(function() {
 		(function($) {
 			$.fn.textWidth = function() {
 				var calc = '<span style="display:none">' + $(this).text() + '</span>';
