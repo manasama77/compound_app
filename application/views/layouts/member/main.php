@@ -55,7 +55,7 @@ if (isset($vitamin_css)) {
 					<div class="modal-body">
 						<div class="form-group">
 							<label for="otp">OTP</label>
-							<input type="text" class="form-control" id="otp" name="otp" minlength="6" maxlength="6" required>
+							<input type="text" class="form-control" id="otp" name="otp" minlength="6" maxlength="6" inputmode="numeric" required>
 						</div>
 					</div>
 					<div class="modal-footer">
