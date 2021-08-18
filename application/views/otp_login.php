@@ -89,7 +89,7 @@
 			"onclick": null,
 			"showDuration": 300,
 			"hideDuration": 1000,
-			"timeOut": 3000,
+			"timeOut": 2000,
 			"extendedTimeOut": 0,
 			"showEasing": "swing",
 			"hideEasing": "linear",
@@ -150,7 +150,7 @@
 				toastr.success('Success', 'OTP Verified', toastrOptions);
 				setTimeout(function() {
 					window.location.replace('<?= site_url('dashboard'); ?>');
-				}, 3000);
+				}, 2000);
 			} else {
 				toastr.error('Error', 'Response Unknown', toastrOptions);
 			}
