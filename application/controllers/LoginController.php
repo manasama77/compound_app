@@ -447,7 +447,7 @@ class LoginController extends CI_Controller
 			$id             = base64_decode($id);
 			$fullname       = $this->input->post('fullname');
 			$phone_number   = $this->input->post('phone_number');
-			$user_id        = $this->input->post('user_id');
+			$user_id        = strtolower($this->input->post('user_id'));
 			$email          = $this->input->post('email');
 			$password       = $this->input->post('password');
 
