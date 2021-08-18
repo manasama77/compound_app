@@ -2361,7 +2361,7 @@ class TaskSchedulerController extends CI_Controller
 
 				// UPLINE GET PROFIT START
 				if ($id_upline != null) {
-					$exec2 = $this->M_trade_manager->update_member_profit($id_upline, $share_upline_value);
+					$exec2 = $this->M_trade_manager->update_member_profit_unpaid($id_upline, $share_upline_value);
 
 					// adam
 					/* LOG START */
