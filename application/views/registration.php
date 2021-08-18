@@ -82,7 +82,7 @@
 								</div>
 
 								<div class="input-group mb-3">
-									<input type="text" class="form-control <?= (form_error('user_id')) ? 'is-invalid' : '' ?>" id="user_id" name="user_id" placeholder="User ID" value="<?= set_value('user_id'); ?>" minlength="8" maxlength="8" required>
+									<input type="text" class="form-control lowercase <?= (form_error('user_id')) ? 'is-invalid' : '' ?>" id="user_id" name="user_id" placeholder="User ID" value="<?= set_value('user_id'); ?>" minlength="8" maxlength="8" autocapitalize="none" required>
 									<div class="input-group-append">
 										<div class="input-group-text">
 											<label for="user_id" class="fas fa-user-tie"></label>
@@ -193,7 +193,7 @@
 		});
 
 		$('#user_id').on('keypress', function(e) {
-			if (!/[0-9a-z]/.test(String.fromCharCode(e.which))) {
+			if (!/[a-z0-9]/.test(String.fromCharCode(e.which))) {
 				return false;
 			}
 		});
