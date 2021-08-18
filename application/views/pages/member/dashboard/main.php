@@ -204,7 +204,7 @@
 					</div>
 					<div class="card-body p-0">
 						<div class="table-responsive">
-							<table class="table table-sm">
+							<table class="table table-bordered table-sm">
 								<thead>
 									<tr>
 										<th class="text-center align-middle"><i class="fas fa-image"></i></th>
