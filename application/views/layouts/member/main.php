@@ -100,8 +100,6 @@ if (isset($vitamin_css)) {
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/fastclick/fastclick.js"></script>
 	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/select2/js/select2.full.min.js"></script>
-	<!-- Pace -->
-	<!-- <script src="<?= base_url(); ?>public/plugin/adminlte/plugins/pace-progress/pace.min.js"></script> -->
 	<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
 </body>
 
