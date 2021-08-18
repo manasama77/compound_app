@@ -28,7 +28,7 @@ class TradeManagerController extends CI_Controller
 		$this->load->library('Nested_set', null, 'tree');
 		$this->load->model('M_trade_manager');
 		$this->load->model('M_log_send_email_member');
-		$this->load->helper('Floating_helper');
+		$this->load->helper('floating_helper');
 
 		$this->date            = date('Y-m-d');
 		$this->datetime        = date('Y-m-d H:i:s');

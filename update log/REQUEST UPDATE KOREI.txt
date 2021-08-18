@@ -1,0 +1,4 @@
+- ganti tampilan login
+- footer di halaman registrasi
+- ketika checkout ganti cek status paket menggunakan ajax
+- reset password tambahin fitur kirim ulang OTP
