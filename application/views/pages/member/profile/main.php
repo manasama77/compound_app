@@ -183,19 +183,19 @@
 									<div class="form-group row">
 										<label for="current_password" class="col-sm-3 col-form-label">Password Saat Ini</label>
 										<div class="col-sm-9">
-											<input type="password" class="form-control" id="current_password" name="current_password" placeholder="Password Saat Ini" required>
+											<input type="password" class="form-control" id="current_password" name="current_password" placeholder="Password Saat Ini" autocomplete="current-password" required>
 										</div>
 									</div>
 									<div class="form-group row">
 										<label for="new_password" class="col-sm-3 col-form-label">Password Baru</label>
 										<div class="col-sm-9">
-											<input type="password" class="form-control" id="new_password" name="new_password" placeholder="Password Baru" required>
+											<input type="password" class="form-control" id="new_password" name="new_password" placeholder="Password Baru" autocomplete="new-password" required>
 										</div>
 									</div>
 									<div class="form-group row">
 										<label for="verify_password" class="col-sm-3 col-form-label">Verifikasi Password Baru</label>
 										<div class="col-sm-9">
-											<input type="password" class="form-control" id="verify_password" name="verify_password" placeholder="Verifikasi Password Baru" required>
+											<input type="password" class="form-control" id="verify_password" name="verify_password" placeholder="Verifikasi Password Baru" autocomplete="new-password" required>
 										</div>
 									</div>
 									<div class="form-group row">

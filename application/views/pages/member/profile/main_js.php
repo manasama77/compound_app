@@ -31,7 +31,7 @@
 					Swal.fire({
 						icon: 'error',
 						title: 'Oops...',
-						text: 'Failed connect to Database, please contact web developer',
+						text: 'Gagal Terhubung Dengan Server Database, silahkan coba kembali',
 					});
 				} else if (e.code == 200) {
 					Swal.fire({
@@ -100,13 +100,13 @@
 				Swal.fire({
 					icon: 'error',
 					title: 'Oops...',
-					text: 'Failed connect to Database, please contact web developer',
+					text: 'Gagal Terhubung Dengan Server Database, silahkan coba kembali',
 				});
 			} else if (e.code == 404) {
 				Swal.fire({
 					icon: 'warning',
 					title: 'Oops...',
-					text: 'Current password Wrong, please check again!',
+					text: 'Password Saat Ini salah, silahkan coba kembali',
 				});
 			} else if (e.code == 200) {
 				compareNewPassword();
@@ -128,7 +128,7 @@
 			Swal.fire({
 				icon: 'warning',
 				title: 'Oops...',
-				text: 'New Password & Verify Password must be same!',
+				text: 'Password Baru & Verifikasi Password Baru harus sama!',
 			});
 		} else {
 			sendOTP().done(function(e) {
@@ -169,14 +169,14 @@
 				Swal.fire({
 					icon: 'error',
 					title: 'Oops...',
-					text: 'Failed connect to Database, please contact web developer',
+					text: 'Gagal Terhubung Dengan Server Database, silahkan coba kembali',
 				});
 			} else if (e.code == 200) {
 				Swal.fire({
 					position: 'top-end',
 					icon: 'success',
-					title: 'Success...',
-					text: 'Update Success',
+					title: 'Berhasil...',
+					text: 'Update Password Berhasil',
 					showConfirmButton: true,
 					timer: 2000,
 					timerProgressBar: true,
