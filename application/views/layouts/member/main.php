@@ -13,7 +13,8 @@ if (isset($vitamin_css)) {
 	<div class="wrapper">
 
 		<!-- Preloader -->
-		<?php $this->load->view('layouts/member/_preloader'); ?>
+		<?php //$this->load->view('layouts/member/_preloader'); 
+		?>
 		<!-- /.Preloader -->
 
 		<!-- Navbar -->
