@@ -26,11 +26,21 @@ class WalletController extends CI_Controller
 
 	public function index()
 	{
-		$arr = $this->M_core->get('member_wallet', '*', ['id_member' => $this->id_member]);
+		$arr    = $this->M_core->get('member_wallet', '*', ['id_member' => $this->id_member, 'deleted_at' => null]);
+		$is_kyc = $this->M_core->get('member', 'is_kyc', ['id' => $this->id_member])->row()->is_kyc;
+
+		$content    = 'wallet/main';
+		$vitamin_js = 'wallet/main_js';
+
+		if ($is_kyc != "yes") {
+			$content    = 'kyc_alert';
+			$vitamin_js = null;
+		}
+
 		$data = [
-			'title'      => APP_NAME . ' | Wallet Management',
-			'content'    => 'wallet/main',
-			'vitamin_js' => 'wallet/main_js',
+			'title'      => APP_NAME . ' | Wallet',
+			'content'    => $content,
+			'vitamin_js' => $vitamin_js,
 			'arr'        => $arr,
 			'csrf'       => $this->csrf,
 		];
@@ -103,12 +113,12 @@ class WalletController extends CI_Controller
 
 	public function destroy()
 	{
-		$code           = 200;
-		$id             = $this->input->post('id');
+		$code = 200;
+		$id   = $this->input->post('id');
 
-		$data = ['deleted_at' => $this->datetime,];
+		$data = ['deleted_at' => $this->datetime];
 		$where = [
-			'id' => $id,
+			'id'        => $id,
 			'id_member' => $this->id_member,
 		];
 		$exec = $this->M_core->update("member_wallet", $data, $where);

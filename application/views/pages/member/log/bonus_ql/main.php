@@ -2,12 +2,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">Log Bonus Qualification Leader</h1>
+				<h1 class="m-0">Catatan Bonus Kualifikasi Leader</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
 					<li class="breadcrumb-item"><a href="#">Log</a></li>
-					<li class="breadcrumb-item active">Bonus Qualification Leader</li>
+					<li class="breadcrumb-item active">Catatan Bonus Kualifikasi Leader</li>
 				</ol>
 			</div>
 		</div>
@@ -20,7 +20,7 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Log Bonus Qualification Leader</h3>
+						<h3 class="card-title">Catatan Bonus Kualifikasi Leader</h3>
 
 						<div class="card-tools">
 							<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -33,12 +33,12 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
-										<th class="align-top" style="min-width: 120px;">Date Time</th>
-										<th class="align-top" style="min-width: 120px;">Member</th>
-										<th class="align-top">Package</th>
-										<th class="align-top" style="min-width: 120px;">Type</th>
-										<th class="align-top text-right" style="min-width: 100px;">Amount</th>
-										<th class="align-top" style="min-width: 350px;">Description</th>
+										<th class="align-top" style="min-width: 120px;">Tanggal Waktu</th>
+										<th class="align-top" style="min-width: 120px;">Downline</th>
+										<th class="align-top" style="min-width: 120px;">Upline</th>
+										<th class="align-top">Paket</th>
+										<th class="align-top" style="min-width: 120px;">Tipe</th>
+										<th class="align-top text-right" style="min-width: 100px;">Nilai</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -51,7 +51,10 @@
 													<?= $key->created_at; ?>
 												</td>
 												<td class="align-top">
-													<?= $key->fullname; ?>
+													<?= $key->downline_user_id; ?>
+												</td>
+												<td class="align-top">
+													<?= $key->upline_user_id; ?>
 												</td>
 												<td class="align-top">
 													<?= $key->package; ?>
@@ -62,16 +65,13 @@
 												<td class="align-top text-right">
 													<?= check_float($key->package_amount); ?>
 												</td>
-												<td class="align-top">
-													<?= $key->description; ?>
-												</td>
 											</tr>
 
 										<?php endforeach; ?>
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- You Don't Have Any History Bonus Qualification Leader -</td>
+											<td colspan="6" class="text-center text-danger">- Kamu Belum Memiliki Catatan Bonus Kualifikasi Leader -</td>
 										</tr>
 
 									<?php endif; ?>

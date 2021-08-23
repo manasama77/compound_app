@@ -7,16 +7,16 @@ function time_ago(Datetime $date)
 
 
 	if (($t = $diff->format("%m")) > 0) {
-		$time_ago = $t . ' months';
+		$time_ago = $t . ' bulan';
 	} elseif (($t = $diff->format("%d")) > 0) {
-		$time_ago = $t . ' days';
+		$time_ago = $t . ' hari';
 	} elseif (($t = $diff->format("%H")) > 0) {
-		$time_ago = $t . ' hours';
+		$time_ago = $t . ' jam';
 	} else {
-		$time_ago = 'minutes';
+		$time_ago = 'menit';
 	}
 
-	return $time_ago . ' ago (' . $date->format('M j, Y') . ')';
+	return $time_ago . ' yang lalu (' . $date->format('M j, Y') . ')';
 }
                         
 /* End of file TimeHelper.php */

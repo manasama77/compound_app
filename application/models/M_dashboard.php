@@ -10,8 +10,10 @@ class M_dashboard extends CI_Model
 		$this->db->select([
 			'balance.total_invest_trade_manager',
 			'balance.total_invest_crypto_asset',
-			'balance.profit',
+			'balance.profit_paid',
+			'balance.profit_unpaid',
 			'balance.bonus',
+			'balance.ratu',
 			'balance.self_omset',
 			'balance.downline_omset',
 			'balance.total_omset',
@@ -52,12 +54,13 @@ class M_dashboard extends CI_Model
 	{
 		$this->db->select("
 			member.id,
+			member.user_id,
 			member.profile_picture,
 			member.fullname,
 			member.email,
 			member.phone_number,
 			( SELECT upline.fullname FROM et_member AS upline WHERE upline.id = member.id_upline ) AS fullname_upline,
-			( SELECT upline.email FROM et_member AS upline WHERE upline.id = member.id_upline ) AS email_upline,
+			( SELECT upline.user_id FROM et_member AS upline WHERE upline.id = member.id_upline ) AS user_id_upline,
 			( tree.depth - ( SELECT self_tree.depth FROM et_tree AS self_tree WHERE self_tree.id_member = '$id_member' ) ) AS generation,
 			balance.self_omset,
 			balance.downline_omset,
@@ -107,12 +110,13 @@ class M_dashboard extends CI_Model
 		if ($query->num_rows() > 0) {
 			foreach ($query->result() as $key) {
 				$id              = $key->id;
+				$user_id         = $key->user_id;
 				$profile_picture = ($key->profile_picture == NULL) ? base_url() . 'public/img/pp/default_avatar.svg' : base_url() . "public/img/pp/$key->profile_picture";
 				$fullname        = $key->fullname;
 				$email           = $key->email;
 				$phone_number    = $key->phone_number;
 				$fullname_upline = $key->fullname_upline;
-				$email_upline    = $key->email_upline;
+				$user_id_upline  = $key->user_id_upline;
 				$generation      = $key->generation;
 				$self_omset      = check_float($key->self_omset);
 				$downline_omset  = check_float($key->downline_omset);
@@ -121,12 +125,13 @@ class M_dashboard extends CI_Model
 
 				$nested = [
 					'id'              => $id,
+					'user_id'         => $user_id,
 					'profile_picture' => $profile_picture,
 					'fullname'        => $fullname,
 					'email'           => $email,
 					'phone_number'    => $phone_number,
 					'fullname_upline' => $fullname_upline,
-					'email_upline'    => $email_upline,
+					'user_id_upline'  => $user_id_upline,
 					'generation'      => $generation,
 					'self_omset'      => $self_omset,
 					'downline_omset'  => $downline_omset,

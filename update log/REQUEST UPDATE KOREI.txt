@@ -1,0 +1,7 @@
+- ganti tampilan login
+- footer di halaman registrasi
+- ketika checkout ganti cek status paket menggunakan ajax
+- reset password tambahin fitur kirim ulang OTP
+- paket crown deskripsi ≥
+- crypto asset bisa punya paket lebih dari 1
+- Pesan tolak KYC di buat hitam

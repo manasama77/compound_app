@@ -10,10 +10,13 @@ class M_log_bonus_recruitment extends CI_Model
 		return $this->db
 			->select([
 				'member.fullname',
+				'member.email',
+				'member.user_id',
 				'log_bonus_recruitment.type_package as type',
 				'log_bonus_recruitment.package_name as package',
 				'log_bonus_recruitment.description',
 				'log_bonus_recruitment.package_amount',
+				'log_bonus_recruitment.bonus_amount',
 				'log_bonus_recruitment.created_at',
 			])
 			->from('log_bonus_recruitment')

@@ -2,12 +2,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">Log Recruitment</h1>
+				<h1 class="m-0">Catatan Rekrutmen</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Log</a></li>
-					<li class="breadcrumb-item active">Recuritment</li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Beranda</a></li>
+					<li class="breadcrumb-item active">Catatan Rekrutmen</li>
 				</ol>
 			</div>
 		</div>
@@ -22,7 +22,7 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Log Recruitment</h3>
+						<h3 class="card-title">Catatan Rekrutmen</h3>
 
 						<div class="card-tools">
 							<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -35,13 +35,11 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
-										<th class="align-middle">Picture</th>
-										<th class="align-middle">Fullname</th>
-										<th class="align-middle">Email</th>
-										<th class="align-middle">Phone Number</th>
-										<th class="text-center align-middle">Generation</th>
+										<th class="text-center align-middle"><i class="fas fa-image"></i></th>
+										<th class="align-middle">Member</th>
+										<th class="text-center align-middle">Generasi</th>
 										<th class="text-center align-middle">Upline</th>
-										<th class="text-center align-middle" style="min-width: 150px; width: 150px;">Join Date</th>
+										<th class="text-center align-middle" style="min-width: 150px; width: 150px;">Tanggal Join</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -50,17 +48,11 @@
 										<?php foreach ($data_downline as $key) : ?>
 
 											<tr>
-												<td class="align-middle no-sort">
+												<td class="text-center align-middle no-sort">
 													<img src="<?= $key['profile_picture_downline']; ?>" alt="Profile Picture" class="img-size-50">
 												</td>
 												<td class="align-middle">
-													<?= $key['fullname_downline']; ?>
-												</td>
-												<td class="align-middle">
-													<?= $key['email_downline']; ?>
-												</td>
-												<td class="align-middle">
-													<?= $key['phone_number_downline']; ?>
+													<?= $key['user_id_downline']; ?>
 												</td>
 												<td class="text-center align-middle">
 													<span class="badge badge-primary">
@@ -68,7 +60,7 @@
 													</span>
 												</td>
 												<td class="align-middle text-center">
-													<?= $key['fullname_upline']; ?> <small>(<?= $key['email_upline']; ?>)</small>
+													<?= $key['user_id_upline']; ?>
 												</td>
 												<td class="align-middle text-center">
 													<?= $key['created_at_downline']; ?>
@@ -79,7 +71,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="7" class="text-center text-danger">- You Don't Have Any Friend On Your Circle -</td>
+											<td colspan="5" class="text-center text-danger">- KAMU TIDAK MEMILIKI DOWNLINE-</td>
 										</tr>
 
 									<?php endif; ?>

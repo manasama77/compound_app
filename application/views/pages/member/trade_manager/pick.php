@@ -29,7 +29,7 @@
 
 							<div class="card-tools">
 								<a href="<?= site_url('trade_manager/add'); ?>" class="btn btn-dark btn-sm elevation-2">
-									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke List Paket Trade Manager
+									<i class="fas fa-chevron-left fa-fw"></i> Kembali ke Join Paket
 								</a>
 							</div>
 						</div>
@@ -37,7 +37,7 @@
 							<div class="row">
 								<div class="col-md-5">
 									<p class="card-text">
-									<ul>
+									<ul style="font-size: 16px;">
 										<li>
 											Nilai Investasi: <span id="total_investment"><?= $arr[0]['amount']; ?></span> <small>USDT</small>
 										</li>
@@ -82,7 +82,7 @@
 													$type     = "text";
 												}
 												?>
-												<input type="<?= $type; ?>" class="form-control" id="total_transfer" name="total_transfer" value="<?= $arr[0]['amount']; ?>" required <?= $readonly; ?> min="<?= $min; ?>">
+												<input type="<?= $type; ?>" class="form-control" id="total_transfer" name="total_transfer" value="<?= str_replace(',', '', $arr[0]['amount']); ?>" required <?= $readonly; ?> min="<?= $min; ?>">
 												<div class="input-group-append">
 													<span class="input-group-text bg-primary">USDT</span>
 												</div>
@@ -114,7 +114,9 @@
 							<input type="hidden" class="form-control" id="id_package_trade_manager" name="id_package_trade_manager" value="<?= $id_package_trade_manager; ?>">
 							<input type="hidden" class="form-control" id="id_konfigurasi_trade_manager" name="id_konfigurasi_trade_manager" value="<?= $id_konfigurasi_trade_manager; ?>">
 							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
-							<button id="submit" type="submit" class="btn btn-primary btn-block btn-flat elevation-2">Checkout</button>
+							<button id="submit" type="submit" class="btn btn-primary btn-block btn-flat elevation-2">
+								<i class="fas fa-check"></i> CHECKOUT
+							</button>
 						</div>
 					</div>
 				</form>

@@ -17,7 +17,8 @@ class LoginController extends CI_Controller
 		parent::__construct();
 		$this->load->library('Nested_set', null, 'Nested_set');
 		$this->load->library('L_genuine_mail', null, 'genuine_mail');
-		$this->load->helper(['cookie', 'string', 'Otp_helper', 'Domain_helper', 'Time_helper']);
+		$this->load->helper(['cookie', 'string', 'otp_helper', 'domain_helper', 'time_helper']);
+		$this->load->model('M_login');
 		$this->load->model('M_log_send_email_member');
 
 		$this->datetime   = date('Y-m-d H:i:s');
@@ -71,7 +72,7 @@ class LoginController extends CI_Controller
 			'email'      => $email,
 			'deleted_at' => null,
 		];
-		$arr_user = $this->M_core->get('member', 'id, password, fullname, phone_number, id_upline, is_active, profile_picture, created_at, updated_at', $where, null, null, 1);
+		$arr_user = $this->M_core->get('member', 'id, password, fullname, user_id, phone_number, id_upline, is_active, profile_picture, activation_code, created_at, updated_at', $where, null, null, 1);
 
 		if ($arr_user->num_rows() == 0) {
 			$this->session->set_flashdata('email_value', $email);
@@ -79,9 +80,11 @@ class LoginController extends CI_Controller
 			$this->session->set_flashdata('email_state_message', 'Email Not Found');
 			redirect('login');
 		} elseif ($arr_user->row()->is_active == 'no') {
-			$msg = 'Akun belum aktif, silahkan aktivasi terlebih dahulu. Untuk melakukan aktivasi silahkan cek email kamu';
-			if (date($arr_user->row()->updated_at) > date($arr_user->row()->created_at)) {
-				$msg = 'Akun telah dimatikan oleh Admin';
+			if ($arr_user->row()->activation_code == null) {
+				$msg = 'Akun Nonaktif';
+			} else {
+				$msg = 'Akun belum aktif, silahkan aktivasi terlebih dahulu. Untuk melakukan aktivasi silahkan cek email kamu';
+				$check = $this->_send_email_activation($arr_user->row()->id, $email);
 			}
 			$this->session->set_flashdata('email_value', $email);
 			$this->session->set_flashdata('email_state', 'is-invalid');
@@ -106,15 +109,13 @@ class LoginController extends CI_Controller
 				SESI . 'email' => $email,
 			]);
 
-			if (ENVIRONMENT == "production") {
-				$check = $this->_send_otp($id, $email);
+			$check = $this->_send_otp($id, $email);
 
-				if ($check === true) {
-				}
+			if ($check === true) {
+				redirect('otp');
 			}
-			redirect('otp');
 
-			return show_error('Sistem gagal mengiri email, silahkan coba kembali', 500, 'Terjadi Kesalahan...');
+			return show_error('Sistem gagal mengirimkan email OTP, silahkan coba kembali', 500, 'Terjadi Kesalahan...');
 		}
 	}
 
@@ -155,6 +156,7 @@ class LoginController extends CI_Controller
 			$profile_picture = $arr->row()->profile_picture;
 			$cookies         = $arr->row()->cookies;
 			$is_active       = $arr->row()->is_active;
+			$user_id         = $arr->row()->user_id;
 
 			if (is_file(FCPATH . $profile_picture)) {
 				$pp = base_url() . 'public/img/pp/' . $profile_picture;
@@ -162,7 +164,7 @@ class LoginController extends CI_Controller
 				$pp = base_url() . "public/img/pp/default_avatar.svg";
 			}
 
-			$this->_set_session($id, $fullname, $email, $phone_number, $cookies, $is_active, $pp);
+			$this->_set_session($id, $fullname, $email, $phone_number, $cookies, $is_active, $pp, $user_id);
 		}
 
 		echo json_encode(['code' => $code]);
@@ -184,10 +186,12 @@ class LoginController extends CI_Controller
 			$id = $arr->row()->id;
 		}
 
-		$this->_send_otp($id, $email);
+		$status = $this->_send_otp($id, $email);
 
 		echo json_encode([
-			'code' => 200,
+			'code'   => 200,
+			'email'  => $email,
+			'status' => $status,
 		]);
 	}
 
@@ -201,6 +205,7 @@ class LoginController extends CI_Controller
 			SESI . 'phone_number',
 			SESI . 'is_active',
 			SESI . 'profile_picture',
+			SESI . 'user_id',
 		];
 		$this->session->unset_userdata($data);
 		$this->session->set_flashdata('logout', 'Logout Success');
@@ -214,7 +219,7 @@ class LoginController extends CI_Controller
 		return $key_cookies;
 	}
 
-	protected function _set_session($id, $fullname, $email, $phone_number, $cookies, $is_active, $profile_picture): void
+	protected function _set_session($id, $fullname, $email, $phone_number, $cookies, $is_active, $profile_picture, $user_id): void
 	{
 		$data = [
 			SESI . 'id'              => $id,
@@ -223,6 +228,7 @@ class LoginController extends CI_Controller
 			SESI . 'phone_number'    => $phone_number,
 			SESI . 'is_active'       => $is_active,
 			SESI . 'profile_picture' => $profile_picture,
+			SESI . 'user_id'         => $user_id,
 		];
 		$this->session->set_userdata($data);
 
@@ -254,6 +260,7 @@ class LoginController extends CI_Controller
 			$phone_number    = $check_cookies->row()->phone_number;
 			$is_active       = $check_cookies->row()->is_active;
 			$profile_picture = $check_cookies->row()->profile_picture;
+			$user_id         = $check_cookies->row()->user_id;
 
 			if (is_file(FCPATH . $profile_picture)) {
 				$pp = base_url() . 'public/img/pp/' . $profile_picture;
@@ -261,8 +268,8 @@ class LoginController extends CI_Controller
 				$pp = base_url() . "public/img/pp/default_avatar.svg";
 			}
 
-			$this->_set_session($id, $fullname, $email, $phone_number, $cookies, $is_active, $pp);
-			$this->session->set_flashdata('first_login', 'Login Success, Never share your Email and Password to the others');
+			$this->_set_session($id, $fullname, $email, $phone_number, $cookies, $is_active, $pp, $user_id);
+			$this->session->set_flashdata('first_login', 'Login Berhasil, Jangan Pernah Sharing Akun dengan yang lain');
 			redirect('dashboard');
 		} else {
 			delete_cookie(KUE);
@@ -335,22 +342,22 @@ class LoginController extends CI_Controller
 		$arr = $this->M_core->get('member', 'id, is_active, activation_code', $where);
 
 		if ($arr->num_rows() == 0) {
-			return show_error('Email / Account not found', 404, 'Something Wrong!');
+			return show_error('Email / Akun tidak ditemukan', 404, 'Terjadi Kesalahan!');
 		}
 
 		if ($arr->row()->is_active == "yes") {
-			return show_error('Account already Active<br /><a href="' . site_url('login') . '" class="btn btn-primary mt-3">Go to Login Page</a>', 200, 'Something Wrong!');
+			return show_error('Akun Sudah Aktif<br /><a href="' . site_url('login') . '" class="btn btn-primary mt-3">Ke Halaman Login</a>', 200, 'Terjadi Kesalahan!');
 		}
 
 		if ($arr->row()->activation_code != $activation_code || $arr->row()->activation_code == null) {
 			$id = $arr->row()->id;
 
 			$data = [
-				'title'   => APP_NAME . ' | Activation Error',
+				'title'   => APP_NAME . ' | Aktivasi Error',
 				'id'      => $id,
 				'email'   => $email,
 				'type'    => 'activation_not_same',
-				'message' => 'Activation Code Already Expired',
+				'message' => 'Kode Aktivasi Sudah Expired',
 			];
 			return $this->load->view('activation_account_error', $data);
 		}
@@ -363,7 +370,7 @@ class LoginController extends CI_Controller
 		$exec = $this->M_core->update('member', $data, $where);
 
 		if (!$exec) {
-			return show_error('Activation account failed, please try again', 500, 'Something Wrong!');
+			return show_error('Aktivasi Akun Gagal, silahkan coba kembali', 500, 'Terjadi Kesalahan!');
 		}
 
 		return $this->load->view('activation_account_success');
@@ -371,20 +378,47 @@ class LoginController extends CI_Controller
 
 	public function registration($id, $hash)
 	{
-		$this->form_validation->set_rules('fullname', 'Fullname', 'required');
-		$this->form_validation->set_rules('phone_number', 'Phone Number', 'required');
-		$this->form_validation->set_rules('id_card_number', 'ID Card Number', 'required|is_unique[member.id_card_number]', [
-			'is_unique' => 'This %s already exists.'
+		$this->form_validation->set_rules('fullname', 'Nama Lengkap', 'required|min_length[3]|max_length[100]', [
+			'required'  => '%s Wajib Diisi',
+			'min_length' => '%s Minimal 3 Karakter',
+			'max_length' => '%s Maksimal 100 Karakter',
 		]);
-		$this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[member.email]', [
-			'is_unique' => 'This %s already exists.'
+		$this->form_validation->set_rules('phone_number', 'No Telepon', 'required|min_length[3]|max_length[20]', [
+			'required'  => '%s Wajib Diisi',
+			'min_length' => '%s Minimal 3 Karakter',
+			'max_length' => '%s Maksimal 20 Karakter',
 		]);
-		$this->form_validation->set_rules('password', 'Password', 'required');
-		$this->form_validation->set_rules('verify_password', 'Verify Password', 'required|matches[password]');
+		$this->form_validation->set_rules('user_id', 'User ID', 'required|min_length[8]|max_length[8]|callback_check_user_id', [
+			'required'  => '%s Wajib Diisi',
+			'min_length' => '%s Harus 8 Karakter',
+			'max_length' => '%s Harus 8 Karakter',
+			'is_unique' => 'KTP %s Telah Terdaftar.'
+		]);
+		$this->form_validation->set_rules('email', 'Email', 'required|valid_email|min_length[3]|max_length[100]|is_unique[member.email]', [
+			'required'  => '%s Wajib Diisi',
+			'min_length' => '%s Minimal 3 Karakter',
+			'max_length' => '%s Maksimal 100 Karakter',
+			'is_unique' => 'Email %s Telah Terdaftar.'
+		]);
+		$this->form_validation->set_rules('password', 'Password', 'required|min_length[4]|max_length[16]', [
+			'required'  => '%s Wajib Diisi',
+			'min_length' => '%s Minimal 4 Karakter',
+			'max_length' => '%s Maksimal 16 Karakter',
+		]);
+		$this->form_validation->set_rules('verify_password', 'Verifikasi Password', 'required|min_length[4]|max_length[16]|matches[password]', [
+			'required'  => '%s Wajib Diisi',
+			'min_length' => '%s Minimal 4 Karakter',
+			'max_length' => '%s Maksimal 16 Karakter',
+			'matches'   => '%s Tidak sama dengan Password'
+		]);
 
 		if ($this->form_validation->run() == FALSE) {
-			$id   = base64_decode($id);
-			$hash = hash_hmac('sha1', $hash, UYAH);
+			$id     = base64_decode($id);
+			$hash_b = hash_hmac('sha1', $id, UYAH);
+
+			if ($hash != $hash_b) {
+				return show_error("Link Referral Salah", 404);
+			}
 
 			$where = [
 				'id'         => $id,
@@ -393,8 +427,12 @@ class LoginController extends CI_Controller
 			];
 			$arr = $this->M_core->get('member', 'email, fullname, created_at', $where);
 
+			if ($arr->num_rows() == 0) {
+				return show_error("Link Referral Salah", 404);
+			}
+
 			$data = [
-				'title'        => APP_NAME . ' | Member Registration',
+				'title'        => APP_NAME . ' | Registrasi Member',
 				'id'           => $id,
 				'email'        => $arr->row()->email,
 				'fullname'     => $arr->row()->fullname,
@@ -409,7 +447,7 @@ class LoginController extends CI_Controller
 			$id             = base64_decode($id);
 			$fullname       = $this->input->post('fullname');
 			$phone_number   = $this->input->post('phone_number');
-			$id_card_number = $this->input->post('id_card_number');
+			$user_id        = strtolower($this->input->post('user_id'));
 			$email          = $this->input->post('email');
 			$password       = $this->input->post('password');
 
@@ -421,21 +459,28 @@ class LoginController extends CI_Controller
 			$data = [
 				'email'                => $email,
 				'password'             => password_hash(UYAH . $password, PASSWORD_BCRYPT),
-				'id_card_number'       => $id_card_number,
+				'user_id'              => $user_id,
+				'id_card_number'       => null,
 				'fullname'             => $fullname,
 				'phone_number'         => $phone_number,
+				'address'              => null,
+				'postal_code'          => null,
+				'id_bank'              => null,
+				'no_rekening'          => null,
 				'id_upline'            => $id,
 				'country_code'         => null,
 				'profile_picture'      => null,
-				'otp'                  => null,
 				'otp'                  => null,
 				'is_active'            => 'no',
 				'activation_code'      => null,
 				'forgot_password_code' => null,
 				'is_founder'           => 'no',
+				'is_kyc'               => 'no',
 				'cookies'              => null,
 				'ip_address'           => null,
 				'user_agent'           => null,
+				'foto_ktp'             => null,
+				'foto_pegang_ktp'      => null,
 				'created_at'           => $this->datetime,
 				'updated_at'           => $this->datetime,
 				'deleted_at'           => null,
@@ -445,7 +490,7 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
+				return show_error('Tidak Terhubung Dengan Database, Silahkan cek koneksi kamu!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$where     = ['email' => $email];
@@ -458,8 +503,10 @@ class LoginController extends CI_Controller
 				'count_trade_manager'        => 0,
 				'total_invest_crypto_asset'  => 0,
 				'count_crypto_asset'         => 0,
-				'profit'                     => 0,
+				'profit_paid'                => 0,
+				'profit_unpaid'              => 0,
 				'bonus'                      => 0,
+				'ratu'                       => 0,
 				'self_omset'                 => 0,
 				'downline_omset'             => 0,
 				'total_omset'                => 0,
@@ -472,14 +519,14 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
+				return show_error('Tidak Terhubung Dengan Database, Silahkan cek koneksi kamu!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$add_tree_downline = $this->_add_tree_downline($id_member, $email, $id);
 
 			if ($this->Nested_set->checkIsValidNode($add_tree_downline) == FALSE) {
 				$this->db->trans_rollback();
-				echo json_encode(['code' => '500', 'msg' => 'Cannot Connect to Database, please check your connection!']);
+				echo json_encode(['code' => '500', 'msg' => 'Tidak Terhubung Dengan Database, Silahkan cek koneksi kamu!']);
 				exit;
 			}
 
@@ -505,14 +552,14 @@ class LoginController extends CI_Controller
 
 			if (!$exec) {
 				$this->db->trans_rollback();
-				return show_error('Cannot Connect to Database, please check your connection!', 500, 'Terjadi Kesalahan...');
+				return show_error('Tidak Terhubung Dengan Database, Silahkan cek koneksi kamu!', 500, 'Terjadi Kesalahan...');
 			}
 
 			$check = $this->_send_email_activation($id_member, $email);
 
 			if ($check == "no") {
 				$this->db->trans_rollback();
-				return show_error('Cannot Send Email, Please check your <mark>Email Address</mark>', 500, 'Terjadi Kesalahan...');
+				return show_error('Gagal Mengirimkan Aktivasi Email, Silahkan Pastikan Email <mark>Email Address</mark> Benar', 500, 'Terjadi Kesalahan...');
 			}
 
 			$this->db->trans_commit();
@@ -592,7 +639,7 @@ class LoginController extends CI_Controller
 	public function forgot_password()
 	{
 		$data = [
-			'title' => APP_NAME . ' | Forgot Password',
+			'title' => APP_NAME . ' | Lupa Password',
 			'csrf'  => $this->csrf,
 		];
 		$this->load->view('forgot_password', $data);
@@ -623,7 +670,7 @@ class LoginController extends CI_Controller
 
 	protected function _send_email_forgot_password($id, $to)
 	{
-		$subject = APP_NAME . " | Forgot Password";
+		$subject = APP_NAME . " | Lupa Password";
 		$message = "";
 
 		$this->email->set_newline("\r\n");
@@ -653,7 +700,7 @@ class LoginController extends CI_Controller
 		$email_decode = urldecode(str_replace(UYAH, "", base64_decode($email)));
 
 		if (!Is_base64($email_decode)) {
-			return show_error('Reset Password Code Invalid. Please try using Feature <a href="' . site_url('forgot_password') . '"><mark>Forgot Password</mark></a> again!', 403, '[403] - Access Forbidden');
+			return show_error('Kode Reset Password Salah. Silahkan coba kembali fitur <a href="' . site_url('forgot_password') . '"><mark>Lupa Password</mark></a> ', 403, '[403] - Akses Dibatasi');
 		}
 
 		$where = [
@@ -664,7 +711,7 @@ class LoginController extends CI_Controller
 		$arr = $this->M_core->get('member', 'id, forgot_password_code', $where);
 
 		if ($arr->num_rows() == 0 || $arr->row()->forgot_password_code != $forgot_password_code) {
-			return show_error('Reset Password Invalid', 404, 'Something Wrong!');
+			return show_error('Reset Password Salah', 404, 'Terjadi Kesalahan!');
 		}
 
 		$this->form_validation->set_rules('password', 'Password', 'required');
@@ -692,14 +739,27 @@ class LoginController extends CI_Controller
 			$exec = $this->M_core->update('member', $data, $where);
 
 			if (!$exec) {
-				return show_error('Reset password failed, Connection Issue. Please try again', 500, 'Something Wrong!');
+				return show_error('Reset password gagal, Permasalahan Koneksi. Silahkan Coba Kembali', 500, 'Terjadi Kesalahan!');
 			}
 
 			$data = [
-				'title' => APP_NAME . ' | Reset Password Success',
+				'title' => APP_NAME . ' | Reset Password Berhasil',
 			];
 			return $this->load->view('reset_password_success', $data);
 		}
+	}
+
+	public function check_user_id($user_id)
+	{
+		$id_member = base64_decode($this->uri->segment(2));
+		$count = $this->M_login->count_user_id($user_id, $id_member);
+
+		if ($count == 0) {
+			return TRUE;
+		}
+
+		$this->form_validation->set_message('check_user_id', "User ID $user_id Telah Terdaftar, silahkan gunakan User ID lain");
+		return FALSE;
 	}
 }
         

@@ -1613,7 +1613,7 @@
   var CLASS_NAME_CONTROL_SIDEBAR_SLIDE_OPEN = 'control-sidebar-slide-open';
   var CLASS_NAME_CONTROL_SIDEBAR_OPEN = 'control-sidebar-open';
   var Default$6 = {
-    scrollbarTheme: 'os-theme-light',
+    scrollbarTheme: 'os-theme-dark',
     scrollbarAutoHide: 'l',
     panelAutoHeight: true,
     panelAutoHeightMode: 'min-height',

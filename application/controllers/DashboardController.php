@@ -15,7 +15,7 @@ class DashboardController extends CI_Controller
 		$this->load->model('M_dashboard');
 		$this->load->model('M_member');
 		$this->load->model('M_tree');
-		$this->load->helper('Floating_helper');
+		$this->load->helper('floating_helper');
 
 
 		$this->id_member = $this->session->userdata(SESI . 'id');
@@ -37,6 +37,7 @@ class DashboardController extends CI_Controller
 		$data_card            = $this->_card();
 		$data_latest_downline = $this->_latest_downline($this->id_member);
 		$recruitment_link     = $this->_generate_recruitment_link();
+		$ratu_wallet          = base64url_encode($this->id_member);
 
 		$data = [
 			'title'                => APP_NAME . " | Dashboard",
@@ -45,6 +46,7 @@ class DashboardController extends CI_Controller
 			'data_card'            => $data_card,
 			'data_latest_downline' => $data_latest_downline,
 			'recruitment_link'     => $recruitment_link,
+			'ratu_wallet'          => $ratu_wallet,
 		];
 
 		$this->template->render($data);
@@ -55,66 +57,133 @@ class DashboardController extends CI_Controller
 		header('Content-Type: application/json');
 
 		$id_member = $this->input->get('id_member');
-
+		$limit     = ($this->input->get('limit')) ?? 5;
 		$where_package = [
 			'id_member'  => $id_member,
 			'deleted_at' => null,
 		];
-		$arr_package = $this->M_core->get('member_trade_manager', '*', $where_package);
 
-		$data_package = [];
-		if ($arr_package->num_rows() > 0) {
-			foreach ($arr_package->result() as $key) {
-				$item_name           = $key->item_name;
-				$amount_usd          = check_float($key->amount_usd);
-				$profit_self_per_day = check_float($key->profit_self_per_day);
-				$expired_at          = $key->expired_at;
-				$state               = $key->state;
+		// TM START
+		$arr_package_tm = $this->M_core->get('member_trade_manager', '*', $where_package);
+
+		$data_package_tm = [];
+		if ($arr_package_tm->num_rows() > 0) {
+			foreach ($arr_package_tm->result() as $key) {
+				$package_name     = $key->package_name;
+				$amount_1         = check_float($key->amount_1);
+				$share_self_value = check_float($key->share_self_value);
+				$expired_package  = $key->expired_package;
+				$state            = $key->state;
 
 				$now_obj     = new DateTime('now');
-				$expired_obj = new DateTime($expired_at);
+				$expired_obj = new DateTime($expired_package);
 				$diff        = $now_obj->diff($expired_obj);
 
 				if ($diff->format('%r') == "-") {
-					$duration = $diff->format('+%a day expired');
+					$duration = $diff->format('+%a hari tidak aktif');
 				} else {
-					$duration = $diff->format('%r%a day remain');
+					$duration = $diff->format('%r%a hari lagi');
 				}
 
 				if ($state == "waiting payment") {
 					$badge_color = 'info';
+					$text        = "Menunggu Pembayaran";
 				} elseif ($state == "pending") {
 					$badge_color = 'secondary';
+					$text        = "Pembayaran Sedang Diproses";
 				} elseif ($state == "active") {
 					$badge_color = 'success';
+					$text        = "Aktif";
 				} elseif ($state == "inactive") {
 					$badge_color = 'dark';
+					$text        = "Tidak Aktif";
 				} elseif ($state == "cancel") {
 					$badge_color = 'warning';
+					$text        = "Transaksi Dibatalkan";
 				} elseif ($state == "expired") {
 					$badge_color = 'danger';
+					$text        = "Pembayaran Melewati Batas Waktu";
 				}
 
-				$status_badge = '<span class="badge badge-' . $badge_color . '">' . STRTOUPPER($state) . '</span>';
+				$status_badge = '<span class="badge badge-' . $badge_color . '">' . ucwords($text) . '</span>';
 
-				$nested = [
-					'package'        => $item_name,
-					'amount'         => $amount_usd,
-					'profit_per_day' => $profit_self_per_day,
+				$nested_tm = [
+					'package'        => $package_name,
+					'amount'         => $amount_1,
+					'profit_per_day' => $share_self_value,
 					'duration'       => $duration,
 					'status'         => $status_badge,
 				];
 
-				array_push($data_package, $nested);
+				array_push($data_package_tm, $nested_tm);
 			}
 		}
+		// TM END
 
-		$data_downline = $this->_latest_downline($id_member);
+		// CA START
+		$arr_package_ca = $this->M_core->get('member_crypto_asset', '*', $where_package);
+
+		$data_package_ca = [];
+		if ($arr_package_ca->num_rows() > 0) {
+			foreach ($arr_package_ca->result() as $key) {
+				$package_name     = $key->package_name;
+				$amount_1         = check_float($key->amount_1);
+				$share_self_value = check_float($key->share_self_value);
+				$expired_package  = $key->expired_package;
+				$state            = $key->state;
+
+				$now_obj     = new DateTime('now');
+				$expired_obj = new DateTime($expired_package);
+				$diff        = $now_obj->diff($expired_obj);
+
+				if ($diff->format('%r') == "-") {
+					$duration = $diff->format('+%a hari tidak aktif');
+				} else {
+					$duration = $diff->format('%r%a hari lagi');
+				}
+
+				if ($state == "waiting payment") {
+					$badge_color = 'info';
+					$text        = "Menunggu Pembayaran";
+				} elseif ($state == "pending") {
+					$badge_color = 'secondary';
+					$text        = "Pembayaran Sedang Diproses";
+				} elseif ($state == "active") {
+					$badge_color = 'success';
+					$text        = "Aktif";
+				} elseif ($state == "inactive") {
+					$badge_color = 'dark';
+					$text        = "Tidak Aktif";
+				} elseif ($state == "cancel") {
+					$badge_color = 'warning';
+					$text        = "Transaksi Dibatalkan";
+				} elseif ($state == "expired") {
+					$badge_color = 'danger';
+					$text        = "Pembayaran Melewati Batas Waktu";
+				}
+
+				$status_badge = '<span class="badge badge-' . $badge_color . '">' . ucwords($text) . '</span>';
+
+				$nested_ca = [
+					'package'        => $package_name,
+					'amount'         => $amount_1,
+					'profit_per_day' => $share_self_value,
+					'duration'       => $duration,
+					'status'         => $status_badge,
+				];
+
+				array_push($data_package_ca, $nested_ca);
+			}
+		}
+		// CA END
+
+		$data_downline = $this->_latest_downline($id_member, null);
 
 		echo json_encode([
-			'code'          => 200,
-			'data_package'  => $data_package,
-			'data_downline' => $data_downline,
+			'code'            => 200,
+			'data_package_tm' => $data_package_tm,
+			'data_package_ca' => $data_package_ca,
+			'data_downline'   => $data_downline,
 		]);
 	}
 
@@ -141,15 +210,19 @@ class DashboardController extends CI_Controller
 		if ($arr_balance->num_rows() > 0) {
 			$total_invest_trade_manager = check_float($arr_balance->row()->total_invest_trade_manager);
 			$total_invest_crypto_asset  = check_float($arr_balance->row()->total_invest_crypto_asset);
-			$profit                     = check_float($arr_balance->row()->profit);
+			$profit_paid                = check_float($arr_balance->row()->profit_paid);
+			$profit_unpaid              = check_float($arr_balance->row()->profit_unpaid);
 			$bonus                      = check_float($arr_balance->row()->bonus);
+			$ratu                       = check_float($arr_balance->row()->ratu);
 			$downline_omset             = check_float($arr_balance->row()->downline_omset);
 
 			$data_balance = [
 				'total_invest_trade_manager' => $total_invest_trade_manager,
 				'total_invest_crypto_asset'  => $total_invest_crypto_asset,
-				'profit'                     => $profit,
+				'profit_paid'                => $profit_paid,
+				'profit_unpaid'              => $profit_unpaid,
 				'bonus'                      => $bonus,
+				'ratu'                       => $ratu,
 				'downline_omset'             => $downline_omset,
 			];
 		}
@@ -163,9 +236,9 @@ class DashboardController extends CI_Controller
 		return check_float($count->row()->count_all_downline);
 	}
 
-	public function _latest_downline($id_member)
+	public function _latest_downline($id_member, $limit = 5)
 	{
-		$arr = $this->M_dashboard->get_latest_downline($id_member, null, 5);
+		$arr = $this->M_dashboard->get_latest_downline($id_member, null, $limit);
 		return $arr;
 	}
 

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
 	<meta name="x-apple-disable-message-reformatting"> <!-- Disable auto-scale in iOS 10 Mail entirely -->
-	<title>Distribution Daily Profit</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+	<title>Distribusi Keuntungan Harian</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 
@@ -376,10 +376,10 @@
 							<tr>
 								<td>
 									<div class="text" style="padding: 0 1.5em; text-align: center;">
-										<h3>Distribution Daily Profit Success</h3>
+										<h3>Distribusi Profit Harian Sukses</h3>
 										<table border="1" cellpadding="10" style="width: 400px;">
 											<tr>
-												<th style="text-align: left; color: #000; width: 100px;">Package</th>
+												<th style="text-align: left; color: #000; width: 100px;">Paket</th>
 												<th style="text-align: left; color: #000;"><small><?= $item_name; ?></small></th>
 											</tr>
 											<tr>
@@ -387,7 +387,7 @@
 												<th style="text-align: left; color: #000;"><?= $amount; ?> <small>USDT</small></th>
 											</tr>
 											<tr>
-												<th style="text-align: left; color: #000;">Date Time</th>
+												<th style="text-align: left; color: #000;">Tanggal dan Waktu</th>
 												<th style="text-align: left; color: #000;"><small><?= $datetime; ?></small></th>
 											</tr>
 										</table>

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
 	<meta name="x-apple-disable-message-reformatting"> <!-- Disable auto-scale in iOS 10 Mail entirely -->
-	<title>Alert CoinPayment Balance</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+	<title>Peringatan Saldo Pembayaran Koin</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 
@@ -377,8 +377,8 @@
 							<tr>
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
-										<h3>Insufficient Balance on Coin Payment <?= $coin_type; ?></h3>
-										<h4>Someone try to withdraw <?= $amount; ?> <?= $coin_type; ?> but coinpayment balance is on low, please fullfill coinpayment wallet <?= $coin_type; ?> so member can withdraw</h4>
+										<h3>Saldo Tidak Cukup pada Pembayaran Koin <?= $coin_type; ?></h3>
+										<h4>Seseorang mencoba untuk Withdraw <?= $amount; ?> <?= $coin_type; ?> but coinpayment balance is on low, please fullfill coinpayment wallet <?= $coin_type; ?> so member can withdraw</h4>
 									</div>
 								</td>
 							</tr>

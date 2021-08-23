@@ -5,17 +5,74 @@
 		})
 
 		$("#table_data").DataTable({
-			"scrollX": "300px",
-			"scrollY": "300px",
+			dom: 'Brtip',
+			scrollX: "300px",
+			scrollY: "300px",
 			order: [
-				[0, 'asc']
+				[0, 'desc']
 			],
 			responsive: false,
 			lengthChange: false,
 			autoWidth: false,
-			buttons: ["copy", "csv", "excel", "pdf"],
+			buttons: [{
+					extend: 'copy',
+					text: 'Copy',
+					orientation: 'landscape',
+					pageSize: 'A3',
+					title: "List Paket Trade Manager Kamu",
+					filename: "Trade Manager <?= $this->session->userdata(SESI . 'user_id'); ?>",
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+						modifier: {
+							page: 'all'
+						},
+					}
+				},
+				{
+					extend: 'csv',
+					text: 'CSV',
+					orientation: 'landscape',
+					pageSize: 'A3',
+					title: "List Paket Trade Manager Kamu",
+					filename: "Trade Manager <?= $this->session->userdata(SESI . 'user_id'); ?>",
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+						modifier: {
+							page: 'all'
+						},
+					}
+				},
+				{
+					extend: 'excelHtml5',
+					text: 'Excel',
+					orientation: 'landscape',
+					pageSize: 'A3',
+					title: "List Paket Trade Manager Kamu",
+					filename: "Trade Manager <?= $this->session->userdata(SESI . 'user_id'); ?>",
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+						modifier: {
+							page: 'all'
+						},
+					}
+				},
+				{
+					extend: 'pdfHtml5',
+					text: 'PDF',
+					orientation: 'landscape',
+					pageSize: 'A3',
+					title: "List Paket Trade Manager Kamu",
+					filename: "Trade Manager <?= $this->session->userdata(SESI . 'user_id'); ?>",
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+						modifier: {
+							page: 'all'
+						},
+					}
+				}
+			],
 			columnDefs: [{
-				targets: [8],
+				targets: [9],
 				orderable: false
 			}]
 		}).buttons().container().appendTo('#table_data_wrapper .col-md-6:eq(0)');
@@ -29,7 +86,9 @@
 				dataType: 'json',
 				data: $('#form_extend').serialize(),
 				beforeSend: function() {
-					$.blockUI();
+					$.blockUI({
+						message: `<i class="fas fa-spinner fa-spin"></i>`
+					});
 				}
 			}).always(function(e) {
 				$.unblockUI();
@@ -55,7 +114,7 @@
 				} else if (e.code == 200) {
 					Swal.fire({
 						icon: 'success',
-						title: 'Success...',
+						title: 'Berhasil...',
 						html: e.status_text,
 					}).then(() => {
 						window.location.reload();
@@ -74,7 +133,9 @@
 				invoice: invoice,
 			},
 			beforeSend: function() {
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function(e) {
 			$.unblockUI();
@@ -93,22 +154,28 @@
 				Swal.fire({
 					icon: 'error',
 					title: 'Oops...',
-					text: e.status_text,
+					html: e.status_text,
 				});
 			} else if (e.code == 200) {
-				$('#package').html(e.result.package);
-				$('#amount').html(e.result.amount + " <small>USDT</small>");
+				$('#package').html(e.result.package_name);
+				$('#amount').html(e.result.amount_1 + " <small>USDT</small>");
 				$('#created_at').html(e.result.created_at);
-				$('#expired_at').html(`${e.result.expired_at} 00:00:00`);
-				$('#state').html(e.result.state.toUpperCase());
-				$('#is_extend').html(e.result.is_extend.toUpperCase());
 
-				let profit_montly_text = `${e.result.profit_montly_value} <small>USDT</small> (15 %)`;
-				let profit_daily_text = `${e.result.profit_per_day} <small>USDT</small> (0.5 %)`;
-				let profit_self_text = `${e.result.profit_self_value} <small>USDT per day</small> (${e.result.profit_self_percentage} %)`;
-				let profit_upline_text = `${e.result.profit_upline_value} <small>USDT per day</small> (${e.result.profit_upline_percentage} %)`;
-				let profit_company_text = `${e.result.profit_upline_value} <small>USDT per day</small> (${e.result.profit_company_percentage} %)`;
-				let payment_text = `${e.result.payment_method.toUpperCase()} - ${e.result.txn_id}<br/>Amount Transfer ${e.result.amount_transfer} <small>USDT</small>`;
+				if (e.result.state == "active" || e.result.state == "expired") {
+					$('#expired_at').html(`${e.result.expired_package} 00:00:00`);
+					$('#is_extend').html(e.result.is_extend.toUpperCase());
+				} else {
+					$('#expired_at').html(`-`);
+					$('#is_extend').html('-');
+				}
+				$('#state').html(e.result.state_badge);
+
+				let profit_montly_text = `${e.result.profit_per_month_value} <small>USDT</small> (${e.result.profit_per_month_percent}%)`;
+				let profit_daily_text = `${e.result.profit_per_day_value} <small>USDT</small> (${e.result.profit_per_day_percentage}%)`;
+				let profit_self_text = `${e.result.share_self_value} <small>USDT per day</small> (${e.result.share_self_percentage}%)`;
+				let profit_upline_text = `${e.result.share_upline_value} <small>USDT per day</small> (${e.result.share_upline_percentage}%)`;
+				let profit_company_text = `${e.result.share_company_value} <small>USDT per day</small> (${e.result.share_company_percentage}%)`;
+				let payment_text = `CoinPayments TXID <small>${e.result.txn_id}</small><br/>Total Transfer ${e.result.amount_2} <small>${e.result.currency2}</small>`;
 
 				$('#profit_monthly').html(profit_montly_text);
 				$('#profit_daily').html(profit_daily_text);

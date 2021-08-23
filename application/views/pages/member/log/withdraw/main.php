@@ -2,12 +2,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">Log Withdraw</h1>
+				<h1 class="m-0">Catatan Penarikan</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Log</a></li>
-					<li class="breadcrumb-item active">Withdraw</li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Beranda</a></li>
+					<li class="breadcrumb-item active">Catatan Penarikan</li>
 				</ol>
 			</div>
 		</div>
@@ -20,7 +20,7 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Log Withdraw</h3>
+						<h3 class="card-title">Catatan Penarikan</h3>
 
 						<div class="card-tools">
 							<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -33,11 +33,11 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
-										<th class="text-center align-middle" style="min-width: 120px;">Date</th>
+										<th class="text-center align-middle" style="min-width: 120px;">Tanggal</th>
 										<th class="align-middle">Invoice</th>
-										<th class="text-right align-middle" style="min-width: 120px;">Amount 1</th>
-										<th class="text-right align-middle" style="min-width: 120px;">Amount 2</th>
-										<th class="text-center align-middle">Source</th>
+										<th class="text-right align-middle" style="min-width: 120px;">Dari Coin</th>
+										<th class="text-right align-middle" style="min-width: 120px;">Ke Coin</th>
+										<th class="text-center align-middle" style="min-width: 70px;">Sumber</th>
 										<th class="align-middle">Wallet</th>
 										<th class="text-center align-middle">Status</th>
 										<th class="align-middle">TXID</th>
@@ -62,7 +62,13 @@
 													<?= check_float($key->amount_2); ?> <small><?= $key->currency_2; ?></small>
 												</td>
 												<td class="text-center align-middle">
-													<?= strtoupper($key->source); ?>
+													<?php
+													if ($key->source == "profit_paid") {
+														echo "PROFIT PAID";
+													} else {
+														echo "BONUS";
+													}
+													?>
 												</td>
 												<td class="align-middle">
 													<small><?= $key->wallet_address; ?></small>
@@ -79,7 +85,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- You Don't Have Any History Withdraw -</td>
+											<td colspan="8" class="text-center text-danger">- Kamu tidak Catatan Penarikan -</td>
 										</tr>
 
 									<?php endif; ?>
@@ -93,4 +99,3 @@
 		</div>
 	</div>
 </section>
-<!-- /.Main Content -->

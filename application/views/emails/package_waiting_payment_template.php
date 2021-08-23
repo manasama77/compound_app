@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
 	<meta name="x-apple-disable-message-reformatting"> <!-- Disable auto-scale in iOS 10 Mail entirely -->
-	<title>Package Waiting Payment</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+	<title>Menunggu Pembayaran Paket</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 
@@ -377,7 +377,7 @@
 							<tr>
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
-										<h3>Package <?= $arr_data->row()->item_name; ?> Waiting Payment</h3>
+										<h3>Menunggu<?= $arr_data->row()->item_name; ?> Pembayaran Paket</h3>
 									</div>
 								</td>
 							</tr>

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
 	<meta name="x-apple-disable-message-reformatting"> <!-- Disable auto-scale in iOS 10 Mail entirely -->
-	<title>Package Active</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+	<title>Paket Aktif</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 
@@ -377,40 +377,40 @@
 							<tr>
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
-										<h3>Package <?= $arr_data->row()->item_name; ?> Active</h3>
-										<h4>Detail Invoice <?= $arr_data->row()->item_name; ?></h4>
+										<h3>Paket <?= $arr_data->row()->package_name; ?> Aktif</h3>
+										<h4>Detail Invoice <?= $arr_data->row()->package_name; ?></h4>
 										<table border="1" cellpadding="10" style="width: 400px;">
 											<tr>
-												<th style="text-align: left; color: #000; width: 100px;">Payment Method</th>
+												<th style="text-align: left; color: #000; width: 100px;">Metode Pembayaran</th>
 												<th style="text-align: left; color: #000;"><?= $arr_data->row()->payment_method; ?></th>
 											</tr>
 											<tr>
-												<th style="text-align: left; color: #000;">Transaction ID</th>
+												<th style="text-align: left; color: #000;">ID Transaksi</th>
 												<th style="text-align: left; color: #000;"><small><?= $arr_data->row()->txn_id; ?></small></th>
 											</tr>
 											<tr>
-												<th style="text-align: left; color: #000;">Amount Invest</th>
-												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->amount_usd); ?> USDT</th>
+												<th style="text-align: left; color: #000;">Jumlah Investasi</th>
+												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->amount_1); ?> <small>USDT</small></th>
 											</tr>
 											<tr>
 												<th style="text-align: left; color: #000;">Total Transfer</th>
-												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->amount_coin); ?> <?= $arr_data->row()->currency2; ?></th>
+												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->amount_2); ?> <?= $arr_data->row()->currency2; ?></th>
 											</tr>
 											<tr>
-												<th style="text-align: left; color: #000;">Package</th>
-												<th style="text-align: left; color: #000;"><?= $arr_data->row()->item_name; ?></th>
+												<th style="text-align: left; color: #000;">Paket</th>
+												<th style="text-align: left; color: #000;"><?= $arr_data->row()->package_name; ?></th>
 											</tr>
 											<tr>
-												<th style="text-align: left; color: #000;">Daily Profit Self</th>
-												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->profit_self_per_day); ?></th>
+												<th style="text-align: left; color: #000;">Profit Harian Member</th>
+												<th style="text-align: left; color: #000;"><?= check_float($arr_data->row()->share_self_value); ?><small>USDT</small></th>
 											</tr>
 											<tr>
-												<th style="text-align: left; color: #000;">Buyer</th>
-												<th style="text-align: left; color: #000;"><?= $arr_data->row()->buyer_name; ?> (<?= $arr_data->row()->buyer_email; ?>)</th>
+												<th style="text-align: left; color: #000;">Pembeli</th>
+												<th style="text-align: left; color: #000;"><?= $arr_data->row()->member_fullname; ?> (<?= $arr_data->row()->member_email; ?>)</th>
 											</tr>
 											<tr>
-												<th style="text-align: left; color: #000;">Active Until</th>
-												<th style="text-align: left; color: #000;"><?= $arr_data->row()->expired_at; ?> 00:00:00 AM</th>
+												<th style="text-align: left; color: #000;">Aktif Sampai</th>
+												<th style="text-align: left; color: #000;"><?= $arr_data->row()->expired_package; ?> 00:00:00 AM</th>
 											</tr>
 										</table>
 									</div>
@@ -418,8 +418,7 @@
 							</tr>
 						</table>
 					</td>
-				</tr><!-- end tr -->
-				<!-- 1 Column Text + Button : END -->
+				</tr>
 			</table>
 
 		</div>

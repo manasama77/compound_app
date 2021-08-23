@@ -14,20 +14,29 @@ class M_trade_manager extends CI_Model
 		$this->datetime = date('Y-m-d H:i:s');
 	}
 
-	public function get_package($id = null)
+	public function get_package($id = null, $date = null)
 	{
 		if ($id != null) {
 			$this->db->where('konfigurasi_trade_manager.id', $id);
 		}
 
+		if ($date != null) {
+			$this->db->where('DATE(konfigurasi_trade_manager.tanggal_aktif) =', $date);
+			$this->db->where('konfigurasi_trade_manager.is_active', 'no');
+		} else {
+			$this->db->where('konfigurasi_trade_manager.is_active', 'yes');
+		}
+
 		$query = $this->db
 			->select([
+				'konfigurasi_trade_manager.tanggal_aktif',
 				'konfigurasi_trade_manager.id',
 				'package_trade_manager.code',
 				'package_trade_manager.name',
 				'package_trade_manager.amount',
 				'package_trade_manager.contract_duration',
 				'package_trade_manager.logo',
+				'konfigurasi_trade_manager.id_package_trade_manager',
 				'konfigurasi_trade_manager.profit_per_month_percent',
 				'konfigurasi_trade_manager.profit_per_month_value',
 				'konfigurasi_trade_manager.profit_per_day_percentage',
@@ -41,7 +50,6 @@ class M_trade_manager extends CI_Model
 			])
 			->from('konfigurasi_trade_manager as konfigurasi_trade_manager')
 			->join('package_trade_manager as package_trade_manager', 'package_trade_manager.id = konfigurasi_trade_manager.id_package_trade_manager', 'left')
-			->where('is_active', 'yes')
 			->where('deleted_at', null)
 			->order_by('package_trade_manager.sequence', 'asc')
 			->get();
@@ -49,12 +57,14 @@ class M_trade_manager extends CI_Model
 		$data = [];
 		if ($query->num_rows() > 0) {
 			foreach ($query->result() as $item) {
+				$tanggal_aktif             = $item->tanggal_aktif;
 				$id                        = $item->id;
 				$code                      = $item->code;
 				$name                      = $item->name;
 				$amount                    = check_float($item->amount);
 				$contract_duration         = $item->contract_duration;
 				$logo                      = $item->logo;
+				$id_package_trade_manager  = $item->id_package_trade_manager;
 				$profit_per_month_percent  = check_float($item->profit_per_month_percent);
 				$profit_per_month_value    = check_float($item->profit_per_month_value);
 				$profit_per_day_percentage = check_float($item->profit_per_day_percentage);
@@ -67,12 +77,14 @@ class M_trade_manager extends CI_Model
 				$share_company_value       = check_float($item->share_company_value);
 
 				$nested = compact([
+					'tanggal_aktif',
 					'id',
 					'code',
 					'name',
 					'amount',
 					'contract_duration',
 					'logo',
+					'id_package_trade_manager',
 					'profit_per_month_percent',
 					'profit_per_month_value',
 					'profit_per_day_percentage',
@@ -104,14 +116,14 @@ class M_trade_manager extends CI_Model
 			->get();
 	}
 
-	public function update_member_profit($id_member, $profit)
+	public function update_member_profit_unpaid($id_member, $profit)
 	{
-		return $this->db->set('profit', 'profit + ' . $profit, false)->where('id_member', $id_member)->update('member_balance');
+		return $this->db->set('profit_unpaid', 'profit_unpaid + ' . $profit, false)->where('id_member', $id_member)->update('member_balance');
 	}
 
 	public function update_unknown_profit($profit)
 	{
-		return $this->db->set('amount_profit', 'amount_profit + ' . $profit, false)->where('id', 1)->update('unknown_balance');
+		return $this->db->set('amount_profit_unpaid', 'amount_profit_unpaid + ' . $profit, false)->where('id', 1)->update('unknown_balance');
 	}
 
 	public function update_member_bonus($id_member, $bonus)
@@ -130,23 +142,25 @@ class M_trade_manager extends CI_Model
 			->select([
 				'member_trade_manager.invoice',
 				'member_trade_manager.id_member',
+				'member_trade_manager.member_fullname',
+				'member_trade_manager.member_email',
+				'member_trade_manager.member_user_id',
 				'member_trade_manager.id_package',
-				'member_trade_manager.item_name',
-				'member_trade_manager.buyer_email',
-				'member_trade_manager.buyer_name',
-				'member_trade_manager.amount_usd',
+				'member_trade_manager.id_konfigurasi',
+				'member_trade_manager.package_code',
+				'member_trade_manager.package_name',
+				'member_trade_manager.amount_1',
 			])
-			->from('member_trade_manager')
-			->join('et_member', 'et_member.id = et_member_trade_manager.id_member', 'left')
-			->where('et_member_trade_manager.id_member !=', $id_member)
-			->where('et_member_trade_manager.is_qualified', 'no')
-			->where('et_member_trade_manager.state', 'active')
-			->where('et_member_trade_manager.deleted_at', null)
-			->where('et_member.id_upline', $id_upline)
-			->where('et_member.is_active', 'yes')
-			->where('et_member.deleted_at', null)
-			->group_by('member_trade_manager.id_member')
-			->order_by('et_member_trade_manager.created_at', 'asc')
+			->from('member_trade_manager as member_trade_manager')
+			->join('member as member', 'member.id = member_trade_manager.id_member', 'left')
+			->where('member_trade_manager.id_member !=', $id_member)
+			->where('member_trade_manager.is_qualified', 'no')
+			->where('member_trade_manager.state', 'active')
+			->where('member_trade_manager.deleted_at', null)
+			->where('member.id_upline', $id_upline)
+			->where('member.is_active', 'yes')
+			->where('member.deleted_at', null)
+			->order_by('member_trade_manager.created_at', 'asc')
 			->limit(1)
 			->get();
 	}
@@ -200,6 +214,7 @@ class M_trade_manager extends CI_Model
 			member_trade_manager.share_upline_value,
 			member_trade_manager.share_company_percentage,
 			member_trade_manager.share_company_value,
+			member_trade_manager.txn_id,
 			member_trade_manager.created_at,
 			member_trade_manager.updated_at,
 		', false);
@@ -224,25 +239,48 @@ class M_trade_manager extends CI_Model
 				$member_email              = $key->member_email;
 				$package_code              = $key->package_code;
 				$package_name              = $key->package_name;
-				$amount_1                  = $key->amount_1;
-				$amount_2                  = $key->amount_2;
+				$amount_1                  = check_float($key->amount_1);
+				$amount_2                  = check_float($key->amount_2);
 				$currency1                 = $key->currency1;
 				$currency2                 = $key->currency2;
 				$state                     = $key->state;
 				$expired_package           = $key->expired_package;
 				$is_extend                 = $key->is_extend;
-				$profit_per_month_percent  = $key->profit_per_month_percent;
-				$profit_per_month_value    = $key->profit_per_month_value;
-				$profit_per_day_percentage = $key->profit_per_day_percentage;
-				$profit_per_day_value      = $key->profit_per_day_value;
-				$share_self_percentage     = $key->share_self_percentage;
-				$share_self_value          = $key->share_self_value;
-				$share_upline_percentage   = $key->share_upline_percentage;
-				$share_upline_value        = $key->share_upline_value;
-				$share_company_percentage  = $key->share_company_percentage;
-				$share_company_value       = $key->share_company_value;
+				$profit_per_month_percent  = check_float($key->profit_per_month_percent);
+				$profit_per_month_value    = check_float($key->profit_per_month_value);
+				$profit_per_day_percentage = check_float($key->profit_per_day_percentage);
+				$profit_per_day_value      = check_float($key->profit_per_day_value);
+				$share_self_percentage     = check_float($key->share_self_percentage);
+				$share_self_value          = check_float($key->share_self_value);
+				$share_upline_percentage   = check_float($key->share_upline_percentage);
+				$share_upline_value        = check_float($key->share_upline_value);
+				$share_company_percentage  = check_float($key->share_company_percentage);
+				$share_company_value       = check_float($key->share_company_value);
+				$txn_id                    = $key->txn_id;
 				$created_at                = $key->created_at;
 				$updated_at                = $key->updated_at;
+
+				if ($state == "waiting payment") {
+					$badge_color   = 'info';
+					$badge_text    = 'Menunggu Pembayaran';
+				} elseif ($state == "pending") {
+					$badge_color   = 'secondary';
+					$badge_text    = 'Pembayaran Sedang Diproses';
+				} elseif ($state == "active") {
+					$badge_color = 'success';
+					$badge_text  = 'Aktif';
+				} elseif ($state == "inactive") {
+					$badge_color = 'dark';
+					$badge_text  = 'Tidak Aktif';
+				} elseif ($state == "cancel") {
+					$badge_color = 'warning';
+					$badge_text  = 'Transaksi Dibatalkan';
+				} elseif ($state == "expired") {
+					$badge_color = 'danger';
+					$badge_text  = 'Pembayaran Melewati Batas Waktu';
+				}
+
+				$state_badge = '<span class="badge badge-' . $badge_color . '">' . ucwords($badge_text) . '</span>';
 
 				$nested = [
 					'invoice'                   => $invoice,
@@ -255,6 +293,7 @@ class M_trade_manager extends CI_Model
 					'currency1'                 => $currency1,
 					'currency2'                 => $currency2,
 					'state'                     => $state,
+					'state_badge'               => $state_badge,
 					'expired_package'           => $expired_package,
 					'is_extend'                 => $is_extend,
 					'profit_per_month_percent'  => $profit_per_month_percent,
@@ -267,6 +306,7 @@ class M_trade_manager extends CI_Model
 					'share_upline_value'        => $share_upline_value,
 					'share_company_percentage'  => $share_company_percentage,
 					'share_company_value'       => $share_company_value,
+					'txn_id'                    => $txn_id,
 					'created_at'                => $created_at,
 					'updated_at'                => $updated_at,
 				];
@@ -317,7 +357,7 @@ class M_trade_manager extends CI_Model
 		return $this->db
 			->set('total_invest_trade_manager', 'total_invest_trade_manager - ' . $amount, false)
 			->set('count_trade_manager', 'count_trade_manager - 1', false)
-			->set('profit', 'profit + ' . $amount, false)
+			->set('profit_paid', 'profit_paid + ' . $amount, false)
 			->where('id_member', $id_member)
 			->update('member_balance');
 	}

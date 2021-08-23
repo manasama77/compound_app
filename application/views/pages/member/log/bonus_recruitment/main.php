@@ -2,12 +2,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">Log Bonus Recruitment</h1>
+				<h1 class="m-0">Catatan Bonus Sponsor</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Log</a></li>
-					<li class="breadcrumb-item active">Bonus Recruitment</li>
+					<li class="breadcrumb-item"><a href="<?= site_url('dashboard'); ?>">Beranda</a></li>
+					<li class="breadcrumb-item active">Catatan Bonus Sponsor</li>
 				</ol>
 			</div>
 		</div>
@@ -20,7 +20,7 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Log Bonus Recruitment</h3>
+						<h3 class="card-title">Catatan Bonus Sponsor</h3>
 
 						<div class="card-tools">
 							<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -33,12 +33,12 @@
 							<table id="table_data" class="table table-bordered table-striped">
 								<thead>
 									<tr>
-										<th class="align-top" style="min-width: 120px;">Date Time</th>
-										<th class="align-top" style="min-width: 120px;">Member</th>
-										<th class="align-top" style="min-width: 80px;">Package</th>
-										<th class="align-top" style="min-width: 120px;">Type</th>
-										<th class="text-right align-top" style="min-width: 100px;">Amount</th>
-										<th class="align-top" style="min-width: 350px;">Description</th>
+										<th class="align-top" style="min-width: 120px;">Tanggal Waktu</th>
+										<th class="align-top" style="min-width: 120px;">Downline</th>
+										<th class="align-top" style="min-width: 80px;">Paket</th>
+										<th class="text-right align-top" style="min-width: 80px;">Investasi</th>
+										<th class="align-top" style="min-width: 120px;">Tipe</th>
+										<th class="text-right align-top" style="min-width: 80px;">Bonus</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -50,20 +50,20 @@
 												<td class="align-top">
 													<?= $key->created_at; ?>
 												</td>
-												<td class="text-center align-top">
-													<?= $key->fullname; ?>
+												<td class="align-top">
+													<?= $key->user_id; ?>
 												</td>
 												<td class="align-top">
 													<?= $key->package; ?>
+												</td>
+												<td class="text-right align-top">
+													<?= check_float($key->package_amount); ?>
 												</td>
 												<td class="align-top">
 													<?= ucwords($key->type); ?></small>
 												</td>
 												<td class="text-right align-top">
-													<?= check_float(($key->package_amount * 10) / 100); ?> <small>USDT</small>
-												</td>
-												<td class="align-top">
-													<?= $key->description; ?>
+													<?= check_float($key->bonus_amount); ?>
 												</td>
 											</tr>
 
@@ -71,7 +71,7 @@
 									<?php else : ?>
 
 										<tr>
-											<td colspan="8" class="text-center text-danger">- You Don't Have Any History Bonus Recruitment -</td>
+											<td colspan="6" class="text-center text-danger">- Kamu Belum Memiliki Catatan Bonus Sponsor -</td>
 										</tr>
 
 									<?php endif; ?>

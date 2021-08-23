@@ -2,12 +2,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">List Paket Trade Manager</h1>
+				<h1 class="m-0">Join Paket Trade Manager</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="<?= site_url('trade_manager'); ?>">Trade Manager</a></li>
-					<li class="breadcrumb-item active">List Paket Trade Manager</li>
+					<li class="breadcrumb-item"><a href="<?= site_url('trade_manager/index'); ?>">Trade Manager</a></li>
+					<li class="breadcrumb-item active">Join Paket Trade Manager</li>
 				</ol>
 			</div>
 		</div>
@@ -49,7 +49,7 @@
 										</span>
 									<?php } else { ?>
 										<span class="btn btn-secondary btn-flat btn-block font-weight-bold">
-											Tidak Dapat Dipilih
+											Tidak Dapat Dipilih<sup>**</sup>
 										</span>
 									<?php } ?>
 								</div>
@@ -59,7 +59,7 @@
 										<?= strtoupper($key['name']); ?>
 									</h3>
 									<p class="card-text">
-									<ul>
+									<ul style="font-size: 17px;">
 										<li>
 											Nilai Investasi: <?= $key['amount']; ?> <small>USDT</small>
 										</li>
@@ -94,6 +94,7 @@
 				<div class="alert alert-warning">
 					<i class="fas fa-info-circle"></i> Informasi
 					<p>* Nilai tersebut belum termasuk Rasio Profit Sharing Member, Upline dan Perusahaan</p>
+					<p>** Jika telah memilih paket dengan nilai investasi lebih tinggi, maka paket dengan nilai investasi dibawahnya otomatis tidak dapat dipilih</p>
 				</div>
 
 			</div>

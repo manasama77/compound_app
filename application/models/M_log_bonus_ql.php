@@ -9,7 +9,8 @@ class M_log_bonus_ql extends CI_Model
 	{
 		return $this->db
 			->select([
-				'member.fullname',
+				'downline.user_id as downline_user_id',
+				'upline.user_id as upline_user_id',
 				'log_bonus_qualification_level.type_package as type',
 				'log_bonus_qualification_level.package_name as package',
 				'log_bonus_qualification_level.description',
@@ -17,8 +18,9 @@ class M_log_bonus_ql extends CI_Model
 				'log_bonus_qualification_level.created_at',
 			])
 			->from('log_bonus_qualification_level')
-			->join('member', 'member.id = log_bonus_qualification_level.id_downline', 'left')
-			->where('id_member', $id_member)
+			->join('member as downline', 'downline.id = log_bonus_qualification_level.id_downline', 'left')
+			->join('member as upline', 'upline.id = downline.id_upline', 'left')
+			->where('log_bonus_qualification_level.id_member', $id_member)
 			->get();
 	}
 }

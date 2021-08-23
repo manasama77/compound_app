@@ -10,7 +10,7 @@ class L_member
 	{
 		$this->ci = &get_instance();
 		$this->ci->load->model('M_core', 'mcore');
-		$this->ci->load->helper(['cookie', 'string']);
+		$this->ci->load->helper(['cookie', 'string', 'floating_helper', 'indodax_rate_helper']);
 	}
 
 	public function render($data)
@@ -52,6 +52,7 @@ class L_member
 				$cookies_db      = $arr->row()->cookies;
 				$is_active       = $arr->row()->is_active;
 				$profile_picture = $arr->row()->profile_picture;
+				$user_id         = $arr->row()->user_id;
 
 				if ($profile_picture == NULL) {
 					$profile_picture = base_url('public/img/pp/default_avatar.svg');
@@ -60,7 +61,7 @@ class L_member
 				}
 
 				if ($cookies == $cookies_db) {
-					return $this->reset_session($id, $email, $fullname, $phone_number, $is_active, $profile_picture);
+					return $this->reset_session($id, $email, $fullname, $phone_number, $is_active, $profile_picture, $user_id);
 				}
 				return FALSE;
 			} else {
@@ -77,8 +78,9 @@ class L_member
 		$phone_number    = $this->ci->session->userdata(SESI . 'phone_number');
 		$is_active       = $this->ci->session->userdata(SESI . 'is_active');
 		$profile_picture = $this->ci->session->userdata(SESI . 'profile_picture');
+		$user_id         = $this->ci->session->userdata(SESI . 'user_id');
 
-		if ($id && $email && $fullname && $phone_number && $is_active && $profile_picture) {
+		if ($id && $email && $fullname && $phone_number && $is_active && $profile_picture && $user_id) {
 			if ($is_active == "yes") {
 				return TRUE;
 			} else {
@@ -98,6 +100,9 @@ class L_member
 			];
 			$data['aside_count_trade_manager'] = $this->ci->M_core->count('member_trade_manager', $where_trade_manager);
 			$data['aside_count_crypto_asset']  = $this->ci->M_core->count('member_crypto_asset', $where_trade_manager);
+			$data['x_app']                     = $this->ci->M_core->get('app_config', '*', ['id' => 1]);
+			$data['x_usdt_idr']                = indodax_rate('usdtidr');
+			$data['x_trx_idr']                 = indodax_rate('trxidr');
 			$this->ci->load->view('layouts/member/main', $data, FALSE);
 		} else {
 			show_404();
@@ -110,7 +115,7 @@ class L_member
 		redirect('logout');
 	}
 
-	protected function reset_session($id, $email, $fullname, $phone_number, $is_active, $profile_picture)
+	protected function reset_session($id, $email, $fullname, $phone_number, $is_active, $profile_picture, $user_id)
 	{
 		$this->ci->session->set_userdata(SESI . 'id', $id);
 		$this->ci->session->set_userdata(SESI . 'email', $email);
@@ -118,6 +123,7 @@ class L_member
 		$this->ci->session->set_userdata(SESI . 'phone_number', $phone_number);
 		$this->ci->session->set_userdata(SESI . 'is_active', $is_active);
 		$this->ci->session->set_userdata(SESI . 'profile_picture', $profile_picture);
+		$this->ci->session->set_userdata(SESI . 'user_id', $user_id);
 
 		return $this->check_session();
 	}

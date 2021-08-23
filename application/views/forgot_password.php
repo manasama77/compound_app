@@ -24,7 +24,7 @@
 				<a href="index2.html" class="h1"><b><?= APP_NAME; ?></b></a>
 			</div>
 			<div class="card-body">
-				<p class="login-box-msg">We will send email to reset your password</p>
+				<p class="login-box-msg">Kami Akan Mengirimkan Email Untuk Reset Password Anda</p>
 
 				<form id="form_forgot_password">
 					<div class="input-group mb-3">
@@ -40,14 +40,14 @@
 						<!-- /.col -->
 						<div class="col-12">
 							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
-							<button type="submit" class="btn btn-primary btn-block">Send Email</button>
+							<button type="submit" class="btn btn-primary btn-block">Kirim Email</button>
 						</div>
 						<!-- /.col -->
 					</div>
 				</form>
 
 				<p class="mb-1 mt-3">
-					<a href="<?= site_url('login'); ?>">I remember my password</a>
+					<a href="<?= site_url('login'); ?>">Saya sudah ingat Password Saya</a>
 				</p>
 			</div>
 			<!-- /.card-body -->
@@ -87,7 +87,9 @@
 				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function(e) {
 			$.unblockUI();
@@ -107,13 +109,13 @@
 				Swal.fire({
 					icon: 'error',
 					title: 'Oops...',
-					text: 'Send Email Forgot Password Failed, Connection Issue. Please check email address or try again',
+					text: 'Proses Kirim Email Reset Password Gagal, dikarenakan masalah koneksi. Silahkan coba kembali',
 				});
 			} else if (e.code == 200) {
 				Swal.fire({
 					icon: 'success',
-					title: 'Send Email Forgot Password Success',
-					text: 'Please check your email to reset your password',
+					title: 'Proses Kirim Email Reset Password Berhasil',
+					text: 'Silahkan cek email kamu untuk melakukan proses Reset Password',
 				});
 			}
 		});

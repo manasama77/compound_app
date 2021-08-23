@@ -27,18 +27,18 @@
 				<form id="form_otp">
 					<div class="card">
 						<div class="card-header">
-							Verifikasi OTP <i>(one time password)</i>
+							Verifikasi OTP <i>(One Time Password)</i>
 						</div>
 						<div class="card-body">
 							<div class="form-group text-center">
 								<label for="otp">OTP</label>
-								<input type="number" class="form-control mb-2" id="otp" name="otp" min="100000" max="999999" placeholder="000000" autofocus required>
+								<input type="text" class="form-control mb-2" id="otp" name="otp" minlength="6" maxlength="6" placeholder="000000" inputmode="numeric" autofocus required>
 								<span class="help-block"><small>Sistem telah mengirimkan kode OTP pada alamat email <kbd><?= $this->session->userdata(SESI . 'email'); ?></kbd></small></span>
 							</div>
 							<button type="button" class="btn btn-warning btn-sm btn-block" id="resend_button" onclick="resendOTP('<?= $this->session->userdata(SESI . 'email'); ?>');" disabled>
 								Tidak menerima kode OTP ?<br />
 								Coba kirimkan kembali kode OTP<br />
-								(Setelah <span id="time">00:05</span>)
+								(Setelah <span id="time">01:00</span>)
 							</button>
 							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 							<button type="submit" class="btn btn-primary btn-block mt-3" id="submit_btn">Verifikasi</button>
@@ -64,6 +64,21 @@
 </html>
 
 <script>
+	$.fn.inputFilter = function(inputFilter) {
+		return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function() {
+			if (inputFilter(this.value)) {
+				this.oldValue = this.value;
+				this.oldSelectionStart = this.selectionStart;
+				this.oldSelectionEnd = this.selectionEnd;
+			} else if (this.hasOwnProperty("oldValue")) {
+				this.value = this.oldValue;
+				this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+			} else {
+				this.value = "";
+			}
+		});
+	};
+
 	let toastrOptions = {
 			"closeButton": false,
 			"debug": false,
@@ -74,7 +89,7 @@
 			"onclick": null,
 			"showDuration": 300,
 			"hideDuration": 1000,
-			"timeOut": 3000,
+			"timeOut": 2000,
 			"extendedTimeOut": 0,
 			"showEasing": "swing",
 			"hideEasing": "linear",
@@ -86,6 +101,10 @@
 
 	$(document).ready(function() {
 		startTimer(minutes, display);
+
+		$("#otp").inputFilter(function(value) {
+			return /^\d*$/.test(value); // Allow digits only, using a RegExp
+		});
 
 		$('#form_otp').on('submit', function(e) {
 			e.preventDefault();
@@ -110,7 +129,9 @@
 				$('#otp').attr('disabled', true);
 				$("#resend_button").attr('disabled', true);
 				$('#submit_btn').attr('disabled', true);
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function() {
 			$.unblockUI();
@@ -124,12 +145,12 @@
 				toastr.warning('Warning', 'OTP Wrong', toastrOptions);
 				setTimeout(function() {
 					$('#otp').focus();
-				}, 3000);
+				}, 2000);
 			} else if (e.code == 200) {
 				toastr.success('Success', 'OTP Verified', toastrOptions);
 				setTimeout(function() {
 					window.location.replace('<?= site_url('dashboard'); ?>');
-				}, 3000);
+				}, 2000);
 			} else {
 				toastr.error('Error', 'Response Unknown', toastrOptions);
 			}
@@ -147,7 +168,9 @@
 			},
 			beforeSend: function() {
 				$("#resend_button").attr('disabled', true);
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function() {
 			$.unblockUI();

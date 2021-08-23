@@ -3,12 +3,12 @@
 	<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-				<h1 class="m-0">Withdraw Request Created</h1>
+				<h1 class="m-0">Permintaan Penarikan Telah Dibuat</h1>
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
 					<li class="breadcrumb-item"><a href="#">Home</a></li>
-					<li class="breadcrumb-item active">Withdraw Request Created</li>
+					<li class="breadcrumb-item active">Permintaan Penarikan Telah Dibuat</li>
 				</ol>
 			</div>
 		</div>
@@ -21,8 +21,8 @@
 		<div class="row">
 
 			<div class="col-sm-12 col-md-8 offset-md-2">
-				<div class="alert alert-primary" role="alert">
-					<h4 class="alert-heading">Withdraw <?= strtoupper($arr->row()->state); ?></h4>
+				<div class="alert alert-secondary" role="alert">
+					<h4 class="alert-heading">Penarikan <?= strtoupper($arr->row()->state); ?></h4>
 					<div class="table-responsive">
 						<table class="table table-bordered table-striped table-sm bg-dark">
 							<tr>
@@ -30,19 +30,27 @@
 								<th><?= $arr->row()->invoice; ?></th>
 							</tr>
 							<tr>
-								<th>Source</th>
-								<th><?= strtoupper($arr->row()->source); ?></th>
+								<th>Sumber</th>
+								<th>
+									<?php
+									if ($arr->row()->source == "profit_paid") {
+										echo "PROFIT PAID";
+									} else {
+										echo "BONUS";
+									}
+									?>
+								</th>
 							</tr>
 							<tr>
 								<th>TXID</th>
 								<th><small><?= $arr->row()->tx_id; ?></small></th>
 							</tr>
 							<tr>
-								<th>Withdraw Amount</th>
+								<th>Nominal Penarikan</th>
 								<th><?= check_float($arr->row()->amount_1); ?> <small>USDT</small></th>
 							</tr>
 							<tr>
-								<th>Receive Amount</th>
+								<th>Nominal Diterima</th>
 								<th><?= check_float($arr->row()->amount_2); ?> <small><?= strtoupper($arr->row()->currency_2); ?></small></th>
 							</tr>
 							<tr>
@@ -51,8 +59,9 @@
 							</tr>
 						</table>
 					</div>
+					<a href="<?= site_url('log/withdraw'); ?>" class="btn btn-dark btn-block">Lihat Catatan Penarikan</a>
 					<hr>
-					<p class="mb-0"><i class="fas fa-info-circle"></i> Please wait maximum 24 hour for system to process your withdraw request.</p>
+					<p class="mb-0"><i class="fas fa-info-circle"></i> Harap tunggu maksimal 24 jam agar sistem memproses Permintaan Penarikan Anda.</p>
 				</div>
 			</div>
 		</div>

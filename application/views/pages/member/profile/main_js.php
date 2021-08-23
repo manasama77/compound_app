@@ -1,5 +1,8 @@
 <script>
 	$(document).ready(function() {
+
+		$('#id_bank').val('<?= $arr->row()->id_bank; ?>').trigger('change');
+
 		$('#form_setting').on('submit', function(e) {
 			e.preventDefault();
 
@@ -9,7 +12,9 @@
 				dataType: 'json',
 				data: $('#form_setting').serialize(),
 				beforeSend: function() {
-					$.blockUI();
+					$.blockUI({
+						message: `<i class="fas fa-spinner fa-spin"></i>`
+					});
 				}
 			}).always(function(e) {
 				$.unblockUI();
@@ -26,7 +31,7 @@
 					Swal.fire({
 						icon: 'error',
 						title: 'Oops...',
-						text: 'Failed connect to Database, please contact web developer',
+						text: 'Gagal Terhubung Dengan Server Database, silahkan coba kembali',
 					});
 				} else if (e.code == 200) {
 					Swal.fire({
@@ -57,7 +62,7 @@
 					Swal.fire({
 						icon: 'warning',
 						title: 'Oops...',
-						text: 'OTP Wrong',
+						text: 'Kode OTP Salah',
 					});
 				} else if (e.code == 200) {
 					updatePassword();
@@ -76,7 +81,9 @@
 				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function(e) {
 			$.unblockUI();
@@ -93,13 +100,13 @@
 				Swal.fire({
 					icon: 'error',
 					title: 'Oops...',
-					text: 'Failed connect to Database, please contact web developer',
+					text: 'Gagal Terhubung Dengan Server Database, silahkan coba kembali',
 				});
 			} else if (e.code == 404) {
 				Swal.fire({
 					icon: 'warning',
 					title: 'Oops...',
-					text: 'Current password Wrong, please check again!',
+					text: 'Password Saat Ini salah, silahkan coba kembali',
 				});
 			} else if (e.code == 200) {
 				compareNewPassword();
@@ -121,7 +128,7 @@
 			Swal.fire({
 				icon: 'warning',
 				title: 'Oops...',
-				text: 'New Password & Verify Password must be same!',
+				text: 'Password Baru & Verifikasi Password Baru harus sama!',
 			});
 		} else {
 			sendOTP().done(function(e) {
@@ -141,7 +148,9 @@
 				'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
 			},
 			beforeSend: function() {
-				$.blockUI();
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
 			}
 		}).always(function(e) {
 			$.unblockUI();
@@ -160,14 +169,14 @@
 				Swal.fire({
 					icon: 'error',
 					title: 'Oops...',
-					text: 'Failed connect to Database, please contact web developer',
+					text: 'Gagal Terhubung Dengan Server Database, silahkan coba kembali',
 				});
 			} else if (e.code == 200) {
 				Swal.fire({
 					position: 'top-end',
 					icon: 'success',
-					title: 'Success...',
-					text: 'Update Success',
+					title: 'Berhasil...',
+					text: 'Update Password Berhasil',
 					showConfirmButton: true,
 					timer: 2000,
 					timerProgressBar: true,

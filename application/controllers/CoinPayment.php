@@ -217,17 +217,17 @@ class CoinPayment extends CI_Controller
 		header('Content-Type: application/json');
 		$code = 500;
 
-		$req['amount'] = 3;
-		$req['add_tx_fee'] = 1; // if 1, TX Fee will given to Sender, if 0, it will reduce from amount transfer
-		$req['currency'] = 'ETH';
+		$req['amount'] = 9;
+		$req['add_tx_fee'] = 0; // if 1, TX Fee will given to Sender, if 0, it will reduce from amount transfer
+		$req['currency'] = 'USDT';
 
 		/*
 		Optional currency to use to to withdraw 'amount' worth of 'currency2' in 'currency' coin. This is for exchange rate calculation only and will not convert coins or change which currency is withdrawn.
 		For example, to withdraw 1.00 USD worth of BTC you would specify 'currency'='BTC', 'currency2'='USD', and 'amount'='1.00' 
 		*/
-		$req['currency2'] = 'USD';
+		$req['currency2'] = 'USDT';
 
-		$req['address'] = '0xa96A468585c951EF1c33F9B987179d4d14d2ECBe';
+		$req['address'] = '0xc4b79a7458b393ee8d44a7181daf946492ab2e87';
 		$req['ipn_url'] = site_url('coinpayment/ipn');
 		$req['auto_confirm'] = 0; // if set to 1 withdraw will complete without email confirmation
 		$req['note'] = 'withdraw from coinpayment to external wallet';
@@ -240,7 +240,7 @@ class CoinPayment extends CI_Controller
 
 		$result = [
 			'code' => $code,
-			'data' => $exec['result'],
+			'data' => $exec,
 		];
 
 		echo json_encode($result, JSON_PRETTY_PRINT);
@@ -276,14 +276,14 @@ class CoinPayment extends CI_Controller
 		/*
 		The withdrawal ID to cancel. Note the withdrawal must be in the "Awaiting email confirmation" state to be able to be cancelled.
 		*/
-		$req['amount'] = 3.25;
+		$req['amount'] = 9;
 		$req['from'] = 'USDT';
 		$req['to'] = 'ETH';
 
 		/*
 		The address to send the funds to. If blank or not included the coins will go to your CoinPayments Wallet.
 		*/
-		$req['address'] = '0xa96A468585c951EF1c33F9B987179d4d14d2ECBe';
+		$req['address'] = '0xc4b79a7458b393ee8d44a7181daf946492ab2e87';
 		$exec = $this->coinpayments_api_call('convert', $req);
 		if ($exec['error'] == "ok") {
 			$code = 200;
@@ -302,8 +302,8 @@ class CoinPayment extends CI_Controller
 		header('Content-Type: application/json');
 		$code = 500;
 
-		$req['from'] = 'DOGE';
-		$req['to'] = 'TRX';
+		$req['from'] = 'USDT';
+		$req['to'] = 'ETH';
 
 		$exec = $this->coinpayments_api_call('convert_limits', $req);
 		if ($exec['error'] == "ok") {

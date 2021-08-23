@@ -4,15 +4,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class TestController extends CI_Controller
 {
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('M_test');
+	}
 
 	public function index()
 	{
-		$data = [
-			'invoice' 	   => 'invoicenya',
-			'item_name'    => 'nama paket',
-			'date_expired' => date("Y-m-d")
-		];
-		return $this->load->view('emails/package_extend', $data, FALSE);
+		$this->M_test->perbaikan_omset_downline();
 	}
 }
         
