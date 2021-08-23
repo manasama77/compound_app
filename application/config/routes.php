@@ -64,6 +64,9 @@ $route['withdraw/success/(:any)'] 			= 'WithdrawController/success/$1';
 $route['convert']       = 'ConvertController/index';
 $route['convert/store'] = 'ConvertController/store';
 
+$route['transfer']       = 'TransferController/index';
+$route['transfer/store'] = 'TransferController/store';
+
 $route['rewards'] = 'RewardsController/index';
 
 $route['log/trade_manager'] 				= 'LogTradeManagerController/index';
@@ -85,6 +88,8 @@ $route['log/bonus_ql']          = 'LogBonusQLController/index';
 $route['log/bonus_royalty']     = 'LogBonusRoyaltyController/index';
 
 $route['log/convert'] = 'LogConvertController/index';
+
+$route['log/transfer'] = 'LogTransferController/index';
 
 $route['init']         = 'InitController/init';
 $route['init/country'] = 'InitController/country';

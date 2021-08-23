@@ -11,6 +11,8 @@ class M_convert extends CI_Model
 			return $this->db->set('profit_paid', 'profit_paid - ' . $amount, false)->where('id_member', $id_member)->update('member_balance');
 		} elseif ($source == "bonus") {
 			return $this->db->set('bonus', 'bonus - ' . $amount, false)->where('id_member', $id_member)->update('member_balance');
+		} elseif ($source == "ratu") {
+			return $this->db->set('ratu', 'ratu - ' . $amount, false)->where('id_member', $id_member)->update('member_balance');
 		}
 	}
 

@@ -5,12 +5,14 @@ class L_member
 {
 
 	protected $ci;
+	protected $id_member;
 
 	public function __construct()
 	{
 		$this->ci = &get_instance();
 		$this->ci->load->model('M_core', 'mcore');
 		$this->ci->load->helper(['cookie', 'string', 'floating_helper', 'indodax_rate_helper']);
+		$this->id_member = $this->ci->session->userdata(SESI . 'id');
 	}
 
 	public function render($data)
@@ -103,6 +105,7 @@ class L_member
 			$data['x_app']                     = $this->ci->M_core->get('app_config', '*', ['id' => 1]);
 			$data['x_usdt_idr']                = indodax_rate('usdtidr');
 			$data['x_trx_idr']                 = indodax_rate('trxidr');
+			$data['x_wallet_address']          = base64url_encode($this->id_member);
 			$this->ci->load->view('layouts/member/main', $data, FALSE);
 		} else {
 			show_404();

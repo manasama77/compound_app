@@ -11,8 +11,8 @@
 	<!-- Right navbar links -->
 	<ul class="navbar-nav ml-auto">
 		<li class="nav-item">
-			<a data-fancybox="single" href="https://chart.googleapis.com/chart?cht=qr&chs=400x400&chl=<?= hash('sha1', $this->session->userdata(SESI . 'id')) ?>&choe=UTF-8" data-caption="<?= hash('sha1', $this->session->userdata(SESI . 'id')) ?>">
-				<img src="https://chart.googleapis.com/chart?cht=qr&chs=40x40&chl=<?= hash('sha1', $this->session->userdata(SESI . 'id')) ?>&choe=UTF-8" data-lazy-src="https://chart.googleapis.com/chart?cht=qr&chs=40x40&chl=<?= hash('sha1', $this->session->userdata(SESI . 'id')) ?>&choe=UTF-8" />
+			<a data-fancybox="single" href="https://chart.googleapis.com/chart?cht=qr&chs=400x400&chl=<?= $x_wallet_address; ?>&choe=UTF-8" data-caption="<?= $x_wallet_address; ?>">
+				<img src="https://chart.googleapis.com/chart?cht=qr&chs=40x40&chl=<?= $x_wallet_address; ?>&choe=UTF-8" data-lazy-src="https://chart.googleapis.com/chart?cht=qr&chs=40x40&chl=<?= $x_wallet_address; ?>&choe=UTF-8" />
 			</a>
 		</li>
 		<li class="nav-item">

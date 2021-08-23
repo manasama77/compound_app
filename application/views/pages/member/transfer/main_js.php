@@ -1,0 +1,170 @@
+<script src="<?= base_url(); ?>public/plugin/qrcode_reader/js/qrcode-reader.js"></script>
+<script>
+	let wallet_address = $('#wallet_address');
+	let amount_ratu = $('#amount_ratu');
+
+	$('#document').ready(function() {
+		$("#scan").qrCodeReader();
+
+		$('#form_add').on('submit', function(e) {
+			e.preventDefault();
+			if (wallet_address.val().length < 48) {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Format Wallet Address Salah...',
+					showConfirmButton: false,
+					toast: true,
+					timer: 3000,
+					timerProgressBar: true,
+				});
+			} else if (amount_ratu.val() == 0) {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Nominal Transfer Nol...',
+					showConfirmButton: false,
+					toast: true,
+					timer: 3000,
+					timerProgressBar: true,
+				});
+			} else if ($('#otp').val().lenght < 6) {
+				Swal.fire({
+					icon: 'error',
+					title: 'OTP Salah...',
+					showConfirmButton: false,
+					toast: true,
+					timer: 3000,
+					timerProgressBar: true,
+				});
+			} else {
+				storeData();
+			}
+		});
+
+		$('#otp').on('keyup', function(e) {
+			if ($(this).val().length == 6) {
+				$(this).trigger("keydown", [9]);
+				otpAuth().done(function(e) {
+					console.log(e);
+					if (e.code == 500) {
+						Swal.fire({
+							icon: 'error',
+							title: 'OTP Salah...',
+							showConfirmButton: false,
+							toast: true,
+							timer: 2000,
+							timerProgressBar: true,
+						});
+						$('#otp').val('');
+					} else if (e.code == 200) {
+						$('#btn_otp').attr('disabled', false).unblock();
+						Swal.fire({
+							icon: 'success',
+							title: 'OTP Valid...',
+							showConfirmButton: false,
+							toast: true,
+							timer: 2000,
+							timerProgressBar: true,
+						});
+
+						$('#otp').attr('disabled', true);
+						$('#btn_otp').attr('disabled', true);
+						$('#btn_submit').attr('disabled', false);
+					}
+				});
+			}
+		});
+	});
+
+	function storeData() {
+		$.ajax({
+			url: '<?= site_url('transfer/store'); ?>',
+			method: 'post',
+			dataType: 'json',
+			data: $('#form_add').serialize(),
+			beforeSend: function() {
+				$('#btn_submit').attr('disabled', true);
+				$.blockUI({
+					message: `<i class="fas fa-spinner fa-spin"></i>`
+				});
+			}
+		}).always(function(e) {
+			$.unblockUI();
+		}).fail(function(e) {
+			console.log(e);
+			if (e.responseText != '') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					html: e.responseText,
+				});
+			}
+		}).done(function(e) {
+			console.log(e);
+			if (e.code == 500) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: e.msg,
+				});
+			} else if (e.code == 404) {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Oops...',
+					text: e.msg,
+				});
+				$('#btn_submit').attr('disabled', false);
+			} else if (e.code == 200) {
+				setTimeout(function() {
+					Swal.fire({
+						position: 'top-end',
+						icon: 'success',
+						title: 'Success...',
+						text: e.msg,
+						showConfirmButton: true,
+						timer: 2000,
+						timerProgressBar: true,
+					}).then((res) => {
+						window.location.reload();
+					});
+				}, 500);
+			}
+		});
+	}
+
+	function kirimOTP() {
+		$.ajax({
+			url: '<?= site_url('otp_resend'); ?>',
+			method: 'post',
+			dataType: 'json',
+			beforeSend: function() {
+				$('#otp').attr('disabled', true);
+				$('#btn_submit').attr('disabled', true);
+				$('#btn_otp').attr('disabled', true).block({
+					message: '<i class="fas fa-spinner fa-spin"></i>'
+				});
+			}
+		}).always(function() {
+			//
+		}).fail(function(e) {
+			console.log(e);
+			if (e.responseText != '') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					html: e.responseText,
+				}).then((res) => {
+					window.location.reload();
+				});
+			}
+		}).done(function(e) {
+			console.log(e);
+			if (e.code == 200) {
+				$('#otp').attr('disabled', false);
+				setTimeout(function() {
+					$('#otp').attr('disabled', true);
+					$('#btn_otp').attr('disabled', false).unblock();
+				}, 60000);
+			}
+		});
+	}
+</script>

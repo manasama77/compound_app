@@ -114,14 +114,14 @@
 				</li>
 				<li class="nav-item">
 					<a href="<?= site_url('convert'); ?>" class="nav-link <?= ($this->uri->segment(1) == "convert") ? "active" : ""; ?>">
-						<i class="nav-icon fas fa-exchange-alt"></i>
+						<i class="nav-icon fas fa-long-arrow-alt-right"></i>
 						<p>
 							Konversi
 						</p>
 					</a>
 				</li>
 				<li class="nav-item">
-					<a href="#" class="nav-link <?= ($this->uri->segment(1) == "transfer") ? "active" : ""; ?>" onclick="comingSoon();">
+					<a href="<?= site_url('transfer'); ?>" class="nav-link <?= ($this->uri->segment(1) == "transfer") ? "active" : ""; ?>">
 						<i class="nav-icon fas fa-paper-plane"></i>
 						<p>
 							Transfer
@@ -201,8 +201,14 @@
 						</li>
 						<li class="nav-item">
 							<a href="<?= site_url('log/convert'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "convert") ? "active" : ""; ?>">
-								<i class="fas fa-wallet nav-icon"></i>
+								<i class="fas fa-long-arrow-alt-right nav-icon"></i>
 								<p>Konversi</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/transfer'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "transfer") ? "active" : ""; ?>">
+								<i class="fas fa-paper-plane nav-icon"></i>
+								<p>Transfer</p>
 							</a>
 						</li>
 						<li>

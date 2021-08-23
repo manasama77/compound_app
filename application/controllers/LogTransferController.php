@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class LogConvertController extends CI_Controller
+class LogTransferController extends CI_Controller
 {
 	protected $datetime;
 	protected $id_member;
@@ -15,19 +15,20 @@ class LogConvertController extends CI_Controller
 		$this->id_member = $this->session->userdata(SESI . 'id');
 
 		$this->load->library('L_member', null, 'template');
+		$this->load->model('M_log_transfer');
 	}
 
 	public function index()
 	{
-		$arr = $this->M_core->get('log_convert', '*', ['id_member' => $this->id_member]);
+		$arr = $this->M_log_transfer->get_data($this->id_member);
 		$data = [
-			'title'      => APP_NAME . ' | Catatan Konversi',
-			'content'    => 'log/convert/main',
-			'vitamin_js' => 'log/convert/main_js',
+			'title'      => APP_NAME . ' | Catatan Transfer',
+			'content'    => 'log/transfer/main',
+			'vitamin_js' => 'log/transfer/main_js',
 			'arr'        => $arr,
 		];
 		$this->template->render($data);
 	}
 }
         
-/* End of file  LogConvertController.php */
+/* End of file  LogTransferController.php */
