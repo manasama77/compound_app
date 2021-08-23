@@ -107,9 +107,9 @@
 							<div class="alert alert-warning p-1">
 								<strong>Catatan:</strong><br />
 								<ul class="p-3">
-									<li>Pastikan Wallet Address tujuan adalah wallet address untuk RATU Coin</li>
+									<li>Setiap transaksi transfer akan dikenakan potongan <?= check_float($x_app->row()->potongan_transfer); ?>%</li>
+									<li>Pastikan Wallet Address tujuan adalah untuk RATU Coin</li>
 									<li>Pastikan Wallet Address yang Anda masukan Valid dan tidak salah dalam memasukan alamat</li>
-									<li>Pastikan juga Wallet Address dapat menerima jenis coin yang sama dan berada di jaringan yang sama. Jika tidak, pada saat proses Penarikan Coin yang dikirimkan akan terbakar dijaringan / kehilangan permanent</li>
 									<li><?= APP_NAME; ?> tidak bertanggung jawab atas semua kesalahan input Anda baik dari Wallet Address yang tidak Valid atau salah kepemilikan Wallet Address</li>
 								</ul>
 							</div>

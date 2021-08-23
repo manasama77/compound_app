@@ -110,9 +110,6 @@
 								<strong>Catatan:</strong><br />
 								<ul class="p-3">
 									<li>Setiap Transaksi Konversi akan dikenakan potongan <?= check_float($x_app->row()->potongan_swap); ?>%</li>
-									<li>Pastikan Wallet Address tujuan adalah wallet address untuk RATU Coin</li>
-									<li>Wallet Address yang Anda masukan harus Valid dan tidak salah dalam memasukan alamat</li>
-									<li><?= APP_NAME; ?> tidak bertanggung jawab atas semua kesalahan input Anda baik dari Wallet Address yang tidak Valid atau salah kepemilikan Wallet Address</li>
 								</ul>
 							</div>
 							<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />

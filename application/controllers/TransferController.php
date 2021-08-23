@@ -89,6 +89,10 @@ class TransferController extends CI_Controller
 			exit;
 		}
 
+		$arr_config        = $this->M_core->get('app_config', 'potongan_transfer', ['id' => 1]);
+		$potongan_transfer = $arr_config->row()->potongan_transfer;
+		$amount_ratu       = ($amount_ratu - ($amount_ratu * $potongan_transfer / 100));
+
 		$this->M_convert->reduce_balance('ratu', $amount_ratu, $this->id_member);
 		$this->M_convert->add_balance('ratu', $amount_ratu, $wallet_address);
 
