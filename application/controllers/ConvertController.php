@@ -94,8 +94,10 @@ class ConvertController extends CI_Controller
 			}
 		}
 
-		$rate        = $this->M_core->get('app_config', 'rate_usdt_ratu', ['id' => 1])->row()->rate_usdt_ratu;
-		$amount_ratu = $rate * $amount_usdt;
+		$arr_config    = $this->M_core->get('app_config', 'potongan_swap, rate_usdt_ratu', ['id' => 1]);
+		$potongan_swap = $arr_config->row()->potongan_swap;
+		$rate          = $arr_config->row()->rate_usdt_ratu;
+		$amount_ratu   = ($amount_usdt - ($amount_usdt * $potongan_swap / 100)) * $rate;
 
 		$this->M_convert->reduce_balance($source, $amount_usdt, $this->id_member);
 		$this->M_convert->add_balance('ratu', $amount_ratu, $this->id_member);
@@ -108,7 +110,7 @@ class ConvertController extends CI_Controller
 			'rate'        => $rate,
 			'created_at'  => $this->datetime,
 		];
-		$exec = $this->M_core->store_uuid('log_convert', $data);
+		$this->M_core->store_uuid('log_convert', $data);
 
 		$msg = "Proses Konversi Berhasil";
 		echo json_encode(['code' => $code, 'msg' => $msg]);

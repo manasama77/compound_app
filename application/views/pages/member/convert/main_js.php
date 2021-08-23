@@ -64,7 +64,7 @@
 		});
 
 		amount_usdt.on('change keyup', function(e) {
-			let amount = amount_usdt.val() * rate;
+			let amount = (amount_usdt.val() - (amount_usdt.val() * <?= $x_app->row()->potongan_swap; ?> / 100)) * rate;
 			amount_ratu.val(amount);
 		});
 	});
