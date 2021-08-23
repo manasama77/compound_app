@@ -61,6 +61,9 @@ $route['withdraw_render_wallet_label'] 		= 'WithdrawController/render_wallet_lab
 $route['withdraw_render_wallet_address'] 	= 'WithdrawController/render_wallet_address';
 $route['withdraw/success/(:any)'] 			= 'WithdrawController/success/$1';
 
+$route['convert']       = 'ConvertController/index';
+$route['convert/store'] = 'ConvertController/store';
+
 $route['rewards'] = 'RewardsController/index';
 
 $route['log/trade_manager'] 				= 'LogTradeManagerController/index';
@@ -80,6 +83,8 @@ $route['log/withdraw'] = 'LogWithdrawController/index';
 $route['log/bonus_recruitment'] = 'LogBonusRecruitmentController/index';
 $route['log/bonus_ql']          = 'LogBonusQLController/index';
 $route['log/bonus_royalty']     = 'LogBonusRoyaltyController/index';
+
+$route['log/convert'] = 'LogConvertController/index';
 
 $route['init']         = 'InitController/init';
 $route['init/country'] = 'InitController/country';

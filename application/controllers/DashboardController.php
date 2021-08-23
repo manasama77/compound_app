@@ -15,7 +15,7 @@ class DashboardController extends CI_Controller
 		$this->load->model('M_dashboard');
 		$this->load->model('M_member');
 		$this->load->model('M_tree');
-		$this->load->helper('Floating_helper');
+		$this->load->helper('floating_helper');
 
 
 		$this->id_member = $this->session->userdata(SESI . 'id');
@@ -37,6 +37,7 @@ class DashboardController extends CI_Controller
 		$data_card            = $this->_card();
 		$data_latest_downline = $this->_latest_downline($this->id_member);
 		$recruitment_link     = $this->_generate_recruitment_link();
+		$ratu_wallet          = base64url_encode($this->id_member);
 
 		$data = [
 			'title'                => APP_NAME . " | Dashboard",
@@ -45,6 +46,7 @@ class DashboardController extends CI_Controller
 			'data_card'            => $data_card,
 			'data_latest_downline' => $data_latest_downline,
 			'recruitment_link'     => $recruitment_link,
+			'ratu_wallet'          => $ratu_wallet,
 		];
 
 		$this->template->render($data);

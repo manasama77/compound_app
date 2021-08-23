@@ -176,7 +176,7 @@
 					</div>
 					<div class="card-body">
 						<div class="input-group">
-							<input type="text" class="form-control bg-purple" id="ratu_wallet" value="<?= hash('sha1', $this->session->userdata(SESI . 'id')) ?>" readonly />
+							<input type="text" class="form-control bg-purple" id="ratu_wallet" value="<?= $ratu_wallet; ?>" readonly />
 							<div class="input-group-append">
 								<button type="button" class="btn bg-dark" id="copy" onclick="CopyUrl('ratu_wallet');">
 									<i class="fas fa-clipboard fa-fw"></i> Copy

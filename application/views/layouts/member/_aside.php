@@ -113,10 +113,10 @@
 					</a>
 				</li>
 				<li class="nav-item">
-					<a href="#" class="nav-link <?= ($this->uri->segment(1) == "swap") ? "active" : ""; ?>" onclick="comingSoon();">
+					<a href="<?= site_url('convert'); ?>" class="nav-link <?= ($this->uri->segment(1) == "convert") ? "active" : ""; ?>">
 						<i class="nav-icon fas fa-exchange-alt"></i>
 						<p>
-							Swap
+							Konversi
 						</p>
 					</a>
 				</li>
@@ -170,18 +170,6 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?= site_url('log/recruitment'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "recruitment") ? "active" : ""; ?>">
-								<i class="fas fa-sun nav-icon"></i>
-								<p>Rekrutmen</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="<?= site_url('log/withdraw'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "withdraw") ? "active" : ""; ?>">
-								<i class="fas fa-wallet nav-icon"></i>
-								<p>Penarikan</p>
-							</a>
-						</li>
-						<li class="nav-item">
 							<a href="<?= site_url('log/bonus_recruitment'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "bonus_recruitment") ? "active" : ""; ?>">
 								<i class="fas fa-wallet nav-icon"></i>
 								<p>Bonus Sponsor</p>
@@ -197,6 +185,24 @@
 							<a href="<?= site_url('log/bonus_royalty'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "bonus_royalty") ? "active" : ""; ?>">
 								<i class="fas fa-wallet nav-icon"></i>
 								<p>Bonus Royalty</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/recruitment'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "recruitment") ? "active" : ""; ?>">
+								<i class="fas fa-sun nav-icon"></i>
+								<p>Rekrutmen</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/withdraw'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "withdraw") ? "active" : ""; ?>">
+								<i class="fas fa-wallet nav-icon"></i>
+								<p>Penarikan</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= site_url('log/convert'); ?>" class="nav-link <?= ($this->uri->segment(1) == "log" && $this->uri->segment(2) == "convert") ? "active" : ""; ?>">
+								<i class="fas fa-wallet nav-icon"></i>
+								<p>Konversi</p>
 							</a>
 						</li>
 						<li>
