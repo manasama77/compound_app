@@ -2267,7 +2267,7 @@ class TaskSchedulerController extends CI_Controller
 		$this->db->trans_begin();
 
 		$release_obj = new DateTime('now');
-		$release_obj->modify('+30 day');
+		$release_obj->modify('+' . DURASI_HOLD . ' day');
 		$release_date = $release_obj->format('Y-m-d');
 
 		foreach ($arr as $key) {
@@ -2495,7 +2495,7 @@ class TaskSchedulerController extends CI_Controller
 		$this->db->trans_begin();
 
 		$release_obj = new DateTime('now');
-		$release_obj->modify('+30 day');
+		$release_obj->modify('+' . DURASI_HOLD . ' day');
 		$release_date = $release_obj->format('Y-m-d');
 
 		foreach ($arr as $key) {
