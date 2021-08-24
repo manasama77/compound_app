@@ -145,6 +145,9 @@
 					icon: 'error',
 					title: 'Oops...',
 					html: e.responseText,
+					howConfirmButton: false,
+					timer: 2000,
+					timerProgressBar: true,
 				}).then((res) => {
 					window.location.reload();
 				});
