@@ -156,7 +156,7 @@
 				setTimeout(function() {
 					$('#otp').attr('disabled', true);
 					$('#btn_otp').attr('disabled', false).unblock();
-				}, 60000);
+				}, 120000);
 			}
 		});
 	}
