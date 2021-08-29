@@ -39,13 +39,13 @@
 									<p class="card-text">
 									<ul style="font-size: 16px;">
 										<li>
-											Nilai Investasi: <span id="total_investment"><?= $arr[0]['amount']; ?></span> <small>USDT</small>
+											Nilai Investasi: <span id="total_investment"><?= ($arr[0]['id_package_trade_manager'] == 6) ? "≥" : "";  ?><?= $arr[0]['amount']; ?></span> <small>USDT</small>
 										</li>
 										<li>
-											Profit Per Bulan: <?= $arr[0]['profit_per_month_percent']; ?>% (<?= $arr[0]['profit_per_month_value']; ?> <small>USDT</small>)
+											Profit Per Bulan: <?= $arr[0]['profit_per_month_percent']; ?>% (<?= ($arr[0]['id_package_trade_manager'] == 6) ? "≥" : "";  ?><?= $arr[0]['profit_per_month_value']; ?> <small>USDT</small>)
 										</li>
 										<li>
-											Profit Per Hari: <span id="profit_per_day_x"><?= $arr[0]['profit_per_day_percentage']; ?>% (<?= $arr[0]['profit_per_day_value']; ?> <small>USDT</small>)
+											Profit Per Hari: <span id="profit_per_day_x"><?= $arr[0]['profit_per_day_percentage']; ?>% (<?= ($arr[0]['id_package_trade_manager'] == 6) ? "≥" : "";  ?><?= $arr[0]['profit_per_day_value']; ?> <small>USDT</small>)
 										</li>
 										<li>
 											Masa Aktif: <?= $arr[0]['contract_duration']; ?> <small>Hari</small>
@@ -54,13 +54,13 @@
 											Rasio Profit Sharing:
 											<ul>
 												<li>
-													Member: <?= $arr[0]['share_self_percentage']; ?>% (<span id="self_share"><?= $arr[0]['share_self_value']; ?></span> <small>USDT</small>)
+													Member: <?= $arr[0]['share_self_percentage']; ?>% (<span id="self_share"><?= ($arr[0]['id_package_trade_manager'] == 6) ? "≥" : "";  ?><?= $arr[0]['share_self_value']; ?></span> <small>USDT</small>)
 												</li>
 												<li>
-													Upline: <?= check_float($arr[0]['share_upline_percentage']); ?>% (<span id="upline_share"><?= $arr[0]['share_upline_value']; ?></span> <small>USDT</small>)
+													Upline: <?= check_float($arr[0]['share_upline_percentage']); ?>% (<span id="upline_share"><?= ($arr[0]['id_package_trade_manager'] == 6) ? "≥" : "";  ?><?= $arr[0]['share_upline_value']; ?></span> <small>USDT</small>)
 												</li>
 												<li>
-													Perusahaan: <?= $arr[0]['share_company_percentage']; ?>% (<span id="company_share"><?= $arr[0]['share_company_value']; ?></span> <small>USDT</small>) </li>
+													Perusahaan: <?= $arr[0]['share_company_percentage']; ?>% (<span id="company_share"><?= ($arr[0]['id_package_trade_manager'] == 6) ? "≥" : "";  ?><?= $arr[0]['share_company_value']; ?></span> <small>USDT</small>) </li>
 											</ul>
 										</li>
 									</ul>

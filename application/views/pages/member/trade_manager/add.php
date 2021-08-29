@@ -61,13 +61,13 @@
 									<p class="card-text">
 									<ul style="font-size: 17px;">
 										<li>
-											Nilai Investasi: <?= $key['amount']; ?> <small>USDT</small>
+											Nilai Investasi: <?= ($x == 5) ? "≥" : "";  ?><?= $key['amount']; ?> <small>USDT</small>
 										</li>
 										<li>
-											Profit Per Bulan<sup><strong>*</strong></sup>:<br /><?= $key['profit_per_month_percent']; ?>% (<?= $key['profit_per_month_value']; ?> <small>USDT</small>)
+											Profit Per Bulan<sup><strong>*</strong></sup>:<br /><?= $key['profit_per_month_percent']; ?>% (<?= ($x == 5) ? "≥" : "";  ?><?= $key['profit_per_month_value']; ?> <small>USDT</small>)
 										</li>
 										<li>
-											Profit Per Hari<sup><strong>*</strong></sup>:<br /><?= $key['profit_per_day_percentage']; ?>% (<?= $key['profit_per_day_value']; ?> <small>USDT</small>)
+											Profit Per Hari<sup><strong>*</strong></sup>:<br /><?= $key['profit_per_day_percentage']; ?>% (<?= ($x == 5) ? "≥" : "";  ?><?= $key['profit_per_day_value']; ?> <small>USDT</small>)
 										</li>
 										<li>
 											Masa Aktif: <?= $key['contract_duration']; ?> Hari

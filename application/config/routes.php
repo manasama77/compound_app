@@ -91,29 +91,29 @@ $route['log/convert'] = 'LogConvertController/index';
 
 $route['log/transfer'] = 'LogTransferController/index';
 
-$route['init']         = 'InitController/init';
-$route['init/country'] = 'InitController/country';
-$route['base64']       = 'InitController/base64';
-$route['send_email']   = 'SendEmail';
+// $route['init']         = 'InitController/init';
+// $route['init/country'] = 'InitController/country';
+// $route['base64']       = 'InitController/base64';
+// $route['send_email']   = 'SendEmail';
 
-$route['coinpayment/get_basic_info']         = 'CoinPayment/get_basic_info';
-$route['coinpayment/rates']                  = 'CoinPayment/rates';
-$route['coinpayment/create_transaction']     = 'CoinPayment/create_transaction';
-$route['coinpayment/callback_address']       = 'CoinPayment/callback_address';
-$route['coinpayment/get_tx_info']            = 'CoinPayment/get_tx_info';
-$route['coinpayment/get_tx_ids']             = 'CoinPayment/get_tx_ids';
-$route['coinpayment/balances']               = 'CoinPayment/balances';
-$route['coinpayment/create_transfer']        = 'CoinPayment/create_transfer';
-$route['coinpayment/create_withdrawal']      = 'CoinPayment/create_withdrawal';
-$route['coinpayment/cancel_withdrawal']      = 'CoinPayment/cancel_withdrawal';
-$route['coinpayment/convert']                = 'CoinPayment/convert';
-$route['coinpayment/convert_limits']         = 'CoinPayment/convert_limits';
-$route['coinpayment/get_withdrawal_history'] = 'CoinPayment/get_withdrawal_history';
-$route['coinpayment/get_withdrawal_info']    = 'CoinPayment/get_withdrawal_info';
-$route['coinpayment/ipn']      = 'CoinPayment/ipn';
+// $route['coinpayment/get_basic_info']         = 'CoinPayment/get_basic_info';
+// $route['coinpayment/rates']                  = 'CoinPayment/rates';
+// $route['coinpayment/create_transaction']     = 'CoinPayment/create_transaction';
+// $route['coinpayment/callback_address']       = 'CoinPayment/callback_address';
+// $route['coinpayment/get_tx_info']            = 'CoinPayment/get_tx_info';
+// $route['coinpayment/get_tx_ids']             = 'CoinPayment/get_tx_ids';
+// $route['coinpayment/balances']               = 'CoinPayment/balances';
+// $route['coinpayment/create_transfer']        = 'CoinPayment/create_transfer';
+// $route['coinpayment/create_withdrawal']      = 'CoinPayment/create_withdrawal';
+// $route['coinpayment/cancel_withdrawal']      = 'CoinPayment/cancel_withdrawal';
+// $route['coinpayment/convert']                = 'CoinPayment/convert';
+// $route['coinpayment/convert_limits']         = 'CoinPayment/convert_limits';
+// $route['coinpayment/get_withdrawal_history'] = 'CoinPayment/get_withdrawal_history';
+// $route['coinpayment/get_withdrawal_info']    = 'CoinPayment/get_withdrawal_info';
+// $route['coinpayment/ipn']      = 'CoinPayment/ipn';
 
-$route['coinpayment/success/(:any)']  = 'CoinPayment/success/$1';
-$route['coinpayment/cancel/(:any)']   = 'CoinPayment/cancel/$1';
+// $route['coinpayment/success/(:any)']  = 'CoinPayment/success/$1';
+// $route['coinpayment/cancel/(:any)']   = 'CoinPayment/cancel/$1';
 
 $route['scheduler/coinpayment_tx_info_tm'] 	         = 'TaskSchedulerController/coinpayment_tx_info_tm'; # DONE
 $route['scheduler/withdraw']                         = 'TaskSchedulerController/withdraw'; #

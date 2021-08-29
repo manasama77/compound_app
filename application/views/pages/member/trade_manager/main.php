@@ -40,16 +40,14 @@
 								<thead class="bg-dark">
 									<tr>
 										<th class="text-center align-middle" style="min-width: 120px;">Tanggal Registrasi</th>
-										<th class="align-middle" style="min-width: 80px;">Paket</th>
-										<th class="text-center align-middle">Status</th>
+										<th class="align-middle" style="min-width: 50px;">Paket</th>
+										<th class="text-center align-middle" style="min-width: 50px;">Status</th>
 										<th class="text-right align-middle" style="min-width: 130px;">Nilai Investasi <small>(USDT)</small></th>
-										<th class="text-right align-middle" style="min-width: 100px;">Profit Per Bulan <small>(USDT)</small></th>
-										<th class="text-right align-middle" style="min-width: 100px;">Profit Per Hari <small>(USDT)</small></th>
-										<th class="text-right align-middle" style="min-width: 130px;">Profit Share Member Per Hari <small>(USDT)</small></th>
-										<th class="text-center align-middle" style="min-width: 120px;">Tanggal Kedaluwarsa</th>
-										<th class="text-center align-middle" style="min-width: 120px;">
-											Mode Perpanjangan
-										</th>
+										<th class="text-right align-middle" style="min-width: 120px;">Profit / Bulan <small>(USDT)</small></th>
+										<th class="text-right align-middle" style="min-width: 110px;">Profit / Hari <small>(USDT)</small></th>
+										<th class="text-right align-middle" style="min-width: 150px;">Profit Share / Hari <small>(USDT)</small></th>
+										<th class="text-center align-middle" style="min-width: 140px;">Tanggal Kedaluwarsa</th>
+										<th class="text-center align-middle" style="min-width: 130px;">Mode Perpanjangan</th>
 										<th class="text-center align-middle"><i class="fas fa-cogs"></i></th>
 									</tr>
 								</thead>
