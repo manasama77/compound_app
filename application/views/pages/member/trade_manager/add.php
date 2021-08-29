@@ -93,7 +93,7 @@
 
 				<div class="alert alert-warning">
 					<i class="fas fa-info-circle"></i> Informasi
-					<p>* Nilai tersebut belum termasuk Rasio Profit Sharing Member, Upline dan Perusahaan</p>
+					<p>* Nilai tersebut belum termasuk Rasio Profit Sharing Member, Upline dan Perusahaan dan profit dapat dilakukan penarikan setelah 30 hari kemudian</p>
 					<p>** Jika telah memilih paket dengan nilai investasi lebih tinggi, maka paket dengan nilai investasi dibawahnya otomatis tidak dapat dipilih</p>
 				</div>
 

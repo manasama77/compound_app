@@ -51,7 +51,7 @@
 											Masa Aktif: <?= $arr[0]['contract_duration']; ?> <small>Hari</small>
 										</li>
 										<li>
-											Rasio Profit Sharing:
+											Rasio Profit Sharing<sup class="text-danger"><strong>*</strong></sup>:
 											<ul>
 												<li>
 													Member: <?= $arr[0]['share_self_percentage']; ?>% (<span id="self_share"><?= ($arr[0]['id_package_trade_manager'] == 6) ? "≥" : "";  ?><?= $arr[0]['share_self_value']; ?></span> <small>USDT</small>)
@@ -65,6 +65,14 @@
 										</li>
 									</ul>
 									</p>
+									<div class="row">
+										<div class="col-11 mx-auto">
+											<div class="alert alert-warning p-2">
+												<i class="fas fa-info-circle"></i> Informasi<br />
+												* Profit dapat dilakukan penarikan setelah 30 hari kemudian
+											</div>
+										</div>
+									</div>
 								</div>
 								<div class="col-md-7 p-4">
 									<div class="form-group row">
