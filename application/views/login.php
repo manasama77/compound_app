@@ -77,7 +77,7 @@
 
 				<div class="mb-1 mt-4">
 					<div class="float-right">
-						<a href="<?= LINK_PENDAFTARAN; ?>">Pendaftaran</a>
+						<a href="<?= LINK_PENDAFTARAN; ?>"><strong>Pendaftaran</strong></a>
 					</div>
 					<a href="<?= site_url('forgot_password'); ?>">Lupa Password ?</a>
 				</div>
