@@ -35432,7 +35432,8 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 @media (max-width: 576px) {
   .login-box,
   .register-box {
-    margin-top: .5rem;
+    /* margin-top: .5rem; */
+		margin-top: -10rem;
     width: 90%;
   }
 }
@@ -35504,6 +35505,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
   margin: 0;
   padding: 0 20px 20px;
   text-align: center;
+  color: #000;
 }
 
 .social-auth-links {

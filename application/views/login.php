@@ -17,6 +17,11 @@
 	<link href="<?= base_url(); ?>public/css/sweetalert2-theme-dark.css" rel="stylesheet">
 	<link rel="stylesheet" href="<?= base_url(); ?>public/css/login.css">
 	<link rel="icon" href="<?= base_url(); ?>public/img/logo.png">
+	<style>
+		.login-box {
+			margin-top: -8rem !important;
+		}
+	</style>
 </head>
 
 <body class="hold-transition login-page">
@@ -81,31 +86,39 @@
 			<!-- /.card -->
 		</div>
 		<!-- /.login-box -->
+	</div>
 
-		<!-- jQuery -->
-		<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/jquery/jquery.min.js"></script>
-		<!-- Bootstrap 4 -->
-		<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-		<!-- AdminLTE App -->
-		<script src="<?= base_url(); ?>public/plugin/adminlte/dist/js/adminlte.min.js"></script>
+	<nav class="navbar fixed-bottom navbar-dark bg-light">
+		<strong>Copyright &copy; <?= APP_YEAR_TO; ?> <a href="<?= site_url(); ?>"><?= APP_NAME; ?></a>. All rights reserved.</strong>
+		<div class="float-right d-none d-sm-inline-block">
+			<b>Version</b> <?= APP_VERSION; ?>
+		</div>
+	</nav>
+
+	<!-- jQuery -->
+	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/jquery/jquery.min.js"></script>
+	<!-- Bootstrap 4 -->
+	<script src="<?= base_url(); ?>public/plugin/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<!-- AdminLTE App -->
+	<script src="<?= base_url(); ?>public/plugin/adminlte/dist/js/adminlte.min.js"></script>
 
 
-		<script src="<?= base_url(); ?>public/js/sweetalert2.min.js"></script>
+	<script src="<?= base_url(); ?>public/js/sweetalert2.min.js"></script>
 
-		<script>
-			$(document).ready(function() {
-				$('#eye').on('click', function() {
-					let pass = document.getElementById("password");
-					if (pass.type === "password") {
-						$('#eye').removeClass("fa-eye").addClass("fa-eye-slash");
-						pass.type = "text";
-					} else {
-						$('#eye').removeClass("fa-eye-slash").addClass("fa-eye");
-						pass.type = "password";
-					}
-				});
+	<script>
+		$(document).ready(function() {
+			$('#eye').on('click', function() {
+				let pass = document.getElementById("password");
+				if (pass.type === "password") {
+					$('#eye').removeClass("fa-eye").addClass("fa-eye-slash");
+					pass.type = "text";
+				} else {
+					$('#eye').removeClass("fa-eye-slash").addClass("fa-eye");
+					pass.type = "password";
+				}
 			});
-		</script>
+		});
+	</script>
 </body>
 
 </html>

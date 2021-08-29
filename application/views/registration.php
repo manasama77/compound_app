@@ -13,8 +13,9 @@
 	<!-- icheck bootstrap -->
 	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 	<!-- Theme style -->
-	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/dist/css/adminlte.min.css">
+	<link rel="stylesheet" href="<?= base_url(); ?>public/plugin/adminlte/dist/css/adminlte.css">
 	<link rel="stylesheet" href="<?= base_url(); ?>public/css/login.css">
+	<link rel="icon" href="<?= base_url(); ?>public/img/logo.png">
 	<style>
 		.login-box,
 		.register-box {
@@ -36,7 +37,6 @@
 		<div class="register-logo">
 			<a href="javascript:void(0)"><b><?= APP_NAME; ?></b></a>
 		</div>
-
 
 		<div class="card">
 			<div class="card-body register-card-body">
@@ -153,6 +153,13 @@
 		</div>
 
 	</div>
+
+	<nav class="navbar fixed-bottom navbar-dark bg-light">
+		<strong>Copyright &copy; <?= APP_YEAR_TO; ?> <a href="<?= site_url(); ?>"><?= APP_NAME; ?></a>. All rights reserved.</strong>
+		<div class="float-right d-none d-sm-inline-block">
+			<b>Version</b> <?= APP_VERSION; ?>
+		</div>
+	</nav>
 
 	<div class="modal fade" id="term_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
