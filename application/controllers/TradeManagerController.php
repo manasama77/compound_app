@@ -164,7 +164,7 @@ class TradeManagerController extends CI_Controller
 			'red',
 			'green',
 			'yellow',
-			'light',
+			'purple',
 		];
 
 		$where_member_trade_manager = ['id_member' => $this->id_member];
