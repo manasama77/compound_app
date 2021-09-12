@@ -7,6 +7,7 @@ Every member who was already a member, they can pick / join several 
 After members have a package system will automatically distribute the profit (the compound system in here).
 
 There are two type of package
+
 - Trade Manager
 - Crypto Asset
 
