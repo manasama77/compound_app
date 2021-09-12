@@ -11,7 +11,6 @@ There are two type of package
 - Trade Manager
 - Crypto Asset
 
-
 Information for Trade Manager basically just compounding member investment after they pick some package, then with the duration 365 day the package automatically update the duration or it can stoping the package subcsription.
 Another one information for Crypto Asset basicly after members join the package on this type of package and join or pick package. After 365 day members can claim to get an Asset Property. This system useful when you are really want combine Cryptocurrency with Property Asset.
 For scheduling the distribution can be called via CLI (command line interface) with Cron Job Feature on Server.For Crypto Payments we are use payment gateway from `coinpayments.net  <https://coinpayments.net>`_
