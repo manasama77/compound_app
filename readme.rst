@@ -14,7 +14,7 @@ Information for Trade Manager basically just compounding member investme
 Another one information for Crypto Asset basicly after members join the package on this type of package and join or pick package. After 365 day members can claim to get an Asset Property. This system useful when you are really want combine Cryptocurrency with Property Asset.
 For scheduling the distribution can be called via CLI (command line interface) with Cron Job Feature on Server.For Crypto Payments we are use payment gateway from `coinpayments.net  <https://coinpayments.net>`_
 This Repository is Part of Member Area Application to see Backend Area you can go to 
-`Backend Repository <https://github.com/manasama77/admin.compound_app>`_
+`Backend App Repository <https://github.com/manasama77/admin.compund_app>`_
 
 ***************
 Technology Used
@@ -44,6 +44,7 @@ Installation
 ************
 
 If you have problem with installation, feel free to contact me At
+
 - `Send Email to adam.pm77@gmail.com <mailto:adam.pm77@gmail.com>`_
 - `Ask me on Telegram <https://t.me/dev_adampm>`
 - Call at `+6282114578976<+6282114578976>`
