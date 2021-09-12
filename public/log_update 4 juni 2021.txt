@@ -1,6 +1,0 @@
-proses registrasi dibuat sederhana (done)
-ketika belum ada verifikasi foto ktp tidak bisa withdraw
-ketika login otp email (done)
-ketika withdraw otp sms
-ketika pilih paket otp email
-withdraw kena potongan 10%, tampilkan informasinya ketika withdraw

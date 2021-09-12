@@ -1,70 +1,60 @@
-###################
-What is CodeIgniter
-###################
+######################
+Compound Application
+######################
 
-CodeIgniter is an Application Development Framework - a toolkit - for people
-who build web sites using PHP. Its goal is to enable you to develop projects
-much faster than you could if you were writing code from scratch, by providing
-a rich set of libraries for commonly needed tasks, as well as a simple
-interface and logical structure to access these libraries. CodeIgniter lets
-you creatively focus on your project by minimizing the amount of code needed
-for a given task.
+What is a Compound Application?Compound Application is an Investment Application System with Membership Referral System (Multi Level Marketing) with payment gateway with Crypto Payments.
+Every member who was already a member, they can pick / join several packages with a differential on initial investment value
+After members have a package system will automatically distribute the profit (the compound system in here).
 
-*******************
-Release Information
-*******************
+There are two type of package
+- Trade Manager
+- Crypto Asset
 
-This repo contains in-development code for future releases. To download the
-latest stable release please visit the `CodeIgniter Downloads
-<https://codeigniter.com/download>`_ page.
+Information for Trade Manager basically just compounding member investment after they pick some package, then with the duration 365 day the package automatically update the duration or it can stoping the package subcsription.
+Another one information for Crypto Asset basicly after members join the package on this type of package and join or pick package. After 365 day members can claim to get an Asset Property. This system useful when you are really want combine Cryptocurrency with Property Asset.
+For scheduling the distribution can be called via CLI (command line interface) with Cron Job Feature on Server.For Crypto Payments we are use payment gateway from `coinpayments.net  <https://coinpayments.net>`_
+This Repository is Part of Member Area Application to see Backend Area you can go to 
+`Backend Repository <https://github.com/manasama77/admin.compound_app>`_
 
-**************************
-Changelog and New Features
-**************************
+***************
+Technology Used
+***************
 
-You can find a list of all changes for each release in the `user
-guide change log <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/changelog.rst>`_.
+- Codeigniter 3
+- Bootstrap 4
+- Jquery
+- Sweetalert 2
+- toastr JS
+- Jquery BlockUI
+- QRCode Reader
+- AdminLte (for Backend template)
 
-*******************
-Server Requirements
-*******************
+**********************************
+Application & Server Requirements
+**********************************
 
-PHP version 5.6 or newer is recommended.
-
-It should work on 5.3.7 as well, but we strongly advise you NOT to run
-such old versions of PHP, because of potential security and performance
-issues, as well as missing features.
+- PHP version 7.4 or newer is recommended.
+- MySql databases
+- Web Server (Apache / NGINX / Shared Hosting / VPS / Cloud Hosting)
+- Server with Cron Job feature
+- Composer
 
 ************
 Installation
 ************
 
-Please see the `installation section <https://codeigniter.com/user_guide/installation/index.html>`_
-of the CodeIgniter User Guide.
-
-*******
-License
-*******
-
-Please see the `license
-agreement <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/license.rst>`_.
+If you have problem with installation, feel free to contact me At
+- `Send Email to adam.pm77@gmail.com <mailto:adam.pm77@gmail.com>`_
+- `Ask me on Telegram <https://t.me/dev_adampm>`
+- Call at `+6282114578976<+6282114578976>`
 
 *********
-Resources
+Donation
 *********
 
--  `User Guide <https://codeigniter.com/docs>`_
--  `Language File Translations <https://github.com/bcit-ci/codeigniter3-translations>`_
--  `Community Forums <http://forum.codeigniter.com/>`_
--  `Community Wiki <https://github.com/bcit-ci/CodeIgniter/wiki>`_
--  `Community Slack Channel <https://codeigniterchat.slack.com>`_
+If you helped or think this application useful, you can send donate me with coin to wallet address:
+- BTC - 113vUFFYUuhC5P3Y7dNKS8eVL3R95XV28z
+- TRX - TF57x6FTFfSL9H3AQUHreECKQmZDEvaSHy
+- BNB BEP20 - 0xc4b79a7458b393ee8d44a7181daf946492ab2e87
 
-Report security issues to our `Security Panel <mailto:security@codeigniter.com>`_
-or via our `page on HackerOne <https://hackerone.com/codeigniter>`_, thank you.
-
-***************
-Acknowledgement
-***************
-
-The CodeIgniter team would like to thank EllisLab, all the
-contributors to the CodeIgniter project and you, the CodeIgniter user.
+I Appreciate and thankful for all your support and donation to me.
