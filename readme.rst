@@ -6,10 +6,7 @@ What is a Compound Application?Compound Application is an Investment Appl
 Every member who was already a member, they can pick / join several packages with a differential on initial investment value
 After members have a package system will automatically distribute the profit (the compound system in here).
 
-There are two type of package
-
-- Trade Manager
-- Crypto Asset
+There are two type of package, Trade Manager & Crypto Asset.
 
 Information for Trade Manager basically just compounding member investment after they pick some package, then with the duration 365 day the package automatically update the duration or it can stoping the package subcsription.
 Another one information for Crypto Asset basicly after members join the package on this type of package and join or pick package. After 365 day members can claim to get an Asset Property. This system useful when you are really want combine Cryptocurrency with Property Asset.
